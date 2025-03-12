@@ -1,16 +1,16 @@
 package com.shemuel.site.repository;
 
+import com.shemuel.site.entity.User;
 import org.springframework.stereotype.Service;
 
-/**
- * 用户中心防腐层
- * @Author: dengshaoxiang
- * @Date: 2025-03-12-19:49
- * @Description:
- */
-@Service
-public class UserRepository {
+import java.util.Optional;
 
 
+public interface UserRepository {
+
+    User save(User user);
+    Optional<User> findByEmail(String email);
+    void update(User user);
+    void delete(String userId);
 
 }

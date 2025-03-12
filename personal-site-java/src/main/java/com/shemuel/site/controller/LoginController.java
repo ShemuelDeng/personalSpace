@@ -7,11 +7,15 @@ import com.shemuel.site.dto.UserLoginDTO;
 import com.shemuel.site.dto.UserRegisterDTO;
 import com.shemuel.site.entity.User;
 import com.shemuel.site.service.PasswordService;
+import com.shemuel.site.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Optional;
 
 /**
  * @Author: dengshaoxiang
@@ -22,14 +26,19 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class LoginController {
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/login")
     public SaResult doLogin(@RequestBody @Validated UserLoginDTO userLoginDTO) {
         // 根据邮箱查询用户
-        User user = userService.findByEmail(userLoginDTO.getEmail());
+        Optional<User> userOptional = userService.findUserByEmail(userLoginDTO.getEmail());
         
-        if (user == null) {
+        if (!userOptional.isPresent()) {
             return SaResult.error("用户名或密码错误");
         }
+
+        User user = userOptional.get();
 
         String finalHashPassword = PasswordService.hashPassword(userLoginDTO.getPassword());
         // 哈希+ 服务端盐
@@ -59,14 +68,7 @@ public class LoginController {
 
     @PostMapping("/register")
     public SaResult register(@RequestBody UserRegisterDTO registerDTO) {
-        String serverSalt = PasswordService.generateServerSalt();
-        String finalHash = PasswordService.doubleHash(registerDTO.getClientHash(), serverSalt);
-        
-        // 创建用户对象并保存到数据库
-        User newUser = new User();
-        newUser.setEmail(registerDTO.getEmail());
-        newUser.setServerSalt(serverSalt);
-        newUser.setPasswordHash(finalHash);
+
         
         // 这里需要添加数据库保存逻辑
         return SaResult.data("注册成功");
