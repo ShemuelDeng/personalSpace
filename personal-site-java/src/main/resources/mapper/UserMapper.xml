@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.shemuel.site.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.shemuel.site.entity.User">
+        <id column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="salt" property="salt" jdbcType="CHAR"/>
+        <result column="password_hash" property="passwordHash" jdbcType="VARCHAR"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="last_login" property="lastLogin" jdbcType="TIMESTAMP"/>
+        <result column="enabled" property="enabled" jdbcType="BOOLEAN"/>
+        <result column="failed_attempts" property="failedAttempts" jdbcType="INTEGER"/>
+        <result column="locked_until" property="lockedUntil" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="userId">
+        INSERT INTO users (
+            username, email, phone, frontend_salt, password_hash,
+            created_at, last_login, enabled, failed_attempts, locked_until
+        )
+        VALUES (
+                   #{username}, #{email}, #{phone}, #{frontendSalt}, #{passwordHash},
+                   #{createdAt}, #{lastLogin}, #{enabled}, #{failedAttempts}, #{lockedUntil}
+               )
+    </insert>
+
+    <update id="update">
+        UPDATE users
+        <set>
+            <if test="email != null">email = #{email},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="frontendSalt != null">frontend_salt = #{frontendSalt},</if>
+            <if test="passwordHash != null">password_hash = #{passwordHash},</if>
+            last_login = #{lastLogin},
+            enabled = #{enabled},
+            failed_attempts = #{failedAttempts},
+            locked_until = #{lockedUntil}
+        </set>
+        WHERE user_id = #{userId}
+    </update>
+
+    <!-- 其他基础方法已省略，可根据需要补充 -->
+</mapper>
