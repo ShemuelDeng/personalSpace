@@ -1,16 +1,17 @@
 package com.shemuel.site.repository;
 
-import com.shemuel.site.entity.User;
-import org.springframework.stereotype.Service;
+import com.shemuel.site.entity.UserProfile;
 
 import java.util.Optional;
 
 
 public interface UserRepository {
 
-    User save(User user);
-    Optional<User> findByEmail(String email);
-    void update(User user);
+    UserProfile save(UserProfile userProfile);
+    Optional<UserProfile> findByIdentifier(String identifier);
+    Optional<UserProfile> findByPhone(String phone);
+    Optional<UserProfile> findByUsername(String username);
+    void update(UserProfile userProfile);
     void delete(String userId);
 
 }

@@ -1,4 +1,4 @@
-package com.shemuel.site.user;
+package com.shemuel.site.controller.user;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;

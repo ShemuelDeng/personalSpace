@@ -26,4 +26,9 @@ public class RestExceptionController {
        return RestResult.data(HttpStatus.UNAUTHORIZED.value(), "您还未登录， 请登录后，再访问");
     }
 
+    @ExceptionHandler(BusinessException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public RestResult handleError(BusinessException e) {
+        return RestResult.data(e.getCode(), e.getMessage());
+    }
 }

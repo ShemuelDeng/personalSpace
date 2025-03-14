@@ -1,8 +1,9 @@
 package com.shemuel.site.repository;
 
-import com.shemuel.site.entity.User;
-import com.shemuel.site.mapper.UserMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import cn.hutool.core.util.PhoneUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.shemuel.site.entity.UserProfile;
+import com.shemuel.site.mapper.UserProfileMapper;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 
@@ -18,21 +19,43 @@ import java.util.Optional;
 public class MySQLUserRepository implements UserRepository {
 
     @Resource
-    private UserMapper userMapper;
+    private UserProfileMapper userProfileMapper;
 
     @Override
-    public User save(User user) {
-
-        return user;
+    public UserProfile save(UserProfile users) {
+        userProfileMapper.insert(users);
+        return users;
     }
 
     @Override
-    public Optional<User> findByEmail(String email) {
-      return Optional.ofNullable(null);
+    public Optional<UserProfile> findByIdentifier(String identifier) {
+        if (PhoneUtil.isPhone(identifier)){
+            return findByPhone(identifier);
+        }
+        LambdaQueryWrapper<UserProfile> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserProfile::getEmail, identifier);
+        UserProfile userProfile = userProfileMapper.selectOne(queryWrapper);
+        return Optional.ofNullable(userProfile);
     }
 
     @Override
-    public void update(User user) {
+    public Optional<UserProfile> findByPhone(String phone) {
+        LambdaQueryWrapper<UserProfile> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserProfile::getPhone, phone);
+        UserProfile userProfile = userProfileMapper.selectOne(queryWrapper);
+        return Optional.ofNullable(userProfile);
+    }
+
+    @Override
+    public Optional<UserProfile> findByUsername(String username) {
+        LambdaQueryWrapper<UserProfile> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserProfile::getUsername, username);
+        UserProfile users = userProfileMapper.selectOne(queryWrapper);
+        return Optional.ofNullable(users);
+    }
+
+    @Override
+    public void update(UserProfile users) {
 
     }
 
@@ -40,5 +63,4 @@ public class MySQLUserRepository implements UserRepository {
     public void delete(String userId) {
 
     }
-// 其他方法实现...
 }

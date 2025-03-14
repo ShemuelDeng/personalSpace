@@ -22,17 +22,28 @@ sa-token:
 
 
 # DataSource Config
+db:
+  type: mysql
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/mydb?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
+    url: jdbc:mysql://172.16.6.69:3306/vv_nubility?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
     username: root
-    password: 123456
+    password: Vvlife@2019
     driver-class-name: com.mysql.cj.jdbc.Driver
     # HikariCP 连接池配置（默认已启用）
     hikari:
       connection-timeout: 30000
       maximum-pool-size: 20
       minimum-idle: 5
+    sql:
+      init:
+        schema-locations: classpath:db/schema-h2.sql
+#  mvc:
+#    static-path-pattern: /statics/**
+#    resources:
+#      static-locations: classpath:/statics/,classpath:/META-INF/resources/
+#    pathmatch:
+#      matching-strategy: ant_path_matcher
 
 mybatis-plus:
   mapper-locations: classpath:mapper/**/*.xml  # XML 映射文件路径
@@ -40,4 +51,19 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true  # 自动驼峰命名转换
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 打印 SQL 日志（调试用）
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tagsSorter: alpha
+    enabled: true
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  info:
+    title: 接口文档
+    version: 1.0.0
+    description: 接口文档
+
+
 
