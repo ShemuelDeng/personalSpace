@@ -23,9 +23,9 @@ public class MySQLUsersRepositoryTest {
         // 创建一个用户对象
         UserProfile users = new UserProfile();
         users.setUsername("test");
-        users.setEmail("test@example.com");
+        users.setEmail("test@exampl1e.com");
         users.setPasswordHash("password");
-        users.setPhone("1234567890");
+        users.setPhone("12345678901");
         users.setFailedAttempts(0);
         users.setLockedUntil(null);
         users.setCreatedAt(new Date());

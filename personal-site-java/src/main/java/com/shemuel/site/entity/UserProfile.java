@@ -1,13 +1,17 @@
 package com.shemuel.site.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import java.util.Date;
 
 @Data
 public class UserProfile {
-    @TableId
+    @TableId()
     private Long id;
+
+    @TableField(value = "user_name")
     private String username;
     private String gender;
     private Date birthdate;

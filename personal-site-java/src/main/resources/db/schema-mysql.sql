@@ -2,7 +2,7 @@
 -- 用户基本信息表
 CREATE TABLE user_profile (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  user_name VARCHAR(100) NOT NULL,
+  user_name VARCHAR(100) NULL,
   gender ENUM('male', 'female', 'other') DEFAULT NULL,
   birthdate DATETIME DEFAULT NULL,
   email VARCHAR(100) DEFAULT NULL,
@@ -17,7 +17,10 @@ CREATE TABLE user_profile (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   last_login DATETIME,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  user_status TINYINT  DEFAULT 0 -- 0: 正常, 1: 锁定, 2: 禁用
+  user_status TINYINT  DEFAULT 0, -- 0: 正常, 1: 锁定, 2: 禁用
+  UNIQUE INDEX idx_email (email),
+  UNIQUE INDEX idx_name (user_name),
+  UNIQUE INDEX idx_phone (phone)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 教育经历表
