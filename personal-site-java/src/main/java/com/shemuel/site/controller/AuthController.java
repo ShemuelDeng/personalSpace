@@ -1,11 +1,14 @@
-package com.shemuel.site.controller.auth;
+package com.shemuel.site.controller;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
 import cn.hutool.core.util.PhoneUtil;
 import com.shemuel.site.dto.UserLoginDTO;
+import com.shemuel.site.dto.UserPasswordResetDTO;
+import com.shemuel.site.dto.UserPasswordUpdateDTO;
 import com.shemuel.site.dto.UserRegisterDTO;
+import com.shemuel.site.entity.UserProfile;
 import com.shemuel.site.exception.BusinessException;
 import com.shemuel.site.service.AuthService;
 import com.shemuel.site.service.UserService;
@@ -15,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
@@ -27,6 +31,7 @@ import java.util.Optional;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
+@RequestMapping("/user")
 public class AuthController {
     private final UserService userService;
     private final AuthService authService;
@@ -34,7 +39,7 @@ public class AuthController {
     @PostMapping("/login")
     public SaResult login(@RequestBody @Validated UserLoginDTO userLoginDTO) {
 
-        if (!authService.login(userService::findByIdentifier, userLoginDTO.getIdentifier(), userLoginDTO.getPassword())){
+        if (!authService.login(userLoginDTO.getIdentifier(), userLoginDTO.getPassword())){
             return SaResult.error("用户名或密码错误");
         }
         
@@ -46,12 +51,26 @@ public class AuthController {
 
     @PostMapping("/register")
     public SaResult register(@RequestBody UserRegisterDTO registerDTO) {
+
         if (StringUtils.isNotEmpty(registerDTO.getPhone()) && !PhoneUtil.isPhone(registerDTO.getPhone())){
             throw new BusinessException(500, "手机号格式错误");
+        }
+
+        if (StringUtils.isNotEmpty(registerDTO.getEmail()) && !registerDTO.getEmail().contains("@")){
+            throw new BusinessException(500, "邮箱格式错误");
         }
         userService.register(registerDTO);
         // 这里需要添加数据库保存逻辑
         return SaResult.data("注册成功");
     }
 
+
+
+
+    @PostMapping("/password/recall")
+    public SaResult resetPassword(@RequestBody @Validated UserPasswordResetDTO userLoginDTO) {
+        UserProfile userProfile = authService.checkCaptcha(userLoginDTO.getIdentifier(), userLoginDTO.getCaptcha());
+        authService.updatePassword(userProfile, userLoginDTO.getNewPassword());
+        return SaResult.data("ok");
+    }
 }

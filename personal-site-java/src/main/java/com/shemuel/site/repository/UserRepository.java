@@ -11,7 +11,7 @@ public interface UserRepository {
     Optional<UserProfile> findByIdentifier(String identifier);
     Optional<UserProfile> findByPhone(String phone);
     Optional<UserProfile> findByUsername(String username);
-    void update(UserProfile userProfile);
+     int update(UserProfile userProfile);
     void delete(String userId);
 
 }

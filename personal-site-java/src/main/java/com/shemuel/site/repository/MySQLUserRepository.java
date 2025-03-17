@@ -3,8 +3,11 @@ package com.shemuel.site.repository;
 import cn.hutool.core.util.PhoneUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.shemuel.site.entity.UserProfile;
+import com.shemuel.site.exception.BusinessException;
 import com.shemuel.site.mapper.UserProfileMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
@@ -16,6 +19,7 @@ import java.util.Optional;
  **/
 @Repository("mysqlUserRepository")
 @ConditionalOnProperty(name = "db.type", havingValue = "mysql")
+@Slf4j
 public class MySQLUserRepository implements UserRepository {
 
     @Resource
@@ -24,6 +28,7 @@ public class MySQLUserRepository implements UserRepository {
     @Override
     public UserProfile save(UserProfile users) {
         userProfileMapper.insert(users);
+
         return users;
     }
 
@@ -55,8 +60,8 @@ public class MySQLUserRepository implements UserRepository {
     }
 
     @Override
-    public void update(UserProfile users) {
-
+    public int  update(UserProfile users) {
+        return userProfileMapper.updateById(users);
     }
 
     @Override

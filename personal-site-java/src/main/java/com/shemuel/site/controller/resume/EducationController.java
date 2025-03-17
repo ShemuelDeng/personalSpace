@@ -2,6 +2,7 @@ package com.shemuel.site.controller.resume;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -11,8 +12,8 @@ import org.springframework.stereotype.Controller;
  * @author 邓绍祥
  * @since 2025-03-14
  */
-@Controller
-@RequestMapping("/education")
+@RestController
+@RequestMapping("/api/education")
 public class EducationController {
 
 }
