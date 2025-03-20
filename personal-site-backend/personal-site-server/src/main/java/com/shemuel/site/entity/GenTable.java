@@ -1,7 +1,7 @@
 package com.shemuel.site.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.shemuel.site.util.DateUtil;
+import com.shemuel.site.utils.DateUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;

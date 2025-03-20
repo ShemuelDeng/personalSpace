@@ -34,7 +34,7 @@
         </template>
       </el-input>
       
-      <div class="search-result" v-if="searchResults.length">
+      <div class="search-restResult" v-if="searchResults.length">
         <el-scrollbar height="400px">
           <template v-for="group in searchResults" :key="group.title">
             <div class="menu-group-title">
@@ -60,7 +60,7 @@
           </template>
         </el-scrollbar>
       </div>
-      <div v-else-if="searchKeyword" class="no-result">
+      <div v-else-if="searchKeyword" class="no-restResult">
         <el-empty description="未找到相关菜单" />
       </div>
       <div class="keyboard-tips">
@@ -346,7 +346,7 @@ const getItemIndex = (group: any, idx: number) => {
   }
 }
 
-.search-result {
+.search-restResult {
   margin-top: 16px;
 
   .menu-group-title {
@@ -473,7 +473,7 @@ const getItemIndex = (group: any, idx: number) => {
   }
 }
 
-.no-result {
+.no-restResult {
   padding: 40px 0;
 }
 

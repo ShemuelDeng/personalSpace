@@ -21,7 +21,7 @@ public class ${className} implements Serializable {
     @Schema(name = "$column.columnComment")
     private $column.javaType $column.javaField;
 #else
-    @Schema(value = "$column.columnComment")
+    @Schema(name = "$column.columnComment")
     private $column.javaType $column.javaField;
 #end
 #end

@@ -48,20 +48,20 @@
       <div
         v-for="item in searchResults"
         :key="item.id"
-        class="search-result-item"
+        class="search-restResult-item"
         @click="handleResultClick(item)"
       >
-        <div class="result-header">
+        <div class="restResult-header">
           <h3 v-html="highlightKeyword(item.title)"></h3>
-          <span class="result-date">{{ formatDate(item.createTime) }}</span>
+          <span class="restResult-date">{{ formatDate(item.createTime) }}</span>
         </div>
         <p v-html="highlightKeyword(item.summary)"></p>
-        <div class="result-footer">
-          <span class="result-category">
+        <div class="restResult-footer">
+          <span class="restResult-category">
             <i class="fas fa-folder"></i>
             {{ item.categoryName }}
           </span>
-          <span class="result-views">
+          <span class="restResult-views">
             <i class="fas fa-eye"></i>
             {{ item.quantity }} 阅读
           </span>
@@ -369,7 +369,7 @@ export default {
   }
 }
 
-.search-result-item {
+.search-restResult-item {
   padding: 15px;
   cursor: pointer;
   border-radius: 8px;
@@ -383,7 +383,7 @@ export default {
     border-color: var(--primary-color);
   }
   
-  .result-header {
+  .restResult-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -396,7 +396,7 @@ export default {
       flex: 1;
     }
     
-    .result-date {
+    .restResult-date {
       font-size: 12px;
       color: #909399;
       margin-left: 10px;
@@ -410,7 +410,7 @@ export default {
     line-height: 1.6;
   }
   
-  .result-footer {
+  .restResult-footer {
     display: flex;
     gap: 15px;
     font-size: 12px;
@@ -420,8 +420,8 @@ export default {
       margin-right: 4px;
     }
     
-    .result-category,
-    .result-views {
+    .restResult-category,
+    .restResult-views {
       display: flex;
       align-items: center;
     }

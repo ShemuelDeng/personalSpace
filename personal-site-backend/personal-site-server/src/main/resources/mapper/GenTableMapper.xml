@@ -20,9 +20,11 @@
         from information_schema.tables
         where table_schema = (select database())
         AND table_name NOT LIKE 'gen_%'
-        AND table_name NOT IN (
-            select table_name from gen_table where table_name is not null
-        )
+        <!--
+                          AND table_name NOT IN (
+                   select table_name from gen_table where table_name is not null
+                )
+         -->
         <if test="tableName != null and tableName != ''">
             AND lower(table_name) like concat('%', lower(#{tableName}), '%')
         </if>
@@ -30,6 +32,9 @@
         <if test="offset != null">
             limit #{offset}, #{pageSize}
         </if>
+
+
+
     </select>
     
     <select id="selectDbTableCount" parameterType="com.shemuel.site.entity.GenTable" resultType="int">
@@ -73,6 +78,9 @@
         ) values (
             #{tableName}, #{tableComment}, now()
         )
+            ON DUPLICATE KEY UPDATE
+                                 table_comment = #{tableComment},
+                                 create_time = NOW();  -- 可选：是否更新时间
     </insert>
     
     <delete id="deleteGenTableByIds" parameterType="Long">
@@ -107,6 +115,20 @@
             #{item.isList}, #{item.isQuery}, #{item.queryType}, #{item.htmlType}, #{item.sort}
         )
         </foreach>
+        ON DUPLICATE KEY UPDATE
+        column_comment = VALUES(column_comment),
+        column_type = VALUES(column_type),
+        java_type = VALUES(java_type),
+        java_field = VALUES(java_field),
+        is_pk = VALUES(is_pk),
+        is_required = VALUES(is_required),
+        is_insert = VALUES(is_insert),
+        is_edit = VALUES(is_edit),
+        is_list = VALUES(is_list),
+        is_query = VALUES(is_query),
+        query_type = VALUES(query_type),
+        html_type = VALUES(html_type),
+        sort = VALUES(sort);
     </insert>
     
     <select id="selectGenTableByName" parameterType="String" resultType="com.shemuel.site.entity.GenTable">

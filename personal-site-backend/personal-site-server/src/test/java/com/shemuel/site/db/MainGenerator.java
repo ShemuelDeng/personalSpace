@@ -1,25 +1,20 @@
 package com.shemuel.site.db;
 
 import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.annotation.DbType;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.generator.AutoGenerator;
-import com.baomidou.mybatisplus.generator.FastAutoGenerator;
-import com.baomidou.mybatisplus.generator.config.*;
-import com.baomidou.mybatisplus.generator.config.builder.ConfigBuilder;
-import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
-import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
-import com.baomidou.mybatisplus.generator.engine.VelocityTemplateEngine;
 import com.shemuel.site.config.VelocityInitializer;
 import com.shemuel.site.entity.GenTable;
 import com.shemuel.site.mapper.GenTableMapper;
 import com.shemuel.site.service.GenTableService;
+import com.shemuel.site.utils.VelocityUtil;
 import org.junit.jupiter.api.Test;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
@@ -27,65 +22,100 @@ import java.util.Map;
 
 /**
  * 简历
+ *
  * @Author: dengshaoxiang
  * @Date: 2025-03-14-15:54
  * @Description:
  */
 @SpringBootTest
 @ActiveProfiles("dev")
-@MapperScan("com.shemuel.site.mapper") // 确保与实际mapper包路径一致
 public class MainGenerator {
+
+    @Autowired
+    private GenTableMapper tableMapper;
     @Autowired
     private GenTableService tableService;
 
     @Test
-    public void testMbg(){
+    public void generate() {
+        doGenerate(null);
+    }
 
-        // 1.全局配置
-//        FastAutoGenerator.create("jdbc:mysql://172.16.6.69:3306/vv_nubility?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&nullCatalogMeansCurrent=true&useSSL=false", "root", "Vvlife@2019")
-//                .globalConfig(builder -> builder
-//                        .author("邓绍祥")
-//                        .outputDir("D:\\code\\company\\personalSpace\\personal-site-backend\\personal-site-server\\src\\main\\java")
-//                        .commentDate("yyyy-MM-dd")
-//                )
-//                .packageConfig(builder -> builder
-//                        .parent("com.shemuel.site")
-//                        .entity("entity")
-//                        .mapper("mapper")
-//                        .service("service")
-//                        .controller("controller") // 设置 Controller 包名
-//                        .serviceImpl("service.impl")
-//                        .xml("mapper.xml")
-//                )
-//                .strategyConfig(builder -> {
-//                    builder
-//                            .entityBuilder()
-//                            .enableLombok() // 启用 Lombok
-//                            .enableTableFieldAnnotation() // 启用字段注解
-//                            .controllerBuilder()
-//                            .enableRestStyle(); // 启用 REST 风格
-//                })
-//                .templateConfig(builder -> {
-//                    builder.disable(TemplateType.ENTITY, TemplateType.SERVICE, TemplateType.SERVICE_IMPL, TemplateType.CONTROLLER) // 禁用默认模板
-//                            .entity("/templates/entity.java.vm")
-//                            .service("/templates/service.java.vm")
-//                            .serviceImpl("/templates/serviceImpl.java.vm")
-//                            .controller("/templates/controller.java.vm");
-//                })
-//
-//                .templateEngine(new VelocityTemplateEngine())
-//                .execute();
+    private void doGenerate(String... tableNames) {
 
-        // 查询数据
-        // List<GenTable> list = tableMapper.selectDbTableList(new GenTable());
-        // tableService.importGenTable(Arrays.asList("user_profile").toArray(new String[1]));
+        if (tableNames == null || tableNames.length == 0){
+            tableNames =  tableMapper.selectDbTableList(new GenTable()).stream().map(GenTable::getTableName).toArray(String[]::new);
+        }
+
+
         VelocityInitializer.initVelocity();
-        Map<String, String> map = tableService.previewCode(23L);
-        System.out.println(JSON.toJSONString(map));
+        String[] tables = tableNames;
+        tableService.importGenTable(tables);
 
-        map.forEach((k, v) -> {
+        for (String table : tables) {
+            GenTable genTable = tableMapper.selectGenTableByName(table);
 
-        });
+            Map<String, String> map = tableService.previewCode(genTable.getTableId());
 
+
+            // 在 testMbg() 方法内补充以下代码
+            map.forEach((fileName, content) -> {
+
+                if (!fileName.contains("vue") && !fileName.contains("api")) {
+
+                    String basePath = Paths.get("D:\\code\\company\\personalSpace\\personal-site-backend\\personal-site-server\\src\\main\\java")
+                            .toAbsolutePath().toString();
+
+                    String basePath2 = Paths.get("D:\\code\\company\\personalSpace\\personal-site-backend\\personal-site-server\\src\\main\\resources")
+                            .toAbsolutePath().toString();
+
+                    try {
+                        String fileName1 = getFileName(fileName, genTable);
+                        Path outputPath;
+                        if (fileName1.contains(".xml")) {
+                            // 构建完整保存路径
+                            outputPath = Paths.get(basePath2, fileName1);
+                        } else {
+                            // 构建完整保存路径
+                            outputPath = Paths.get(basePath, fileName1);
+                        }
+
+                        // 创建目录（如果不存在）
+                        Files.createDirectories(outputPath.getParent());
+
+                        // 写入文件（使用UTF-8编码）
+                        Files.write(outputPath, content.getBytes(StandardCharsets.UTF_8));
+
+                        System.out.println("Generated: " + outputPath);
+                    } catch (IOException e) {
+                        System.err.println("Error writing file: " + fileName);
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+        }
+    }
+
+    private String getFileName(String fileName, GenTable table) {
+        String className = VelocityUtil.getClassName(table.getTableName());
+        String packageName = VelocityUtil.packageName.replace(".", "/");
+
+        if (fileName.contains("entity")) {
+            return packageName + "/entity/" + className + ".java";
+        } else if (fileName.contains("mapper.java")) {
+            return packageName + "/mapper/" + className + "Mapper.java";
+        } else if (fileName.contains("service.java")) {
+            return packageName + "/service/" + className + "Service.java";
+        } else if (fileName.contains("serviceImpl")) {
+            return packageName + "/service/impl/" + className + "ServiceImpl.java";
+        } else if (fileName.contains("controller")) {
+            return packageName + "/controller/" + className + "Controller.java";
+        } else if (fileName.contains("mapper.xml")) {
+            return "mapper/" + className + "Mapper.xml";
+        } else if (fileName.contains("vue")) {
+            return "vue/" + className.toLowerCase() + "/index.vue";
+        }
+        return null;
     }
 }

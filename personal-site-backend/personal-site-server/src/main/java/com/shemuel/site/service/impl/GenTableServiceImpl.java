@@ -8,9 +8,9 @@ import com.shemuel.site.entity.GenTableColumn;
 import com.shemuel.site.exception.ServiceException;
 import com.shemuel.site.mapper.GenTableMapper;
 import com.shemuel.site.service.GenTableService;
-import com.shemuel.site.util.GenUtil;
-import com.shemuel.site.util.PageUtil;
-import com.shemuel.site.util.VelocityUtil;
+import com.shemuel.site.utils.GenUtil;
+import com.shemuel.site.utils.PageUtil;
+import com.shemuel.site.utils.VelocityUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.IOUtils;
 import org.apache.velocity.Template;
@@ -214,7 +214,7 @@ public class GenTableServiceImpl implements GenTableService {
                     genTableMapper.insertGenTableBatch(columns);
                 }
             }
-        } catch (Exception e) {
+        }catch (Exception e){
             throw new ServiceException("导入失败：" + e.getMessage());
         }
     }

@@ -1,4 +1,4 @@
-package com.shemuel.site.util;
+package com.shemuel.site.utils;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.shemuel.site.common.PageQuery;

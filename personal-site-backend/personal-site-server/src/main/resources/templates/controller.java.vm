@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
  * ${tableComment} 控制器
  */
 @RestController
-@RequestMapping("/${classname}")
+@RequestMapping("/api/${secondPath}")
 @RequiredArgsConstructor
 @Tag(name = "${tableComment}管理")
 public class ${className}Controller {
@@ -24,31 +24,31 @@ public class ${className}Controller {
 
     @GetMapping("/list")
     @Operation(summary = "获取${tableComment}列表")
-    public Result<IPage<${className}>> list(${className} ${classname}) {
+    public RestResult<IPage<${className}>> list(${className} ${classname}) {
         return RestResult.success(${classname}Service.selectPage(${classname}));
     }
 
     @GetMapping("/{${primaryKey.javaField}}")
     @Operation(summary = "获取${tableComment}详情")
-    public Result<${className}> getInfo(@PathVariable("${primaryKey.javaField}") ${primaryKey.javaType} ${primaryKey.javaField}) {
+    public RestResult<${className}> getInfo(@PathVariable("${primaryKey.javaField}") ${primaryKey.javaType} ${primaryKey.javaField}) {
         return RestResult.success(${classname}Service.getById(${primaryKey.javaField}));
     }
 
     @PostMapping("/add")
     @Operation(summary = "添加${tableComment}")
-    public Result<Object> add(@RequestBody ${className} ${classname}) {
+    public RestResult<Object> add(@RequestBody ${className} ${classname}) {
         return RestResult.success(${classname}Service.insert(${classname}));
     }
 
     @PutMapping("/update")
     @Operation(summary = "修改${tableComment}")
-    public Result<Object> edit(@RequestBody ${className} ${classname}) {
+    public RestResult<Object> edit(@RequestBody ${className} ${classname}) {
         return RestResult.success(${classname}Service.update(${classname}));
     }
 
     @DeleteMapping("/delete/{${primaryKey.javaField}s}")
     @Operation(summary = "删除${tableComment}")
-    public Result<Object> remove(@PathVariable List<${primaryKey.javaType}> ${primaryKey.javaField}s) {
+    public RestResult<Object> remove(@PathVariable List<${primaryKey.javaType}> ${primaryKey.javaField}s) {
         return RestResult.success(${classname}Service.deleteByIds(${primaryKey.javaField}s));
     }
 }

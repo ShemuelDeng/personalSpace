@@ -75,7 +75,7 @@
       </el-tab-pane>
     </el-tabs>
 
-    <div class="result-box">
+    <div class="restResult-box">
       <div class="expression-header">
         <div class="expression-title">
           <el-icon><Document /></el-icon>
@@ -559,7 +559,7 @@ const handleConfirm = () => {
     }
   }
 
-  .result-box {
+  .restResult-box {
     margin-top: 24px;
     padding: 20px;
     border-radius: 8px;
@@ -660,7 +660,7 @@ const handleConfirm = () => {
 html.dark {
   .cron-container {
     .cron-tabs,
-    .result-box {
+    .restResult-box {
       background: var(--el-bg-color);
       box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
     }

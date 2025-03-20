@@ -1,30 +1,56 @@
 package com.shemuel.site.common;
 
-import cn.dev33.satoken.util.SaResult;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 
-import javax.swing.plaf.SpinnerUI;
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * @Author: dengshaoxiang
- * @Date: 2025-03-12-11:19
- * @Description:
- */
-public class RestResult extends SaResult {
+@Data
+public class RestResult<T> {
 
-    public RestResult() {
-        super();
+    @Schema(name = "状态码")
+    private Integer code;
+
+    @Schema(name = "消息")
+    private String message;
+
+    @Schema(name = "数据")
+    private T data;
+
+    @Schema(name = "额外信息")
+    private Map<String,Object> extra = new HashMap<>();
+
+    public RestResult<T> putExtra(String key, Object value) {
+        this.extra.put(key, value);
+        return this;
     }
 
-    public RestResult(int code, String msg, Object data) {
-        super(code, msg, data);
+    public static <T> RestResult<T> success(T data) {
+        RestResult<T> restResult = new RestResult<>();
+        restResult.setCode(200);
+        restResult.setMessage("success");
+        restResult.setData(data);
+        return restResult;
+    }
+    public static <T> RestResult<T> success() {
+        RestResult<T> restResult = new RestResult<>();
+        restResult.setCode(200);
+        restResult.setMessage("success");
+        restResult.setData(null);
+        return restResult;
     }
 
-    public static RestResult data(int code,String msg) {
-        return new RestResult(code,msg,null);
+    public static <T> RestResult<T> error(String message) {
+        RestResult<T> restResult = new RestResult<>();
+        restResult.setCode(500);
+        restResult.setMessage(message);
+        return restResult;
     }
-
-    public static RestResult success(Object data) {
-        return new RestResult(200,"success",data);
+    public static <T> RestResult<T> error(Integer code, String message) {
+        RestResult<T> restResult = new RestResult<>();
+        restResult.setCode(code);
+        restResult.setMessage(message);
+        return restResult;
     }
 }

@@ -23,13 +23,13 @@
                 <!-- <text class="filter-btn">筛选 ▾</text> -->
             </view>
             <view class="results-list">
-                <view v-for="(result, index) in searchResults" :key="index" class="result-item"
-                    @click="goToDetail(result.id)">
-                    <view class="result-title">
-                        <rich-text :nodes="highlightKeyword(result.title)"></rich-text>
+                <view v-for="(restResult, index) in searchResults" :key="index" class="restResult-item"
+                    @click="goToDetail(restResult.id)">
+                    <view class="restResult-title">
+                        <rich-text :nodes="highlightKeyword(restResult.title)"></rich-text>
                     </view>
-                    <view class="result-description">
-                        <rich-text :nodes="highlightKeyword(result.summary)"></rich-text>
+                    <view class="restResult-description">
+                        <rich-text :nodes="highlightKeyword(restResult.summary)"></rich-text>
                         <text class="ellipsis">...</text>
                     </view>
                 </view>
@@ -260,12 +260,12 @@ export default {
     font-size: 14px;
 }
 
-.result-item {
+.restResult-item {
     padding: 15px 0;
     border-bottom: 1px solid #eee;
 }
 
-.result-title {
+.restResult-title {
     font-size: 16px;
     color: #333;
     font-weight: bold;
@@ -277,7 +277,7 @@ export default {
     position: relative;
 }
 
-.result-description {
+.restResult-description {
     font-size: 14px;
     color: #666;
     line-height: 1.5;
@@ -295,7 +295,7 @@ export default {
     background: linear-gradient(to right, rgba(255, 255, 255, 0), #fff 40%);
 }
 
-.result-item:active {
+.restResult-item:active {
     background-color: #f9f9f9;
 }
 

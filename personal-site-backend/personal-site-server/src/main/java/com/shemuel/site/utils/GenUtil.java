@@ -1,4 +1,4 @@
-package com.shemuel.site.util;
+package com.shemuel.site.utils;
 
 import org.apache.commons.lang3.StringUtils;
 

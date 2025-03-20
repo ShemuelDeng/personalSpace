@@ -1,4 +1,4 @@
-package com.shemuel.site.util;
+package com.shemuel.site.utils;
 
 import com.shemuel.site.entity.GenTable;
 import com.shemuel.site.entity.GenTableColumn;
@@ -24,6 +24,7 @@ public class VelocityUtil {
         String className = getClassName(genTable.getTableName());
 
         context.put("tableName", genTable.getTableName());
+        context.put("secondPath", genTable.getTableName().replace("_", "-"));
         context.put("tableComment", genTable.getTableComment());
         context.put("primaryKey", genTable.getPkColumn());
         context.put("className", className);
