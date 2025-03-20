@@ -1,7 +1,6 @@
 package com.shemuel.site.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperties;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
