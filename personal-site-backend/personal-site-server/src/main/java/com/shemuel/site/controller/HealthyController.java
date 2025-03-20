@@ -1,5 +1,7 @@
 package com.shemuel.site.controller;
 
+import com.shemuel.site.annotation.AccessLimit;
+import com.shemuel.site.common.RestResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -9,10 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
  * @Description:
  */
 @RestController
+@AccessLimit
 public class HealthyController {
 
     @GetMapping("/ok")
-    public String healthy() {
-        return "Yes, I'm ok!";
+    public RestResult<String> healthy() {
+        return RestResult.success("Yes, I'm ok!");
     }
 }

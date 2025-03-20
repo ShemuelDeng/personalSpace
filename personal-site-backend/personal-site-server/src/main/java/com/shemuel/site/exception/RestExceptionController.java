@@ -24,8 +24,12 @@ public class RestExceptionController {
         return SaResult.code(401).setMsg("未登录或登录状态已过期");
     }
 
+    @ExceptionHandler(ServiceException.class)
+    public RestResult handleError(ServiceException e) {
+        return RestResult.error(e.getCode(), e.getMessage());
+    }
+
     @ExceptionHandler(BusinessException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public RestResult handleError(BusinessException e) {
         return RestResult.error(e.getCode(), e.getMessage());
     }
