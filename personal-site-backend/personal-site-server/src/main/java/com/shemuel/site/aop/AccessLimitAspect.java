@@ -128,9 +128,6 @@ public class AccessLimitAspect {
     }
 
     public String getAccessGroup(String group, String className, String methodName) {
-
-
-
         return StringUtils.isEmpty(group)
                 ? className + "#" + methodName
                 : group;
