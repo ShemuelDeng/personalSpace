@@ -6,8 +6,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 接口访问限流注解
- * @Author: dengshaoxiang
+ * 接口访问限流注解,可以用在类上，也可以用在方法上
+ * 如果用在类上，且指定了group， 那么类里的所有方法都用该group的限流器
+ *    没有指定group， 则类里的每个方法都受到限流， 但是每个方法的group不同（类名+方法名）
+ * 如果用在方法上， 且指定了group， 那么该方法用该group的限流器
+ *    没有指定group， 则该方法的group为类名+方法名
+ * 如果类上和方法同时使用了该注解， 则方法上的注解会覆盖类上的注解
+ * @Author: 公众号： 加瓦点灯
  * @Date: 2025-03-20-16:46
  * @Description:
  */

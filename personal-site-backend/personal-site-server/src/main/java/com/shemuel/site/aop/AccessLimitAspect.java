@@ -1,17 +1,17 @@
 package com.shemuel.site.aop;
 
-import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.stp.StpUtil;
 import com.shemuel.site.annotation.AccessLimit;
 import com.shemuel.site.common.RestResult;
 import com.shemuel.site.service.IRateLimiter;
-import com.shemuel.site.utils.RateLimitFactory;
+import com.shemuel.site.utils.RateLimiterFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
@@ -34,8 +34,8 @@ public class AccessLimitAspect {
 
     public static final Map<String, IRateLimiter> rateLimiterMap = new ConcurrentHashMap<>();
 
-    @Value("${rateLimiter.type: local}")
-    private String rateLimiterType;
+    @Autowired
+    private RateLimiterFactory rateLimiterFactory;
 
     // SpEL表达式解析器
     private static final ExpressionParser parser = new SpelExpressionParser();
@@ -60,15 +60,10 @@ public class AccessLimitAspect {
         if (methodAnnotation != null) {
             activeAnnotation = methodAnnotation;
         } else if (classAnnotation != null) {
-            // 检查是否被排除
-            String methodName = method.getName();
-            if (!Arrays.asList(classAnnotation.excludeMethods()).contains(methodName)) {
-                activeAnnotation = classAnnotation;
-            }
+            activeAnnotation = classAnnotation;
         }
-
         if (activeAnnotation == null) {
-            return joinPoint.proceed(); // 无有效注解，直接放行
+            return joinPoint.proceed();
         }
 
         // 1. 解析SpEL表达式，获取限流Key对应的参数值
@@ -76,18 +71,14 @@ public class AccessLimitAspect {
         log.info("拦截类注解 - 方法名: {}" , method.getName());
         log.info("拦截类注解 - 类名: {} " , joinPoint.getTarget().getClass().getName());
 
-
-        // todo 项目启动时，初始化限流器
-        String accessGroup = getAccessGroup(activeAnnotation.group(), joinPoint);
-        IRateLimiter iRateLimiter = rateLimiterMap.get(accessGroup);
-        if (iRateLimiter == null) {
-            iRateLimiter = RateLimitFactory.getRateLimiter(rateLimiterType, activeAnnotation);
-            rateLimiterMap.put(accessGroup, iRateLimiter);
+        String accessGroup = getAccessGroup(activeAnnotation.group(), target.getClass().getName(), method.getName());
+        IRateLimiter rateLimiter = rateLimiterFactory.getRateLimiter(accessGroup);
+        if (rateLimiter == null) {
+            return joinPoint.proceed();
         }
-
         log.info("限流的key: " + keyValue);
         log.info("限流的group: " + accessGroup);
-        boolean granted = iRateLimiter.isGranted(keyValue);
+        boolean granted = rateLimiter.isGranted(keyValue);
         if (!granted) {
             return RestResult.error(activeAnnotation.msg());
         }
@@ -136,13 +127,13 @@ public class AccessLimitAspect {
         return  className + method.getName();
     }
 
-    public String getAccessGroup(String group, ProceedingJoinPoint joinPoint) {
-        if (StringUtils.isNotEmpty(group)) {
-            return group;
-        }
-        String className = joinPoint.getTarget().getClass().getName();
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        Method method = signature.getMethod();
-        return className + method.getName();
+    public String getAccessGroup(String group, String className, String methodName) {
+
+
+
+        return StringUtils.isEmpty(group)
+                ? className + "#" + methodName
+                : group;
     }
+
 }

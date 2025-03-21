@@ -4,7 +4,7 @@ import com.shemuel.site.common.LocalRateLimiter;
 import org.junit.jupiter.api.Test;
 
 /**
- * @Author: dengshaoxiang
+ * @Author: 公众号: 加瓦点灯
  * @Date: 2025-03-20-16:43
  * @Description:
  */

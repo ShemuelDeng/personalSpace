@@ -1,7 +1,7 @@
 package com.shemuel.site.exception;
 
 /**
- * @Author: dengshaoxiang
+ * @Author: 公众号: 加瓦点灯
  * @Date: 2025-03-13-15:36
  * @Description:
  */
