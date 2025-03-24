@@ -59,8 +59,8 @@
 </template>
 
 <script>
-import ArticleList from '@/components/ArticleList/index.vue'
-import Sidebar from '@/components/Sidebar/index.vue'
+import ArticleList from '@/components/ArticleList/UserLogin.vue'
+import Sidebar from '@/components/Sidebar/UserLogin.vue'
 import { getTagsApi } from '@/api/tags'
 import { getArticlesApi } from '@/api/article'
 

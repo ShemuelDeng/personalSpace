@@ -56,7 +56,7 @@
 <script>
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
-import Sidebar from '@/components/Sidebar/index.vue'
+import Sidebar from '@/components/Sidebar/UserLogin.vue'
 import { getArchivesApi } from '@/api/article'
 gsap.registerPlugin(ScrollTrigger)
 

@@ -65,7 +65,7 @@
   import { mapState, mapActions } from 'vuex'
   import gsap from 'gsap'
   import ScrollTrigger from 'gsap/ScrollTrigger'
-  import Sidebar from '@/components/Sidebar/index.vue'
+  import Sidebar from '@/components/Sidebar/UserLogin.vue'
   import { getCategoriesApi } from '@/api/article'
 
   gsap.registerPlugin(ScrollTrigger)

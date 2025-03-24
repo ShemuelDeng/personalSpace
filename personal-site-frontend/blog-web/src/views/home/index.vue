@@ -41,9 +41,9 @@
 </template>
 
 <script>
-import ArticleList from "@/components/ArticleList/index.vue";
+import ArticleList from "@/components/ArticleList/UserLogin.vue";
 import Carousel from "@/views/home/components/carousel.vue";
-import Sidebar from "@/components/Sidebar/index.vue";
+import Sidebar from "@/components/Sidebar/UserLogin.vue";
 import MomentsList from "@/views/home/components/moments.vue";
 import {
   getArticlesApi,

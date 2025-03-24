@@ -15,8 +15,9 @@ export function setupPermission() {
       document.title = to.meta.title as string
     }
     NProgress.start();
-    const hasToken = getToken();
-    
+    // const hasToken = getToken();
+    const hasToken = true;
+
     if (hasToken) {
       if (to.path === "/login") {
         // 如果已登录，跳转首页

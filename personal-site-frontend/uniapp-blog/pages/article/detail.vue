@@ -70,7 +70,7 @@ import { highlight } from '@/utils/highlight'
 import mpHtml from 'mp-html/dist/uni-app/components/mp-html/mp-html'
 export default {
   components: {
-    navBar: () => import('@/components/nav-bar/index.vue'),
+    navBar: () => import('@/components/nav-bar/UserLogin.vue'),
     mpHtml
   },
   data() {

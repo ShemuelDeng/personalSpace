@@ -3,7 +3,7 @@ import App from './App'
 import uView from 'uview-ui'
 
 // 导入导航栏组件
-import navBar from '@/components/nav-bar/index.vue'
+import navBar from '@/components/nav-bar/UserLogin.vue'
 
 Vue.component('nav-bar', navBar)
 Vue.use(uView)

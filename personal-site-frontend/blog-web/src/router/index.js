@@ -1,15 +1,15 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '@/views/home/index.vue'
-import Layout from '@/layout/index.vue'
+import Home from '@/views/home/UserLogin.vue'
+import Layout from '@/layout/UserLogin.vue'
 import NotFound from '@/views/404/404.vue'
-import Article from '@/views/article/index.vue'
-import Archive from '@/views/archives/index.vue'
-import Categories from '@/views/categories/index.vue'
-import Tags from '@/views/tags/index.vue'
-import Messages from '@/views/messages/index.vue'
-import About from '@/views/about/index.vue'
-import Photos from '@/views/photos/index.vue'
+import Article from '@/views/article/UserLogin.vue'
+import Archive from '@/views/archives/UserLogin.vue'
+import Categories from '@/views/categories/UserLogin.vue'
+import Tags from '@/views/tags/UserLogin.vue'
+import Messages from '@/views/messages/UserLogin.vue'
+import About from '@/views/about/UserLogin.vue'
+import Photos from '@/views/photos/UserLogin.vue'
 import store from '@/store';
 
 Vue.use(VueRouter)
@@ -68,7 +68,7 @@ const routes = [
               {
                 path: '/moments',
                 name: 'Moments',
-                component: () => import('@/views/moments/index.vue'),
+                component: () => import('@/views/moments/UserLogin.vue'),
                 meta: {
                   title: '说说 - 拾壹博客',
                   icon: 'fas fa-comment-dots'
@@ -98,7 +98,7 @@ const routes = [
               {
                 path: '/hotSearch',
                 name: 'HotSearch',
-                component: () => import(/* webpackPrefetch: true */ '@/views/hotSearch/index.vue'),
+                component: () => import(/* webpackPrefetch: true */ '@/views/hotSearch/UserLogin.vue'),
                 meta: { 
                   transition: 'fade',
                   title: '热搜 - 拾壹博客',
@@ -108,7 +108,7 @@ const routes = [
               {
                 path: '/resources',
                 name: 'Resources',
-                component: () => import('@/views/resources/index.vue'),
+                component: () => import('@/views/resources/UserLogin.vue'),
                 meta: {
                   title: '资源'
                 }
@@ -126,7 +126,7 @@ const routes = [
               {
                 path: '/friends',
                 name: 'Friends',
-                component: () => import(/* webpackPrefetch: true */ '@/views/friends/index.vue'),
+                component: () => import(/* webpackPrefetch: true */ '@/views/friends/UserLogin.vue'),
                 meta: { 
                   transition: 'fade',
                   title: '友情链接 - 拾壹博客',
@@ -155,7 +155,7 @@ const routes = [
               {
                 path: '/user/profile',
                 name: 'Profile',
-                component: () => import(/* webpackPrefetch: true */ '@/views/profile/index.vue'),
+                component: () => import(/* webpackPrefetch: true */ '@/views/profile/UserLogin.vue'),
                 meta: {
                   title: '个人主页 - 拾壹博客',
                   icon: 'fas fa-user',
@@ -165,27 +165,38 @@ const routes = [
               {
                 path: '/editor',
                 name: 'Editor',
-                component: () => import(/* webpackPrefetch: true */ '@/views/editor/index.vue'),
+                component: () => import(/* webpackPrefetch: true */ '@/views/editor/UserLogin.vue'),
                 meta: {
                   title: '写文章 - 拾壹博客',
                   icon: 'fas fa-edit',
-                  requireAuth: true,
+                  requireAuth: false,
                   hidden: true
                 }
               },
               {
                 path: '/chat',
                 name: 'Chat',
-                component: () => import(/* webpackPrefetch: true */ '@/views/chat/index.vue'),
+                component: () => import(/* webpackPrefetch: true */ '@/views/chat/UserLogin.vue'),
                 meta: {
                   title: '聊天 - 拾壹博客',
                   icon: 'fas fa-comments',
                   hidden: true
                 }
-              }, {
+              }
+              ,
+          {
+            path: '/chat2',
+            name: 'Chat',
+            component: () => import(/* webpackPrefetch: true */ '@/views/mytest/ImChat.vue'),
+            meta: {
+              title: '聊天 - 测试聊天',
+              icon: 'fas fa-comments',
+              hidden: true
+            }
+          },{
                 path: '/login',
                 name: 'Login',
-                component: () => import('@/views/login/index.vue'),
+                component: () => import('@/views/login/UserLogin.vue'),
                 meta: {
                   title: '登录',
                   hidden: true,

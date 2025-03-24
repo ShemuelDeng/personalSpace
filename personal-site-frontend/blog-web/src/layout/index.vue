@@ -11,7 +11,7 @@
 </template>
 
 <script>
-  import Announcement from '@/components/Announcement/index.vue';
+  import Announcement from '@/components/Announcement/UserLogin.vue';
   export default {
       components: {
           Announcement

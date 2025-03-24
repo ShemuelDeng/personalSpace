@@ -25,10 +25,17 @@ export const constantRoutes: RouteRecordRaw[] = [
   },
 
   {
+    path: "/chat",
+    component: () => import("@/../../../blog-web/src/views/mytest/ImChat.vue.vue"),
+    meta: {hidden: true },
+  },
+
+  {
     path: '/:pathMatch(.*)*',
     component: () => import('@/views/error-page/404.vue'),
     meta: { hidden: true },
   },
+
 
   {
     path: "/",

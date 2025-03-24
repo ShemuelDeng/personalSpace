@@ -312,9 +312,9 @@
 import { getArticleDetailApi, likeArticleApi } from '@/api/article'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/atom-one-dark.css'
-import Comment from '@/components/Comment/index.vue'
-import PaymentDialog from '@/components/PaymentDialog/index.vue'
-import MembershipDialog from '@/components/MembershipDialog/index.vue'
+import Comment from '@/components/Comment/UserLogin.vue'
+import PaymentDialog from '@/components/PaymentDialog/UserLogin.vue'
+import MembershipDialog from '@/components/MembershipDialog/UserLogin.vue'
 import { marked } from 'marked'
 
 export default {
