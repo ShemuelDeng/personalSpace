@@ -23,7 +23,7 @@ const routes = [
       // 子路由
       {
         path: '/home',
-        component: () => import('@/views/HomeView.vue'),
+        component: () => import('@/layouts/IndexRight.vue'),
         meta: { title: '首页' }
       },
       // {
