@@ -20,6 +20,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * @Author: 公众号: 加瓦点灯
+ * @Date: 2025-03-20-18:00
+ * @Description:
+ */
 @Component
 @Slf4j
 public class RateLimiterInitializer implements ApplicationRunner {

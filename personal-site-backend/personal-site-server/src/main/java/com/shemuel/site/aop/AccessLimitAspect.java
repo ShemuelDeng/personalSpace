@@ -12,7 +12,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -23,16 +22,16 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * @Author: 公众号： 加瓦点灯
+ * 限流器切面
+ * @Date: 2025-03-20-16:46
+ */
 @Aspect
 @Component
 @Slf4j
 public class AccessLimitAspect {
-
-    public static final Map<String, IRateLimiter> rateLimiterMap = new ConcurrentHashMap<>();
 
     @Autowired
     private RateLimiterFactory rateLimiterFactory;
@@ -57,11 +56,15 @@ public class AccessLimitAspect {
         AccessLimit classAnnotation = AnnotationUtils.findAnnotation(target.getClass(), AccessLimit.class);
 
         AccessLimit activeAnnotation = null;
-        if (methodAnnotation != null) {
-            activeAnnotation = methodAnnotation;
-        } else if (classAnnotation != null) {
+
+        if (classAnnotation != null) {
             activeAnnotation = classAnnotation;
         }
+        // method上的优先生效
+        if (methodAnnotation != null) {
+            activeAnnotation = methodAnnotation;
+        }
+
         if (activeAnnotation == null) {
             return joinPoint.proceed();
         }
@@ -70,7 +73,6 @@ public class AccessLimitAspect {
         String keyValue = parseKey(activeAnnotation.key(), joinPoint);
         log.info("拦截类注解 - 方法名: {}" , method.getName());
         log.info("拦截类注解 - 类名: {} " , joinPoint.getTarget().getClass().getName());
-
         String accessGroup = getAccessGroup(activeAnnotation.group(), target.getClass().getName(), method.getName());
         IRateLimiter rateLimiter = rateLimiterFactory.getRateLimiter(accessGroup);
         if (rateLimiter == null) {

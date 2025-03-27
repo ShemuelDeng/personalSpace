@@ -1,9 +1,9 @@
 <template>
   <div class="main-layout">
     <el-container>
-      <el-aside width="250px">
+      <el-aside :width="isCollapse ? '64px' : '250px'" class="sidebar">
         <!-- 个人信息部分 -->
-        <div class="sidebar-profile">
+        <div class="sidebar-profile" v-show="!isCollapse">
           <el-avatar :size="80" src="https://avatars.githubusercontent.com/u/objectx" class="profile-avatar"></el-avatar>
           <h3 class="sidebar-name">ObjectX-不知名程序员</h3>
           <p class="sidebar-desc">前端工程师 & 图形编辑 & AI</p>
@@ -12,6 +12,7 @@
         <el-menu
           :default-active="$route.path"
           router
+          :collapse="isCollapse"
           class="site-menu"
           background-color="#f5f7fa"
           text-color="#303133"
@@ -23,7 +24,7 @@
         </el-menu>
         
         <!-- 在线状态和社交链接 -->
-        <div class="sidebar-footer">
+        <div class="sidebar-footer" v-show="!isCollapse">
           <div class="online-status">
             <span class="status-dot"></span>
             <span>Online</span>
@@ -42,6 +43,9 @@
         </div>
       </el-aside>
       <el-main>
+        <div class="toggle-sidebar" @click="toggleSidebar">
+          <i :class="isCollapse ? 'el-icon-s-unfold' : 'el-icon-s-fold'"></i>
+        </div>
         <router-view></router-view>
       </el-main>
     </el-container>
@@ -53,6 +57,7 @@ export default {
   name: 'MainLayout',
   data() {
     return {
+      isCollapse: false,
       menuItems: [
         { path: '/', icon: 'el-icon-s-home', title: '首页&简介' },
         { path: '/tech-stack', icon: 'el-icon-s-management', title: '技术栈' },
@@ -63,10 +68,27 @@ export default {
         { path: '/navigation', icon: 'el-icon-guide', title: '导航站' },
         { path: '/timeline', icon: 'el-icon-time', title: '时间轴' },
         { path: '/projects', icon: 'el-icon-s-cooperation', title: '项目' },
+        { path: '/editor', icon: 'el-icon-edit', title: '编辑器' },
         { path: '/demo', icon: 'el-icon-s-platform', title: 'demo' },
         { path: '/friends', icon: 'el-icon-user', title: '友链' }
       ]
     }
+  },
+  methods: {
+    toggleSidebar() {
+      this.isCollapse = !this.isCollapse;
+    }
+  },
+  mounted() {
+    // 监听窄屏幕自动收起侧边栏
+    const handleResize = () => {
+      this.isCollapse = window.innerWidth <= 768;
+    };
+    window.addEventListener('resize', handleResize);
+    handleResize(); // 初始化时执行一次
+    this.$once('hook:beforeDestroy', () => {
+      window.removeEventListener('resize', handleResize);
+    });
   }
 }
 </script>
@@ -74,19 +96,23 @@ export default {
 <style scoped>
 .main-layout {
   display: flex;
+  width: 100%;
+  min-height: 100vh;
 }
 
 .el-container {
-  min-height: 100vh;
   width: 100%;
+  min-height: 100vh;
 }
 
-.el-aside {
+.sidebar {
   background-color: #f5f7fa;
   border-right: 1px solid #e6e6e6;
   display: flex;
   flex-direction: column;
   position: relative;
+  transition: width 0.3s;
+  overflow: hidden;
 }
 
 .sidebar-profile {
@@ -99,12 +125,18 @@ export default {
   margin: 10px 0 5px;
   font-size: 16px;
   font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sidebar-desc {
   font-size: 12px;
   color: #606266;
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .site-menu {
@@ -113,105 +145,29 @@ export default {
 }
 
 .el-main {
-  min-height: 100vh;
+  position: relative;
+  background-color: #f5f7fa;
+  padding: 20px;
+}
+
+.toggle-sidebar {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #fff;
+  padding: 8px;
+  border-radius: 0 4px 4px 0;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.15);
+  cursor: pointer;
+  z-index: 100;
+  transition: left 0.3s;
+}
+
+.toggle-sidebar:hover {
   background-color: #f5f7fa;
 }
 
-.profile-header {
-  position: relative;
-}
-
-.profile-banner {
-  height: 200px;
-  background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
-}
-
-.profile-info {
-  max-width: 1200px;
-  margin: -50px auto 0;
-  padding: 20px;
-  position: relative;
-  z-index: 1;
-}
-
-.profile-avatar {
-  border: 4px solid #fff;
-  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
-}
-
-.profile-name {
-  margin: 15px 0;
-  font-size: 24px;
-  color: #303133;
-}
-
-.profile-description {
-  color: #606266;
-  line-height: 1.6;
-  margin-bottom: 30px;
-}
-
-.social-links, .site-stats, .education {
-  margin-bottom: 40px;
-}
-
-.links-container {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  margin-top: 15px;
-}
-
-.stats-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  margin-top: 15px;
-}
-
-.stat-item {
-  text-align: center;
-}
-
-.stat-item i {
-  font-size: 24px;
-  color: #409EFF;
-  margin-bottom: 8px;
-}
-
-.stat-value {
-  font-size: 20px;
-  font-weight: bold;
-  color: #303133;
-  margin-top: 8px;
-}
-
-.education-card {
-  margin-top: 15px;
-}
-
-.education-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.school {
-  font-weight: bold;
-  color: #303133;
-}
-
-.major, .degree, .period {
-  color: #606266;
-}
-
-.year {
-  color: #909399;
-}
-
-/* 侧边栏底部样式 */
 .sidebar-footer {
   padding: 15px;
   border-top: 1px solid #e6e6e6;
@@ -247,5 +203,16 @@ export default {
 
 .social-icon:hover {
   color: #409EFF;
+}
+
+/* 响应式布局 */
+@media screen and (max-width: 768px) {
+  .toggle-sidebar {
+    left: 64px;
+  }
+  
+  .el-main {
+    padding: 10px;
+  }
 }
 </style>

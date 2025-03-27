@@ -26,6 +26,12 @@ const routes = [
         component: () => import('@/layouts/IndexRight.vue'),
         meta: { title: '首页' }
       },
+      // 添加编辑器页面
+      {
+        path: '/editor',
+        component: () => import('@/views/EditorView.vue'),
+        meta: { title: '编辑器' }
+      },
       // {
       //   path: '/articles',
       //   component: () => import('@/views/Articles.vue'),
