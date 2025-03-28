@@ -16,24 +16,24 @@ import java.io.Serializable;
 public class Skills implements Serializable {
 
     @TableId(type = IdType.AUTO)
-    @Schema(name = "")
+    @Schema(description = "")
     private Integer id;
 
-    @Schema(name = "外键关联user_profile表的id")
+    @Schema(description = "外键关联user_profile表的id")
     private Long userId;
 
-    @Schema(name = "技能名称")
+    @Schema(description = "技能名称")
     private String skillName;
 
-    @Schema(name = "技能水平")
+    @Schema(description = "技能水平")
     private String proficiency;
 
-    @Schema(name = "排序顺序")
+    @Schema(description = "排序顺序")
     private Integer sortOrder;
 
-    @Schema(name = "创建时间")
+    @Schema(description = "创建时间")
     private LocalDateTime createdAt;
 
-    @Schema(name = "更新时间")
+    @Schema(description = "更新时间")
     private LocalDateTime updatedAt;
 }

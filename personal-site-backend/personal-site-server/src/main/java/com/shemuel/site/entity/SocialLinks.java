@@ -16,24 +16,24 @@ import java.io.Serializable;
 public class SocialLinks implements Serializable {
 
     @TableId(type = IdType.AUTO)
-    @Schema(name = "")
+    @Schema(description = "")
     private Integer id;
 
-    @Schema(name = "外键关联user_profile表的id")
+    @Schema(description = "外键关联user_profile表的id")
     private Long userId;
 
-    @Schema(name = "平台名称")
+    @Schema(description = "平台名称")
     private String platform;
 
-    @Schema(name = "链接地址")
+    @Schema(description = "链接地址")
     private String url;
 
-    @Schema(name = "排序顺序")
+    @Schema(description = "排序顺序")
     private Integer sortOrder;
 
-    @Schema(name = "创建时间")
+    @Schema(description = "创建时间")
     private LocalDateTime createdAt;
 
-    @Schema(name = "更新时间")
+    @Schema(description = "更新时间")
     private LocalDateTime updatedAt;
 }

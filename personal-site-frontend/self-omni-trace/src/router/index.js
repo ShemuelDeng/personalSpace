@@ -32,8 +32,9 @@ const routes = [
         component: () => import('@/views/EditorView.vue'),
         meta: { title: '编辑器' }
       },
-      {        path: '/articles',
-        component: () => import('@/views/ArticleList.vue'),
+      {
+        path: '/articles',
+        component: () => import('@/views/Articles.vue'),
         meta: { title: '技术文章' }
       }
     ]

@@ -16,21 +16,21 @@ import java.io.Serializable;
 public class UserCategory implements Serializable {
 
     @TableId(type = IdType.AUTO)
-    @Schema(name = "")
+    @Schema(description = "")
     private Integer id;
 
-    @Schema(name = "")
+    @Schema(description = "")
     private Long userId;
 
-    @Schema(name = "")
+    @Schema(description = "")
     private String name;
 
-    @Schema(name = "")
+    @Schema(description = "")
     private String description;
 
-    @Schema(name = "")
+    @Schema(description = "")
     private Integer parentId;
 
-    @Schema(name = "")
+    @Schema(description = "")
     private LocalDateTime createdAt;
 }

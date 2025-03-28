@@ -16,39 +16,39 @@ import java.io.Serializable;
 public class Education implements Serializable {
 
     @TableId(type = IdType.AUTO)
-    @Schema(name = "")
+    @Schema(description = "")
     private Integer id;
 
-    @Schema(name = "外键关联user_profile表的id")
+    @Schema(description = "外键关联user_profile表的id")
     private Long userId;
 
-    @Schema(name = "学校名称")
+    @Schema(description = "学校名称")
     private String schoolName;
 
-    @Schema(name = "专业")
+    @Schema(description = "专业")
     private String major;
 
-    @Schema(name = "学位")
+    @Schema(description = "学位")
     private String degree;
 
-    @Schema(name = "开始日期")
+    @Schema(description = "开始日期")
     private LocalDateTime startDate;
 
-    @Schema(name = "结束日期")
+    @Schema(description = "结束日期")
     private LocalDateTime endDate;
 
-    @Schema(name = "是否正在该阶段")
+    @Schema(description = "是否正在该阶段")
     private Integer isCurrent;
 
-    @Schema(name = "描述")
+    @Schema(description = "描述")
     private String description;
 
-    @Schema(name = "排序顺序")
+    @Schema(description = "排序顺序")
     private Integer sortOrder;
 
-    @Schema(name = "创建时间")
+    @Schema(description = "创建时间")
     private LocalDateTime createdAt;
 
-    @Schema(name = "更新时间")
+    @Schema(description = "更新时间")
     private LocalDateTime updatedAt;
 }

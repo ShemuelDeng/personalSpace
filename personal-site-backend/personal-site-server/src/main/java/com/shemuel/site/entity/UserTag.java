@@ -16,18 +16,18 @@ import java.io.Serializable;
 public class UserTag implements Serializable {
 
     @TableId(type = IdType.AUTO)
-    @Schema(name = "私有标签ID")
+    @Schema(description = "私有标签ID")
     private Integer id;
 
-    @Schema(name = "所属用户ID")
+    @Schema(description = "所属用户ID")
     private Long userId;
 
-    @Schema(name = "标签名称")
+    @Schema(description = "标签名称")
     private String name;
 
-    @Schema(name = "标签类型， 0：系统；1：用户")
+    @Schema(description = "标签类型， 0：系统；1：用户")
     private Integer tagType;
 
-    @Schema(name = "创建时间")
+    @Schema(description = "创建时间")
     private LocalDateTime createdAt;
 }

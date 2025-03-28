@@ -38,7 +38,7 @@ public class MainGenerator {
 
     @Test
     public void generate() {
-        doGenerate("article","article_series","user_category","user_tag","comment");
+        doGenerate(null);
     }
 
     private void doGenerate(String... tableNames) {

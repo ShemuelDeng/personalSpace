@@ -16,30 +16,30 @@ import java.io.Serializable;
 public class Comment implements Serializable {
 
     @TableId(type = IdType.AUTO)
-    @Schema(name = "评论ID")
+    @Schema(description = "评论ID")
     private Integer id;
 
-    @Schema(name = "评论者ID")
+    @Schema(description = "评论者ID")
     private Long userId;
 
-    @Schema(name = "所属文章ID")
+    @Schema(description = "所属文章ID")
     private Integer articleId;
 
-    @Schema(name = "父评论ID（实现评论回复）")
+    @Schema(description = "父评论ID（实现评论回复）")
     private Integer parentId;
 
-    @Schema(name = "评论内容")
+    @Schema(description = "评论内容")
     private String content;
 
-    @Schema(name = "点赞数量")
+    @Schema(description = "点赞数量")
     private Integer likeCount;
 
-    @Schema(name = "评论状态")
+    @Schema(description = "评论状态")
     private String status;
 
-    @Schema(name = "评论时间")
+    @Schema(description = "评论时间")
     private LocalDateTime createdAt;
 
-    @Schema(name = "最后更新时间")
+    @Schema(description = "最后更新时间")
     private LocalDateTime updatedAt;
 }

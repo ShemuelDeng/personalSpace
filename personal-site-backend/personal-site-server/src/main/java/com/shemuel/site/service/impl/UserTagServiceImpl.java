@@ -28,7 +28,7 @@ public class UserTagServiceImpl extends ServiceImpl<UserTagMapper, UserTag> impl
         wrapper.eq(userTag.getId() != null, UserTag::getId, userTag.getId());
         wrapper.eq(userTag.getUserId() != null, UserTag::getUserId, userTag.getUserId());
         wrapper.eq(userTag.getName() != null, UserTag::getName, userTag.getName());
-        wrapper.eq(userTag.getTagType() != null, UserTag::getTagType, userTag.getTagType());
+        wrapper.eq( UserTag::getTagType, 0);
         wrapper.eq(userTag.getCreatedAt() != null, UserTag::getCreatedAt, userTag.getCreatedAt());
         return page(PageUtil.getPage(), wrapper);
     }

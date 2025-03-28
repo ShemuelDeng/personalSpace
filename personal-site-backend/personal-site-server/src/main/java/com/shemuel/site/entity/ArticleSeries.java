@@ -16,39 +16,39 @@ import java.io.Serializable;
 public class ArticleSeries implements Serializable {
 
     @TableId(type = IdType.AUTO)
-    @Schema(name = "系列ID")
+    @Schema(description = "系列ID")
     private Integer id;
 
-    @Schema(name = "作者ID")
+    @Schema(description = "作者ID")
     private Long userId;
 
-    @Schema(name = "系列名称")
+    @Schema(description = "系列名称")
     private String name;
 
-    @Schema(name = "URL标识（全站唯一）")
+    @Schema(description = "URL标识（全站唯一）")
     private String slug;
 
-    @Schema(name = "系列描述")
+    @Schema(description = "系列描述")
     private String description;
 
-    @Schema(name = "封面图URL")
+    @Schema(description = "封面图URL")
     private String coverImage;
 
-    @Schema(name = "发布状态")
+    @Schema(description = "发布状态")
     private String status;
 
-    @Schema(name = "排序序号")
+    @Schema(description = "排序序号")
     private Integer orderNum;
 
-    @Schema(name = "包含文章数")
+    @Schema(description = "包含文章数")
     private Integer articleCount;
 
-    @Schema(name = "订阅人数")
+    @Schema(description = "订阅人数")
     private Integer subscribers;
 
-    @Schema(name = "创建时间")
+    @Schema(description = "创建时间")
     private LocalDateTime createdAt;
 
-    @Schema(name = "更新时间")
+    @Schema(description = "更新时间")
     private LocalDateTime updatedAt;
 }

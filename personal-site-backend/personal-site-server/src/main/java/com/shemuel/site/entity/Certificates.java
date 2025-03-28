@@ -16,36 +16,36 @@ import java.io.Serializable;
 public class Certificates implements Serializable {
 
     @TableId(type = IdType.AUTO)
-    @Schema(name = "")
+    @Schema(description = "")
     private Integer id;
 
-    @Schema(name = "外键关联user_profile表的id")
+    @Schema(description = "外键关联user_profile表的id")
     private Long userId;
 
-    @Schema(name = "证书名称")
+    @Schema(description = "证书名称")
     private String certificateName;
 
-    @Schema(name = "颁发机构")
+    @Schema(description = "颁发机构")
     private String issuingOrganization;
 
-    @Schema(name = "颁发日期")
+    @Schema(description = "颁发日期")
     private LocalDateTime issueDate;
 
-    @Schema(name = "过期日期")
+    @Schema(description = "过期日期")
     private LocalDateTime expirationDate;
 
-    @Schema(name = "证书ID")
+    @Schema(description = "证书ID")
     private String credentialId;
 
-    @Schema(name = "证书链接")
+    @Schema(description = "证书链接")
     private String credentialUrl;
 
-    @Schema(name = "排序顺序")
+    @Schema(description = "排序顺序")
     private Integer sortOrder;
 
-    @Schema(name = "创建时间")
+    @Schema(description = "创建时间")
     private LocalDateTime createdAt;
 
-    @Schema(name = "更新时间")
+    @Schema(description = "更新时间")
     private LocalDateTime updatedAt;
 }

@@ -16,48 +16,48 @@ import java.io.Serializable;
 public class Article implements Serializable {
 
     @TableId(type = IdType.AUTO)
-    @Schema(name = "文章ID")
+    @Schema(description = "文章ID")
     private Integer id;
 
-    @Schema(name = "作者ID")
+    @Schema(description = "作者ID")
     private Long userId;
 
-    @Schema(name = "所属系列ID")
+    @Schema(description = "所属系列ID")
     private Integer seriesId;
 
-    @Schema(name = "所属标签ID")
+    @Schema(description = "所属标签ID")
     private Integer tagId;
 
-    @Schema(name = "所属分类ID")
+    @Schema(description = "所属分类ID")
     private Integer categoryId;
 
-    @Schema(name = "文章标题")
+    @Schema(description = "文章标题")
     private String title;
 
-    @Schema(name = "内容摘要")
+    @Schema(description = "内容摘要")
     private String summary;
 
-    @Schema(name = "文章正文")
+    @Schema(description = "文章正文")
     private String content;
 
-    @Schema(name = "封面图URL")
+    @Schema(description = "封面图URL")
     private String coverImage;
 
-    @Schema(name = "发布状态")
+    @Schema(description = "发布状态")
     private String status;
 
-    @Schema(name = "浏览数")
+    @Schema(description = "浏览数")
     private Integer viewCount;
 
-    @Schema(name = "点赞数")
+    @Schema(description = "点赞数")
     private Integer likeCount;
 
-    @Schema(name = "收藏数")
+    @Schema(description = "收藏数")
     private Integer saveCount;
 
-    @Schema(name = "创建时间")
+    @Schema(description = "创建时间")
     private LocalDateTime createdAt;
 
-    @Schema(name = "更新时间")
+    @Schema(description = "更新时间")
     private LocalDateTime updatedAt;
 }
