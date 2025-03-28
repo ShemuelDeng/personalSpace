@@ -27,8 +27,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         // 构建查询条件
         wrapper.eq(article.getId() != null, Article::getId, article.getId());
         wrapper.eq(article.getUserId() != null, Article::getUserId, article.getUserId());
-        wrapper.eq(article.getCategoryId() != null, Article::getCategoryId, article.getCategoryId());
         wrapper.eq(article.getSeriesId() != null, Article::getSeriesId, article.getSeriesId());
+        wrapper.eq(article.getTagId() != null, Article::getTagId, article.getTagId());
+        wrapper.eq(article.getCategoryId() != null, Article::getCategoryId, article.getCategoryId());
         wrapper.eq(article.getTitle() != null, Article::getTitle, article.getTitle());
         wrapper.eq(article.getSummary() != null, Article::getSummary, article.getSummary());
         wrapper.eq(article.getContent() != null, Article::getContent, article.getContent());
@@ -36,6 +37,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         wrapper.eq(article.getStatus() != null, Article::getStatus, article.getStatus());
         wrapper.eq(article.getViewCount() != null, Article::getViewCount, article.getViewCount());
         wrapper.eq(article.getLikeCount() != null, Article::getLikeCount, article.getLikeCount());
+        wrapper.eq(article.getSaveCount() != null, Article::getSaveCount, article.getSaveCount());
         wrapper.eq(article.getCreatedAt() != null, Article::getCreatedAt, article.getCreatedAt());
         wrapper.eq(article.getUpdatedAt() != null, Article::getUpdatedAt, article.getUpdatedAt());
         return page(PageUtil.getPage(), wrapper);
@@ -50,8 +52,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         // 构建查询条件
         wrapper.eq(article.getId() != null, Article::getId, article.getId());
         wrapper.eq(article.getUserId() != null, Article::getUserId, article.getUserId());
-        wrapper.eq(article.getCategoryId() != null, Article::getCategoryId, article.getCategoryId());
         wrapper.eq(article.getSeriesId() != null, Article::getSeriesId, article.getSeriesId());
+        wrapper.eq(article.getTagId() != null, Article::getTagId, article.getTagId());
+        wrapper.eq(article.getCategoryId() != null, Article::getCategoryId, article.getCategoryId());
         wrapper.eq(article.getTitle() != null, Article::getTitle, article.getTitle());
         wrapper.eq(article.getSummary() != null, Article::getSummary, article.getSummary());
         wrapper.eq(article.getContent() != null, Article::getContent, article.getContent());
@@ -59,6 +62,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         wrapper.eq(article.getStatus() != null, Article::getStatus, article.getStatus());
         wrapper.eq(article.getViewCount() != null, Article::getViewCount, article.getViewCount());
         wrapper.eq(article.getLikeCount() != null, Article::getLikeCount, article.getLikeCount());
+        wrapper.eq(article.getSaveCount() != null, Article::getSaveCount, article.getSaveCount());
         wrapper.eq(article.getCreatedAt() != null, Article::getCreatedAt, article.getCreatedAt());
         wrapper.eq(article.getUpdatedAt() != null, Article::getUpdatedAt, article.getUpdatedAt());
         return list(wrapper);

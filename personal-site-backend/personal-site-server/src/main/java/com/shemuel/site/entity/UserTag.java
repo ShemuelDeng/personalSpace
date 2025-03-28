@@ -11,26 +11,23 @@ import java.time.LocalDateTime;
 import java.io.Serializable;
 
 @Data
-@TableName("category")
-@Tag(name = "文章分类表对象")
-public class Category implements Serializable {
+@TableName("user_tag")
+@Tag(name = "用户私有标签库对象")
+public class UserTag implements Serializable {
 
     @TableId(type = IdType.AUTO)
-    @Schema(name = "分类ID")
+    @Schema(name = "私有标签ID")
     private Integer id;
 
-    @Schema(name = "分类名称（唯一）")
+    @Schema(name = "所属用户ID")
+    private Long userId;
+
+    @Schema(name = "标签名称")
     private String name;
 
-    @Schema(name = "分类描述说明")
-    private String description;
+    @Schema(name = "标签类型， 0：系统；1：用户")
+    private Integer tagType;
 
-    @Schema(name = "父分类ID（建立树形结构）")
-    private Integer parentId;
-
-    @Schema(name = "分类创建时间")
+    @Schema(name = "创建时间")
     private LocalDateTime createdAt;
-
-    @Schema(name = "最后更新时间")
-    private LocalDateTime updatedAt;
 }

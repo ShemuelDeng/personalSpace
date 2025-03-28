@@ -32,17 +32,10 @@ const routes = [
         component: () => import('@/views/EditorView.vue'),
         meta: { title: '编辑器' }
       },
-      // {
-      //   path: '/articles',
-      //   component: () => import('@/views/Articles.vue'),
-      //   meta: { title: '技术文章' }
-      // },
-      // {
-      //   path: '/workspace',
-      //   component: () => import('@/views/Workspace.vue'),
-      //   meta: { title: '工作空间' }
-      // },
-      // 其他子路由...
+      {        path: '/articles',
+        component: () => import('@/views/ArticleList.vue'),
+        meta: { title: '技术文章' }
+      }
     ]
   }
 ];

@@ -3,6 +3,7 @@ package com.shemuel.site.entity;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
@@ -10,20 +11,26 @@ import java.time.LocalDateTime;
 import java.io.Serializable;
 
 @Data
-@TableName("tag")
-@Tag(name = "文章标签表对象")
-public class ArticleTag implements Serializable {
+@TableName("user_category")
+@Tag(name = "用户私有分类对象")
+public class UserCategory implements Serializable {
 
     @TableId(type = IdType.AUTO)
-    @Schema(name = "标签ID")
+    @Schema(name = "")
     private Integer id;
 
-    @Schema(name = "标签名称（唯一）")
+    @Schema(name = "")
+    private Long userId;
+
+    @Schema(name = "")
     private String name;
 
-    @Schema(name = "标签创建时间")
-    private LocalDateTime createdAt;
+    @Schema(name = "")
+    private String description;
 
-    @Schema(name = "最后更新时间")
-    private LocalDateTime updatedAt;
+    @Schema(name = "")
+    private Integer parentId;
+
+    @Schema(name = "")
+    private LocalDateTime createdAt;
 }

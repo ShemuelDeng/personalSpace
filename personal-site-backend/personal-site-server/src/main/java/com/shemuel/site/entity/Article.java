@@ -22,11 +22,14 @@ public class Article implements Serializable {
     @Schema(name = "作者ID")
     private Long userId;
 
-    @Schema(name = "分类ID")
-    private Integer categoryId;
-
     @Schema(name = "所属系列ID")
     private Integer seriesId;
+
+    @Schema(name = "所属标签ID")
+    private Integer tagId;
+
+    @Schema(name = "所属分类ID")
+    private Integer categoryId;
 
     @Schema(name = "文章标题")
     private String title;
@@ -48,6 +51,9 @@ public class Article implements Serializable {
 
     @Schema(name = "点赞数")
     private Integer likeCount;
+
+    @Schema(name = "收藏数")
+    private Integer saveCount;
 
     @Schema(name = "创建时间")
     private LocalDateTime createdAt;

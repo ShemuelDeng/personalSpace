@@ -162,17 +162,33 @@ CREATE TABLE `gen_table_column`
 ) ENGINE = InnoDB AUTO_INCREMENT = 263 CHARACTER SET = utf8mb4  COMMENT = '代码生成业务表字段' ROW_FORMAT = DYNAMIC;
 
 
--- 文章分类表（支持多级分类结构）
-CREATE TABLE category (
-  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '分类ID',
-  name VARCHAR(50) NOT NULL UNIQUE COMMENT '分类名称（唯一）',
-  description VARCHAR(255) COMMENT '分类描述说明',
-  parent_id INT UNSIGNED COMMENT '父分类ID（建立树形结构）',
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '分类创建时间',
-  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
-  FOREIGN KEY (parent_id) REFERENCES category(id) ON DELETE SET NULL,
-  INDEX idx_parent_id (parent_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='文章分类表';
+-- 用户私有标签表
+CREATE TABLE user_tag (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '私有标签ID',
+  user_id BIGINT  NOT NULL COMMENT '所属用户ID',
+  name VARCHAR(50) NOT NULL COMMENT '标签名称',
+  tag_type tinyint NOT NULL DEFAULT 0 COMMENT '标签类型， 0：系统；1：用户',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  UNIQUE INDEX uniq_user_tag (user_id, name), -- 用户下标签名称唯一
+  FOREIGN KEY (user_id) REFERENCES user_profile(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户私有标签库';
+
+
+
+-- 用户私有分类表（用户下唯一）
+CREATE TABLE user_category (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    description VARCHAR(1024) DEFAULT NULL ,
+    parent_id INT UNSIGNED,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uniq_user_category (user_id, name),  -- 用户下名称唯一
+    FOREIGN KEY (user_id) REFERENCES user_profile(id) ON DELETE CASCADE,
+    FOREIGN KEY (parent_id) REFERENCES user_category(id) ON DELETE SET NULL
+) COMMENT='用户私有分类';
+
+
 
 -- 文章系列表（原专栏）
 CREATE TABLE article_series (
@@ -197,8 +213,9 @@ CREATE TABLE article_series (
 CREATE TABLE article (
      id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '文章ID',
      user_id BIGINT  NOT NULL COMMENT '作者ID',
-     category_id INT UNSIGNED NOT NULL COMMENT '分类ID',
-     series_id INT UNSIGNED COMMENT '所属系列ID',
+     series_id INT UNSIGNED DEFAULT NULL COMMENT '所属系列ID',
+     tag_id INT UNSIGNED NOT NULL   COMMENT '所属标签ID',
+     category_id INT UNSIGNED NOT NULL   COMMENT '所属分类ID',
      title VARCHAR(255) NOT NULL COMMENT '文章标题',
      summary VARCHAR(512) COMMENT '内容摘要',
      content LONGTEXT NOT NULL COMMENT '文章正文',
@@ -206,35 +223,34 @@ CREATE TABLE article (
      status ENUM('draft', 'published', 'deleted') NOT NULL DEFAULT 'draft' COMMENT '发布状态',
      view_count INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '浏览数',
      like_count INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '点赞数',
+     save_count INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '收藏数',
      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
      updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-     FOREIGN KEY (user_id) REFERENCES user_profile(id) ON DELETE RESTRICT,
-     FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE RESTRICT,
-     FOREIGN KEY (series_id) REFERENCES article_series(id) ON DELETE SET NULL,
-     INDEX idx_article_author (user_id),
-     INDEX idx_article_category (category_id),
-     INDEX idx_article_series (series_id),
-     INDEX idx_article_status (status),
-     FULLTEXT INDEX ft_article_content (title, content)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='核心文章数据';
+ -- 外键约束定义
+    FOREIGN KEY fk_article_user (user_id)
+        REFERENCES user_profile(id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE,
 
--- 标签表（文章标签管理）
-CREATE TABLE articleTag (
-     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '标签ID',
-     name VARCHAR(50) NOT NULL UNIQUE COMMENT '标签名称（唯一）',
-     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '标签创建时间',
-     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='文章标签表';
+    FOREIGN KEY fk_article_tag (tag_id)
+        REFERENCES user_tag(id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE,
 
--- 文章-标签关联表（多对多关系）
-CREATE TABLE article_tag (
-     article_id INT UNSIGNED NOT NULL COMMENT '文章ID',
-     tag_id INT UNSIGNED NOT NULL COMMENT '标签ID',
-     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '关联创建时间',
-     PRIMARY KEY (article_id, tag_id),
-     FOREIGN KEY (article_id) REFERENCES article(id) ON DELETE CASCADE,
-     FOREIGN KEY (tag_id) REFERENCES articleTag(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='文章标签关联表';
+    FOREIGN KEY fk_article_category (category_id)
+        REFERENCES user_category(id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE,
+
+    FOREIGN KEY fk_article_series (series_id)
+        REFERENCES article_series(id)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '核心文章数据';
+
+
+
+
 
 -- 评论表（支持多级评论）
 CREATE TABLE comment (
@@ -252,5 +268,22 @@ CREATE TABLE comment (
  FOREIGN KEY (parent_id) REFERENCES comment(id) ON DELETE CASCADE,
  INDEX idx_article_parent (article_id, parent_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='文章评论表';
+
+-- 插入预制分类
+INSERT INTO user_category (user_id, name, description, parent_id) VALUES
+                                                                      (1, '前端开发', 'Web前端开发相关技术', NULL),
+                                                                      (1, '后端开发', '服务器端开发相关技术', NULL),
+                                                                      (1, '人工智能', 'AI、机器学习、深度学习相关', NULL),
+                                                                      (1, '数据科学', '数据分析、大数据处理相关', NULL),
+                                                                      (1, 'DevOps', '开发运维一体化相关技术', NULL);
+
+
+-- 插入预制标签
+INSERT INTO user_tag (user_id, name, tag_type) VALUES
+                                                   (1, 'Java', 0),
+                                                   (1, 'Python', 0),
+                                                   (1, 'JavaScript', 0),
+                                                   (1, 'Go', 0),
+                                                   (1, 'C++', 0);
 
 
