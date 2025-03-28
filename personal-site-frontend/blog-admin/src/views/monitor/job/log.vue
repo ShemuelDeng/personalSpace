@@ -47,9 +47,9 @@
         <el-table-column label="日志信息" align="center" prop="jobMessage" :show-overflow-tooltip="true" />
         <el-table-column label="执行状态" align="center">
           <template #default="{ row }">
-            <el-tag :type="row.status === 0 ? 'success' : 'danger'">
+            <el-articleTag :type="row.status === 0 ? 'success' : 'danger'">
               {{ statusFormat(row) }}
-            </el-tag>
+            </el-articleTag>
           </template>
         </el-table-column>
         <el-table-column label="执行时间" align="center" prop="createTime" width="180" />
@@ -89,9 +89,9 @@
           {{ form.jobMessage }}
         </el-descriptions-item>
         <el-descriptions-item label="执行状态">
-          <el-tag :type="form.status === 0 ? 'success' : 'danger'">
+          <el-articleTag :type="form.status === 0 ? 'success' : 'danger'">
               {{ statusFormat(form) }}
-            </el-tag>
+            </el-articleTag>
         </el-descriptions-item>
         <el-descriptions-item label="开始时间">
           {{ form.startTime }}

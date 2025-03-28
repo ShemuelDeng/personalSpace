@@ -107,10 +107,10 @@
       </div>
 
       <div class="next-execute-time" v-if="nextExecuteTime">
-        <el-tag type="success" effect="plain">
+        <el-articleTag type="success" effect="plain">
           <el-icon><Timer /></el-icon>
           <span>下次执行时间：{{ nextExecuteTime }}</span>
-        </el-tag>
+        </el-articleTag>
       </div>
 
       <div class="next-times" v-if="nextTimes.length">
@@ -119,7 +119,7 @@
           <span>最近5次执行时间</span>
         </div>
         <div class="next-times-list">
-          <el-tag 
+          <el-articleTag
             v-for="(time, index) in nextTimes" 
             :key="index"
             type="success"
@@ -127,7 +127,7 @@
             class="next-time-item"
           >
             {{ time }}
-          </el-tag>
+          </el-articleTag>
         </div>
       </div>
 
@@ -600,7 +600,7 @@ const handleConfirm = () => {
 
     .next-execute-time {
       margin-top: 16px;
-      .el-tag {
+      .el-articleTag {
         display: flex;
         align-items: center;
         padding: 8px 12px;

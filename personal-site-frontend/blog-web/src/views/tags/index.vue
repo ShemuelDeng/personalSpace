@@ -10,27 +10,27 @@
 
           <div class="tags-cloud" ref="tagsCloud">
             <div 
-              v-for="tag in tags" 
-              :key="`tag-${tag.name}`"
-              class="tag-item"
-              :class="{ active: activeTag === tag.name }"
+              v-for="articleTag in tags"
+              :key="`articleTag-${articleTag.name}`"
+              class="articleTag-item"
+              :class="{ active: activeTag === articleTag.name }"
               :style="{
-                '--tag-color': `hsl(${(tag.name.length * 40) % 360}, 70%, 60%)`,
+                '--articleTag-color': `hsl(${(articleTag.name.length * 40) % 360}, 70%, 60%)`,
                 '--animation-delay': `${Math.random() * 0.5}s`
               }"
-              @click="selectTag(tag.name,tag.id)"
+              @click="selectTag(articleTag.name,articleTag.id)"
             >
-              <div class="tag-background"></div>
-              <i class="fas fa-tag"></i>
-              <span class="tag-name">{{ tag.name }}</span>
-              <span class="tag-count">{{ tag.articleNum }}</span>
+              <div class="articleTag-background"></div>
+              <i class="fas fa-articleTag"></i>
+              <span class="articleTag-name">{{ articleTag.name }}</span>
+              <span class="articleTag-count">{{ articleTag.articleNum }}</span>
             </div>
           </div>
 
       
         </el-card>
-        <div v-if="activeTag" class="tag-posts" ref="postsSection">
-            <div class="tag-header">
+        <div v-if="activeTag" class="articleTag-posts" ref="postsSection">
+            <div class="articleTag-header">
               <div class="header-line"></div>
               <h2>
                 <i class="fas fa-bookmark"></i>
@@ -221,7 +221,7 @@ export default {
   padding: 0 $spacing-md $spacing-md;
   justify-content: center;
 
-  .tag-item {
+  .articleTag-item {
     padding: $spacing-sm $spacing-sm;
     border-radius: $border-radius-md;
     color: var(--text-primary);
@@ -240,19 +240,19 @@ export default {
     
     i {
       font-size: 0.9em;
-      color: var(--tag-color);
+      color: var(--articleTag-color);
       transition: transform 0.3s ease;
     }
 
-    .tag-name {
+    .articleTag-name {
       position: relative;
       z-index: 1;
     }
 
-    .tag-count {
+    .articleTag-count {
       font-size: 0.85em;
       color: var(--text-secondary);
-      background: rgba(var(--tag-color), 0.1);
+      background: rgba(var(--articleTag-color), 0.1);
       padding: 3px 12px;
       border-radius: $border-radius-lg;
       transition: all 0.3s ease;
@@ -260,7 +260,7 @@ export default {
 
     &:hover {
       transform: translateY(-2px);
-      border-color: var(--tag-color);
+      border-color: var(--articleTag-color);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       
       i {
@@ -269,15 +269,15 @@ export default {
     }
 
     &.active {
-      background: var(--tag-color);
+      background: var(--articleTag-color);
       color: white;
-      box-shadow: 0 4px 12px rgba(var(--tag-color), 0.2);
+      box-shadow: 0 4px 12px rgba(var(--articleTag-color), 0.2);
       
       i {
         color: white;
       }
       
-      .tag-count {
+      .articleTag-count {
         background: rgba(255, 255, 255, 0.25);
         color: white;
       }
@@ -285,7 +285,7 @@ export default {
   }
 }
 
-.tag-header {
+.articleTag-header {
   margin-bottom: $spacing-xl;
   padding: $spacing-md $spacing-xl;
   background: var(--bg-secondary);
@@ -436,13 +436,13 @@ export default {
     padding: 0 $spacing-md $spacing-lg;
     gap: $spacing-sm;
     
-    .tag-item {
+    .articleTag-item {
       padding: $spacing-xs $spacing-md;
       font-size: 0.9em;
     }
   }
 
-  .tag-header {
+  .articleTag-header {
     padding: $spacing-sm $spacing-md;
     
     h2 {
@@ -455,7 +455,7 @@ export default {
   }
 }
 
-.tag-background,
+.articleTag-background,
 .header-waves,
 .wave {
   display: none;

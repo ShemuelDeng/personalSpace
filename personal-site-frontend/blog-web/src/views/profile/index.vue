@@ -117,9 +117,9 @@
                 </div>
               </div>
               <div class="binding-status">
-                <el-tag :type="account.isBound ? 'success' : 'info'" size="small" effect="dark" class="status-tag">
+                <el-articleTag :type="account.isBound ? 'success' : 'info'" size="small" effect="dark" class="status-articleTag">
                   {{ account.isBound ? '已绑定' : '未绑定' }}
-                </el-tag>
+                </el-articleTag>
                 <el-button :type="account.isBound ? 'danger' : 'primary'" size="small"
                   :icon="account.isBound ? 'el-icon-close' : 'el-icon-link'"
                   @click="account.isBound ? unbindAccount(account.type) : bindAccount(account.type)">
@@ -151,11 +151,11 @@
               <h3 class="post-title" @click="viewPost(post.id)">{{ post.title }}</h3>
               <p class="post-excerpt">{{ post.summary }}</p>
               <div class="post-meta">
-                <el-tag size="small"><i class="el-icon-date"></i>{{ post.createTime }}</el-tag>
-                <el-tag size="small" type="info"><i class="el-icon-view"></i>{{ post.quantity }} 阅读</el-tag>
-                <el-tag size="small" type="success"><i class="el-icon-chat-line-square"></i>{{ post.commentNum || 0 }}
-                  评论</el-tag>
-                <el-tag size="small" type="warning"><i class="el-icon-star-off"></i>{{ post.likeNum || 0 }} 点赞</el-tag>
+                <el-articleTag size="small"><i class="el-icon-date"></i>{{ post.createTime }}</el-articleTag>
+                <el-articleTag size="small" type="info"><i class="el-icon-view"></i>{{ post.quantity }} 阅读</el-articleTag>
+                <el-articleTag size="small" type="success"><i class="el-icon-chat-line-square"></i>{{ post.commentNum || 0 }}
+                  评论</el-articleTag>
+                <el-articleTag size="small" type="warning"><i class="el-icon-star-off"></i>{{ post.likeNum || 0 }} 点赞</el-articleTag>
               </div>
             </div>
             <div class="post-actions">
@@ -185,12 +185,12 @@
             </div>
             <div class="comment-meta">
               <el-link type="primary" @click="viewPost(comment.articleId)">文章：{{ comment.articleTitle }}</el-link>
-              <el-tag size="small">
+              <el-articleTag size="small">
                 <i class="el-icon-time"></i>
                 {{ comment.createTime }}
-              </el-tag>
-              <el-tag size="small" type="success"><i class="el-icon-star-off"></i>{{ comment.likeCount ?
-                comment.likeCount : 0 }} 赞</el-tag>
+              </el-articleTag>
+              <el-articleTag size="small" type="success"><i class="el-icon-star-off"></i>{{ comment.likeCount ?
+                comment.likeCount : 0 }} 赞</el-articleTag>
             </div>
           </el-card>
           <div class="pagination-box">
@@ -210,7 +210,7 @@
             <div class="reply-content">
               <div class="comment-actions">
                 <p class="reply-text">
-                  <el-tag size="small" type="info">回复 @{{ reply.replyNickname }}</el-tag>
+                  <el-articleTag size="small" type="info">回复 @{{ reply.replyNickname }}</el-articleTag>
                 <p v-html="parseContent(reply.content)"></p>
                 </p>
                 <el-button type="text" icon="el-icon-delete" class="delete"
@@ -218,10 +218,10 @@
               </div>
               <div class="reply-meta">
                 <el-link type="primary" @click="viewPost(reply.articleId)">文章：{{ reply.articleTitle }}</el-link>
-                <el-tag size="small">
+                <el-articleTag size="small">
                   <i class="el-icon-time"></i>
                   {{ reply.createTime }}
-                </el-tag>
+                </el-articleTag>
               </div>
             </div>
           </el-card>
@@ -249,11 +249,11 @@
                   @click="cancelLike(like.id)">取消点赞</el-button>
               </div>
               <div class="like-meta">
-                <!-- <el-tag size="small"><i class="el-icon-user"></i>{{ like.author }}</el-tag> -->
-                <el-tag size="small">
+                <!-- <el-articleTag size="small"><i class="el-icon-user"></i>{{ like.author }}</el-articleTag> -->
+                <el-articleTag size="small">
                   <i class="el-icon-time"></i>
                   {{ like.createTime }}
-                </el-tag>
+                </el-articleTag>
               </div>
             </div>
           </el-card>
@@ -327,18 +327,18 @@
                 <el-card v-for="feedback in myFeedbacks" :key="feedback.id" class="feedback-item">
                   <div class="feedback-header">
                     <div class="feedback-info">
-                      <el-tag v-if="item.value === feedback.type" v-for="item in feedbackTypes" :type="item.style">
+                      <el-articleTag v-if="item.value === feedback.type" v-for="item in feedbackTypes" :type="item.style">
                         {{ item.label }}
-                      </el-tag>
+                      </el-articleTag>
                       <span class="feedback-time">
                         <i class="far fa-clock"></i>
                         {{ feedback.createTime }}
                       </span>
                     </div>
-                    <el-tag v-if="item.value === String(feedback.status)" v-for="item in feedbackStatus"
+                    <el-articleTag v-if="item.value === String(feedback.status)" v-for="item in feedbackStatus"
                       :type="item.style">
                       {{ item.label }}
-                    </el-tag>
+                    </el-articleTag>
                   </div>
                   <div class="feedback-content">
                     <p>{{ feedback.content }}</p>
@@ -1103,7 +1103,7 @@ export default {
     gap: 12px;
     margin-bottom: 16px;
 
-    .el-tag {
+    .el-articleTag {
       display: flex;
       align-items: center;
       gap: 4px;
@@ -1303,7 +1303,7 @@ export default {
       align-items: center;
       gap: 16px;
 
-      .status-tag {
+      .status-articleTag {
         min-width: 64px;
         text-align: center;
       }

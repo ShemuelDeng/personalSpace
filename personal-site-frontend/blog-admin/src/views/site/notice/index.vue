@@ -54,9 +54,9 @@
                 <el-table-column label="显示位置" align="center" prop="position">
                     <template #default="scope">
                         <span v-for="item in positionOptions">
-                            <el-tag :type="item.style" v-if="scope.row.position === item.value">
+                            <el-articleTag :type="item.style" v-if="scope.row.position === item.value">
                                 {{ item.label }}
-                            </el-tag>
+                            </el-articleTag>
                         </span>
                     </template>
                 </el-table-column>

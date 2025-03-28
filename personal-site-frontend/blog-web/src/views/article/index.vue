@@ -189,9 +189,9 @@
           <div class="tags-section">
             <i class="fas fa-tags"></i>
             <div class="tags-list">
-              <router-link v-for="tag in article.tags" :key="tag.id" :to="`/tags?tagId=${tag.id}&tagName=${tag.name}`"
-                class="tag-item">
-                {{ tag.name }}
+              <router-link v-for="articleTag in article.tags" :key="articleTag.id" :to="`/tags?tagId=${articleTag.id}&tagName=${articleTag.name}`"
+                class="articleTag-item">
+                {{ articleTag.name }}
               </router-link>
             </div>
           </div>
@@ -1541,7 +1541,7 @@ export default {
       gap: $spacing-sm;
     }
 
-    .tag-item {
+    .articleTag-item {
       padding: $spacing-xs $spacing-md;
       background: var(--hover-bg);
       color: var(--text-secondary);

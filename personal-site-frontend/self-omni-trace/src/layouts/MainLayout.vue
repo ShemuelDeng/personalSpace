@@ -97,12 +97,23 @@ export default {
 .main-layout {
   display: flex;
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .el-container {
   width: 100%;
-  min-height: 100vh;
+  height: 100%;
+  display: flex;
+}
+
+.el-main {
+  flex: 1;
+  position: relative;
+  background-color: #f5f7fa;
+  padding: 20px;
+  overflow-y: auto;
+  height: 100%;
 }
 
 .sidebar {
@@ -145,9 +156,12 @@ export default {
 }
 
 .el-main {
+  flex: 1;
   position: relative;
   background-color: #f5f7fa;
   padding: 20px;
+  overflow-y: auto;
+  height: 100%;
 }
 
 .toggle-sidebar {

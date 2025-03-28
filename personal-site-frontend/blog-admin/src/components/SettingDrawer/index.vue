@@ -143,9 +143,9 @@
           @click="handleSave('tagsStyle', style.value)"
         >
           <div class="style-preview" :class="style.value">
-            <span class="tag">首页</span>
-            <span class="tag">列表页</span>
-            <span class="tag active">详情页</span>
+            <span class="articleTag">首页</span>
+            <span class="articleTag">列表页</span>
+            <span class="articleTag active">详情页</span>
           </div>
           <div class="style-name">{{ style.label }}</div>
         </div>
@@ -325,7 +325,7 @@ const tagsStyles = [
   margin-bottom: 8px;
 }
 
-.tag {
+.articleTag {
   display: inline-block;
   padding: 2px 6px;
   font-size: 12px;
@@ -391,7 +391,7 @@ const tagsStyles = [
   margin-bottom: 8px;
 }
 
-.tag {
+.articleTag {
   display: inline-block;
   padding: 2px 6px;
   font-size: 12px;

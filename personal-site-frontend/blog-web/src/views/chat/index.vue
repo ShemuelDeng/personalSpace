@@ -144,8 +144,8 @@
                 class="sender-name"
               >
                 <span :class="msg.userId === 1 ? 'user-name': msg.userId === 2 ? 'assistant-name': ''" >{{ msg.name }}</span>
-                <span v-if="msg.userId === 1" class="author-tag">作者</span>
-                <span v-if="msg.userId === 2" class="assistant-tag">A I</span>
+                <span v-if="msg.userId === 1" class="author-articleTag">作者</span>
+                <span v-if="msg.userId === 2" class="assistant-articleTag">A I</span>
                 <span class="message-time">{{ msg.time }}</span>
                 <span class="location">{{ splitIpAddress(msg.location) }}</span>
                 <span class="gender" v-if="msg.sex"><i :class="msg.sex === 1 ? 'fas fa-mars' : 'fas fa-venus'"></i></span>
@@ -2525,7 +2525,7 @@ export default {
   color: var(--text-secondary);
 }
 
-.author-tag {
+.author-articleTag {
   background: $primary;
   color: white;
   font-size: 12px;
@@ -2534,7 +2534,7 @@ export default {
   margin-left: 4px;
 }
 
-.assistant-tag {
+.assistant-articleTag {
   background: #b32ce9;
   color: white;
   font-size: 12px;

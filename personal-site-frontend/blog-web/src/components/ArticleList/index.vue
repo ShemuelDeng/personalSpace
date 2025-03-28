@@ -1,12 +1,12 @@
 <template>
   <div class="article-list-component" v-loading="loading">
-    <transition-group name="post-list" tag="div" class="posts-list">
+    <transition-group name="post-list" articleTag="div" class="posts-list">
       <article v-for="post in articles" :key="post.id" class="post-item">
         <div class="post-content">
           <div class="post-main">
             <div class="post-text">
               <h3>
-                <span v-if="post.isStick" class="stick-tag">
+                <span v-if="post.isStick" class="stick-articleTag">
                   <i class="fas fa-thumbtack"></i>
                   置顶
                 </span>
@@ -38,7 +38,7 @@
               </div>
             </div>
             <div class="footer-right">
-              <span class="category-tag">{{ post.categoryName }}</span>
+              <span class="category-articleTag">{{ post.categoryName }}</span>
               <span class="read-time">
                 <i class="far fa-clock"></i>
                 {{ Math.ceil(post.contentMd.split(" ").length / 300) }}分钟阅读
@@ -135,7 +135,7 @@ export default {
       line-height: 1.4;
       color: var(--text-primary);
       cursor: pointer;
-      .stick-tag {
+      .stick-articleTag {
         display: inline-flex;
         align-items: center;
         gap: 4px;
@@ -233,7 +233,7 @@ export default {
     align-items: center;
     gap: $spacing-lg;
 
-    .category-tag {
+    .category-articleTag {
       padding: 4px 12px;
       background: var(--hover-bg);
       border-radius: 20px;

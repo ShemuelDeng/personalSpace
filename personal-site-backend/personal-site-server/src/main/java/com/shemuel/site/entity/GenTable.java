@@ -1,5 +1,7 @@
 package com.shemuel.site.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.shemuel.site.utils.DateUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,6 +15,7 @@ import java.util.Date;
 public class GenTable {
 
     @Schema(name = "表ID")
+    @TableId(type = IdType.AUTO)
     private Long tableId;
 
     @Schema(name = "表名称")

@@ -61,16 +61,16 @@
         <el-table-column label="字典名称" prop="name" align="center"/>
         <el-table-column label="字典类型" prop="type" align="center">
           <template #default="{ row }">
-            <el-tag type="warning">
+            <el-articleTag type="warning">
               {{ row.type }}
-            </el-tag>
+            </el-articleTag>
           </template>
         </el-table-column>
         <el-table-column label="状态" align="center">
           <template #default="{ row }">
-            <el-tag :type="row.status === 1 ? 'success' : 'danger'">
+            <el-articleTag :type="row.status === 1 ? 'success' : 'danger'">
               {{ row.status === 1 ? '启用' : '禁用' }}
-            </el-tag>
+            </el-articleTag>
           </template>
         </el-table-column>
         <el-table-column label="备注" align="center" prop="remark" show-overflow-tooltip />

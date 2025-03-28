@@ -854,7 +854,7 @@ INSERT INTO `sys_menu`
 VALUES (68, '0', '/article', 'Layout', '文章管理', 1, 'Document', 'CATALOG', '2024-12-22 10:49:22',
         '2024-12-22 10:49:37', '/article/index', '', 0, '', 0);
 INSERT INTO `sys_menu`
-VALUES (69, '68', 'tag', '/article/tag/index', '标签管理', 2, 'PriceTag', 'MENU', '2024-12-22 10:49:22',
+VALUES (69, '68', 'articleTag', '/article/articleTag/index', '标签管理', 2, 'PriceTag', 'MENU', '2024-12-22 10:49:22',
         '2024-12-22 10:49:37', '', '', 0, '', 0);
 INSERT INTO `sys_menu`
 VALUES (70, '68', 'category', '/article/category/index', '分类管理', 2, 'Dessert', 'MENU', '2024-12-22 10:49:22',
@@ -883,13 +883,13 @@ VALUES (78, '71', '', '', '修改状态', 4, '', 'BUTTON', '2024-12-28 22:02:24'
 INSERT INTO `sys_menu`
 VALUES (79, '71', '', '', '删除文章', 2, '', 'BUTTON', '2024-12-28 22:02:24', NULL, '', '', 1, 'sys:article:delete', 0);
 INSERT INTO `sys_menu`
-VALUES (80, '69', '', '', '标签列表', 1, '', 'BUTTON', '2024-12-28 22:05:25', NULL, '', '', 1, 'sys:tag:list', 0);
+VALUES (80, '69', '', '', '标签列表', 1, '', 'BUTTON', '2024-12-28 22:05:25', NULL, '', '', 1, 'sys:articleTag:list', 0);
 INSERT INTO `sys_menu`
-VALUES (81, '69', '', '', '新增标签', 2, '', 'BUTTON', '2024-12-28 22:05:59', NULL, '', '', 1, 'sys:tag:add', 0);
+VALUES (81, '69', '', '', '新增标签', 2, '', 'BUTTON', '2024-12-28 22:05:59', NULL, '', '', 1, 'sys:articleTag:add', 0);
 INSERT INTO `sys_menu`
-VALUES (82, '69', '', '', '修改标签', 3, '', 'BUTTON', '2024-12-28 22:06:26', NULL, '', '', 1, 'sys:tag:update', 0);
+VALUES (82, '69', '', '', '修改标签', 3, '', 'BUTTON', '2024-12-28 22:06:26', NULL, '', '', 1, 'sys:articleTag:update', 0);
 INSERT INTO `sys_menu`
-VALUES (83, '69', '', '', '删除标签', 4, '', 'BUTTON', '2024-12-28 22:06:40', NULL, '', '', 1, 'sys:tag:delete', 0);
+VALUES (83, '69', '', '', '删除标签', 4, '', 'BUTTON', '2024-12-28 22:06:40', NULL, '', '', 1, 'sys:articleTag:delete', 0);
 INSERT INTO `sys_menu`
 VALUES (84, '70', '', '', '分类列表', 1, '', 'BUTTON', '2024-12-28 22:07:27', NULL, '', '', 1, 'sys:category:list', 0);
 INSERT INTO `sys_menu`

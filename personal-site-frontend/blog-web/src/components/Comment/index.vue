@@ -61,7 +61,7 @@
             <div class="comment-header">
               <div class="comment-info">
                 <span class="nickname">{{ comment.nickname }}</span>
-                <span class="author-tag" v-if="comment.userId === articleAuthorId">作者</span>
+                <span class="author-articleTag" v-if="comment.userId === articleAuthorId">作者</span>
                 <span class="ipSource">
                   IP属地:{{ formatIpSource(comment.ipSource) }}
                 </span>
@@ -90,7 +90,7 @@
                   <div class="reply-header">
                     <div class="reply-info">
                       <span class="nickname">{{ reply.nickname }}</span>
-                      <span class="author-tag" v-if="reply.userId === articleAuthorId">作者</span>
+                      <span class="author-articleTag" v-if="reply.userId === articleAuthorId">作者</span>
                       <span class="reply-to">
                         回复
                         <span class="target">@{{ reply.replyNickname }}</span>
@@ -806,7 +806,7 @@ export default {
     }
 
     // 添加作者标签样式
-    .author-tag {
+    .author-articleTag {
       display: inline-block;
       padding: 2px 6px;
       font-size: 12px;

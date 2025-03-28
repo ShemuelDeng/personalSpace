@@ -58,7 +58,7 @@
           >
             <div class="plan-header">
               <span class="duration">{{ plan.name }}</span>
-              <span v-if="plan.discount" class="discount-tag">{{ plan.discount }}折</span>
+              <span v-if="plan.discount" class="discount-articleTag">{{ plan.discount }}折</span>
             </div>
             <div class="plan-price">
               <span class="currency">￥</span>
@@ -395,7 +395,7 @@ export default {
         font-weight: 500;
       }
 
-      .discount-tag {
+      .discount-articleTag {
         padding: 2px 6px;
         background: #E6162D;
         color: white;

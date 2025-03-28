@@ -10,9 +10,9 @@
         <!-- <view class="hot-search">
             <view class="hot-title">热门搜索</view>
             <view class="hot-tags">
-                <view v-for="(tag, index) in hotTags" :key="index" class="tag-item" @click="quickSearch(tag)">
-                    <text class="tag-prefix">#</text>
-                    {{ tag }}
+                <view v-for="(articleTag, index) in hotTags" :key="index" class="articleTag-item" @click="quickSearch(articleTag)">
+                    <text class="articleTag-prefix">#</text>
+                    {{ articleTag }}
                 </view>
             </view>
         </view> -->
@@ -100,10 +100,10 @@ export default {
 
         /**
          * 根据标签搜索
-         * @param tag 
+         * @param articleTag
          */
-        quickSearch(tag) {
-            this.params.keyword = tag
+        quickSearch(articleTag) {
+            this.params.keyword = articleTag
             this.page = 1
             this.handleSearch()
         },
@@ -226,7 +226,7 @@ export default {
     gap: 10px;
 }
 
-.tag-item {
+.articleTag-item {
     background: #f5f5f5;
     padding: 8px 15px;
     border-radius: 16px;
@@ -234,7 +234,7 @@ export default {
     color: #333;
 }
 
-.tag-prefix {
+.articleTag-prefix {
     color: #999;
     margin-right: 4px;
 }

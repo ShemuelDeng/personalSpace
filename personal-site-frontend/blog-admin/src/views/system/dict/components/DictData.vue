@@ -27,15 +27,15 @@
       <el-table-column label="字典标签" prop="label" />
       <el-table-column label="字典键值" prop="value">
         <template #default="{ row }">
-          <el-tag :type="row.style">{{ row.value }}</el-tag>
+          <el-articleTag :type="row.style">{{ row.value }}</el-articleTag>
         </template>
       </el-table-column>
       <el-table-column label="排序" prop="sort" width="80" align="center" />
       <el-table-column label="状态" align="center" width="100">
         <template #default="{ row }">
-          <el-tag :type="row.status === 1 ? 'success' : 'danger'">
+          <el-articleTag :type="row.status === 1 ? 'success' : 'danger'">
             {{ row.status === 1 ? '启用' : '禁用' }}
-          </el-tag>
+          </el-articleTag>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="180" align="center">

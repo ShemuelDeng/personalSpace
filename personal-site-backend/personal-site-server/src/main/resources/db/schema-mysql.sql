@@ -160,3 +160,97 @@ CREATE TABLE `gen_table_column`
     PRIMARY KEY (`column_id`) USING BTREE,
     UNIQUE INDEX idx_table_id_column (table_id, column_name)
 ) ENGINE = InnoDB AUTO_INCREMENT = 263 CHARACTER SET = utf8mb4  COMMENT = '代码生成业务表字段' ROW_FORMAT = DYNAMIC;
+
+
+-- 文章分类表（支持多级分类结构）
+CREATE TABLE category (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '分类ID',
+  name VARCHAR(50) NOT NULL UNIQUE COMMENT '分类名称（唯一）',
+  description VARCHAR(255) COMMENT '分类描述说明',
+  parent_id INT UNSIGNED COMMENT '父分类ID（建立树形结构）',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '分类创建时间',
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+  FOREIGN KEY (parent_id) REFERENCES category(id) ON DELETE SET NULL,
+  INDEX idx_parent_id (parent_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='文章分类表';
+
+-- 文章系列表（原专栏）
+CREATE TABLE article_series (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '系列ID',
+    user_id BIGINT  NOT NULL COMMENT '作者ID',
+    name VARCHAR(100) NOT NULL COMMENT '系列名称',
+    slug VARCHAR(120) NOT NULL UNIQUE COMMENT 'URL标识（全站唯一）',
+    description TEXT COMMENT '系列描述',
+    cover_image VARCHAR(255) COMMENT '封面图URL',
+    status ENUM('draft', 'published', 'archived') NOT NULL DEFAULT 'draft' COMMENT '发布状态',
+    order_num INT NOT NULL DEFAULT 0 COMMENT '排序序号',
+    article_count INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '包含文章数',
+    subscribers INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '订阅人数',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    FOREIGN KEY (user_id) REFERENCES user_profile(id) ON DELETE CASCADE,
+    INDEX idx_series_author (user_id),
+    INDEX idx_series_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='文章专题系列';
+
+-- 核心文章表
+CREATE TABLE article (
+     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '文章ID',
+     user_id BIGINT  NOT NULL COMMENT '作者ID',
+     category_id INT UNSIGNED NOT NULL COMMENT '分类ID',
+     series_id INT UNSIGNED COMMENT '所属系列ID',
+     title VARCHAR(255) NOT NULL COMMENT '文章标题',
+     summary VARCHAR(512) COMMENT '内容摘要',
+     content LONGTEXT NOT NULL COMMENT '文章正文',
+     cover_image VARCHAR(255) COMMENT '封面图URL',
+     status ENUM('draft', 'published', 'deleted') NOT NULL DEFAULT 'draft' COMMENT '发布状态',
+     view_count INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '浏览数',
+     like_count INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '点赞数',
+     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+     FOREIGN KEY (user_id) REFERENCES user_profile(id) ON DELETE RESTRICT,
+     FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE RESTRICT,
+     FOREIGN KEY (series_id) REFERENCES article_series(id) ON DELETE SET NULL,
+     INDEX idx_article_author (user_id),
+     INDEX idx_article_category (category_id),
+     INDEX idx_article_series (series_id),
+     INDEX idx_article_status (status),
+     FULLTEXT INDEX ft_article_content (title, content)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='核心文章数据';
+
+-- 标签表（文章标签管理）
+CREATE TABLE articleTag (
+     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '标签ID',
+     name VARCHAR(50) NOT NULL UNIQUE COMMENT '标签名称（唯一）',
+     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '标签创建时间',
+     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='文章标签表';
+
+-- 文章-标签关联表（多对多关系）
+CREATE TABLE article_tag (
+     article_id INT UNSIGNED NOT NULL COMMENT '文章ID',
+     tag_id INT UNSIGNED NOT NULL COMMENT '标签ID',
+     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '关联创建时间',
+     PRIMARY KEY (article_id, tag_id),
+     FOREIGN KEY (article_id) REFERENCES article(id) ON DELETE CASCADE,
+     FOREIGN KEY (tag_id) REFERENCES articleTag(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='文章标签关联表';
+
+-- 评论表（支持多级评论）
+CREATE TABLE comment (
+ id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '评论ID',
+ user_id BIGINT  NOT NULL COMMENT '评论者ID',
+ article_id INT UNSIGNED NOT NULL COMMENT '所属文章ID',
+ parent_id INT UNSIGNED COMMENT '父评论ID（实现评论回复）',
+ content TEXT NOT NULL COMMENT '评论内容',
+ like_count INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '点赞数量',
+ status ENUM('normal', 'deleted') NOT NULL DEFAULT 'normal' COMMENT '评论状态',
+ created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '评论时间',
+ updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+ FOREIGN KEY (user_id) REFERENCES user_profile(id) ON DELETE RESTRICT,
+ FOREIGN KEY (article_id) REFERENCES article(id) ON DELETE CASCADE,
+ FOREIGN KEY (parent_id) REFERENCES comment(id) ON DELETE CASCADE,
+ INDEX idx_article_parent (article_id, parent_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='文章评论表';
+
+

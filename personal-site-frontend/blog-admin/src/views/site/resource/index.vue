@@ -72,12 +72,12 @@
         <el-table-column label="分类" align="center" prop="category">
           <template #default="scope">
             <span v-for="item in categoryList" :key="item.value">
-              <el-tag
+              <el-articleTag
                 v-if="scope.row.category === item.value"
                 :type="item.style"
               >
                 {{ item.label }}
-              </el-tag>
+              </el-articleTag>
             </span>
           </template>
         </el-table-column>
@@ -85,21 +85,21 @@
         <el-table-column label="是否免费" align="center" prop="isFree" width="80">
           <template #default="scope">
             <span v-for="item in freeList" :key="item.value">
-              <el-tag
+              <el-articleTag
                 v-if="scope.row.isFree === item.value"
                 :type="item.style"
               >
                 {{ item.label }}
-              </el-tag>
+              </el-articleTag>
             </span>
           </template>
         </el-table-column>
         <el-table-column label="状态" align="center" prop="status">
             <template #default="scope">
                 <span v-for="item in statusList" :key="item.value">
-                    <el-tag :type="item.style" v-if="scope.row.status === item.value">
+                    <el-articleTag :type="item.style" v-if="scope.row.status === item.value">
                         {{ item.label }}
-                    </el-tag>
+                    </el-articleTag>
                 </span>
             </template>
         </el-table-column>

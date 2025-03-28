@@ -1,7 +1,7 @@
 <template>
-  <div class="tag-wall">
+  <div class="articleTag-wall">
     <div 
-      class="tag-cloud" 
+      class="articleTag-cloud"
       ref="wrapper"
       @mouseenter="stopRotate"
       @mouseleave="startRotate"
@@ -9,11 +9,11 @@
       <p
         v-for="(item, index) in data"
         :key="index"
-        ref="tag"
+        ref="articleTag"
         @click="clickTag(item)"
         @mouseenter="handleTagHover(index)"
         @mouseleave="handleTagLeave"
-        :class="{ 'tag-dimmed': hoveredIndex !== null && hoveredIndex !== index }"
+        :class="{ 'articleTag-dimmed': hoveredIndex !== null && hoveredIndex !== index }"
       >
         {{ item.name }}
       </p>
@@ -75,10 +75,10 @@ export default {
         const y = this.option.radius * Math.sin(angleX) * Math.sin(angleY);
         const z = this.option.radius * Math.cos(angleX);
         if (this.option.color) {
-          this.$refs.tag[i].style.color = this.option.color;
+          this.$refs.articleTag[i].style.color = this.option.color;
         } else {
           // 随机颜色
-          this.$refs.tag[i].style.color =
+          this.$refs.articleTag[i].style.color =
             "rgb(" +
             Math.round(255 * Math.random()) +
             "," +
@@ -88,57 +88,57 @@ export default {
             ")";
         }
         // 每个标签对象都有四对值
-        var tag = {
+        var articleTag = {
           x: x,
           y: y,
           z: z,
-          ele: this.$refs.tag[i],
+          ele: this.$refs.articleTag[i],
         };
-        this.tagList.push(tag);
+        this.tagList.push(articleTag);
       }
       this.startRotate();
     },
     /**
      * 设置每个标签的坐标位置和字体大小以及透明度
      */
-    setPosition(tag, r, maxFont) {
+    setPosition(articleTag, r, maxFont) {
       // 设置每个标签的坐标位置和字体大小以及透明度
       if (this.$refs.wrapper) {
-        tag.ele.style.transform =
+        articleTag.ele.style.transform =
           "translate(" +
-          (tag.x +
+          (articleTag.x +
             this.$refs.wrapper.offsetWidth / 2 -
-            tag.ele.offsetWidth / 2) +
+            articleTag.ele.offsetWidth / 2) +
           "px," +
-          (tag.y +
+          (articleTag.y +
             this.$refs.wrapper.offsetHeight / 2 -
-            tag.ele.offsetHeight / 2) +
+            articleTag.ele.offsetHeight / 2) +
           "px)";
-        tag.ele.style.opacity = tag.z / r / 2 + 0.7;
-        tag.ele.style.fontSize = (tag.z / r / 2 + 0.5) * maxFont + "px";
+        articleTag.ele.style.opacity = articleTag.z / r / 2 + 0.7;
+        articleTag.ele.style.fontSize = (articleTag.z / r / 2 + 0.5) * maxFont + "px";
       }
     },
     /**
      * 旋转X轴
      */
-    rotateX(tag) {
+    rotateX(articleTag) {
       var cos = Math.cos(this.rotateAngleX);
       var sin = Math.sin(this.rotateAngleX);
-      var y1 = tag.y * cos - tag.z * sin;
-      var z1 = tag.y * sin + tag.z * cos;
-      tag.y = y1;
-      tag.z = z1;
+      var y1 = articleTag.y * cos - articleTag.z * sin;
+      var z1 = articleTag.y * sin + articleTag.z * cos;
+      articleTag.y = y1;
+      articleTag.z = z1;
     },
     /**
      * 旋转Y轴
      */
-    rotateY(tag) {
+    rotateY(articleTag) {
       var cos = Math.cos(this.rotateAngleY);
       var sin = Math.sin(this.rotateAngleY);
-      var x1 = tag.z * sin + tag.x * cos;
-      var z1 = tag.z * cos - tag.x * sin;
-      tag.x = x1;
-      tag.z = z1;
+      var x1 = articleTag.z * sin + articleTag.x * cos;
+      var z1 = articleTag.z * cos - articleTag.x * sin;
+      articleTag.x = x1;
+      articleTag.z = z1;
     },
     /**
      * 点击标签
@@ -200,7 +200,7 @@ export default {
 </script>
 
 <style scoped>
-.tag-cloud {
+.articleTag-cloud {
   width: 300px;
   height: 300px;
   position: relative;
@@ -210,7 +210,7 @@ export default {
   cursor: default;
 }
 
-.tag-cloud p {
+.articleTag-cloud p {
   position: absolute;
   top: 0px;
   left: 0px;
@@ -227,11 +227,11 @@ export default {
   transition: opacity 0.3s ease;
 }
 
-.tag-cloud p:hover {
+.articleTag-cloud p:hover {
   cursor: pointer;
 }
 
-.tag-dimmed {
+.articleTag-dimmed {
   opacity: 0.05 !important;
 }
 </style>

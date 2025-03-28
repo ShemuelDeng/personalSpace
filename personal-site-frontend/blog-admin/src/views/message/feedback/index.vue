@@ -44,9 +44,9 @@
                 <el-table-column label="反馈类型" align="center" prop="type">
                     <template #default="scope">
                         <span v-for="item in feedbackTypes">
-                            <el-tag v-if="item.value === scope.row.type" :key="item.value" :type="item.style">
+                            <el-articleTag v-if="item.value === scope.row.type" :key="item.value" :type="item.style">
                                 {{ item.label }}
-                            </el-tag>
+                            </el-articleTag>
                         </span>
                     </template>
                 </el-table-column>
@@ -56,9 +56,9 @@
                 <el-table-column label="状态" align="center" prop="status">
                     <template #default="scope">
                         <span v-for="item in feedbackStatus">
-                            <el-tag v-if="item.value === String(scope.row.status)" :key="item.value" :type="item.style">
+                            <el-articleTag v-if="item.value === String(scope.row.status)" :key="item.value" :type="item.style">
                                 {{ item.label }}
-                            </el-tag>
+                            </el-articleTag>
                         </span>
                     </template>
                 </el-table-column>

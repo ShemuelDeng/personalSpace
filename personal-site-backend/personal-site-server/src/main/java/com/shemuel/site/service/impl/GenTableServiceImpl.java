@@ -209,6 +209,7 @@ public class GenTableServiceImpl implements GenTableService {
                     initColumnField(column, table);
                 }
 
+
                 // 批量保存列信息
                 if (!columns.isEmpty()) {
                     genTableMapper.insertGenTableBatch(columns);
@@ -253,6 +254,7 @@ public class GenTableServiceImpl implements GenTableService {
         column.setIsEdit("1");
         column.setIsList("1");
         column.setIsQuery("1");
+        column.setTableId(table.getTableId());
     }
 
     private List<String> getTemplateList() {

@@ -141,7 +141,7 @@ export default {
               name: '标签', 
               path: '/tags', 
               icon: 'fas fa-tags',
-              colorClass: 'tag-link'
+              colorClass: 'articleTag-link'
             }
           ]
         },
@@ -241,8 +241,8 @@ export default {
       this.showMobileSearch = false
       this.searchQuery = ''
     },
-    handleMobileSearch(tag) {
-      this.searchQuery = tag
+    handleMobileSearch(articleTag) {
+      this.searchQuery = articleTag
       this.$refs.mobileSearchInput.focus()
     },
     handleMouseEnter(item) {
@@ -473,7 +473,7 @@ export default {
     &.archive-link i { color: #9C27B0; }
     &.clock-link i { color: #00BCD4; }
     &.category-link i { color: #FF9800; }
-    &.tag-link i { color: #E91E63; }
+    &.articleTag-link i { color: #E91E63; }
     &.talk-link i { color: #2196F3; }
     &.code-link i { color: #607D8B; }
     &.hot-link i { color: #F44336; }
@@ -904,7 +904,7 @@ export default {
     &.archive-link i { color: #CE93D8; }
     &.clock-link i { color: #4DD0E1; }
     &.category-link i { color: #FFB74D; }
-    &.tag-link i { color: #F06292; }
+    &.articleTag-link i { color: #F06292; }
     &.talk-link i { color: #64B5F6; }
     &.code-link i { color: #90A4AE; }
     &.hot-link i { color: #EF5350; }

@@ -63,7 +63,7 @@
           <el-table-column label="描述" align="center" prop="info" show-overflow-tooltip />
           <el-table-column label="状态" align="center" prop="status" show-overflow-tooltip>
             <template #default="scope">
-              <el-tag :type="statusList[scope.row.status].type">{{ statusList[scope.row.status].label }}</el-tag>
+              <el-articleTag :type="statusList[scope.row.status].type">{{ statusList[scope.row.status].label }}</el-articleTag>
             </template>
           </el-table-column>
           <el-table-column label="排序" align="center" prop="sort" show-overflow-tooltip />

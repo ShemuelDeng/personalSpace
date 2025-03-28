@@ -44,9 +44,9 @@
             <div class="resource-info">
               <div class="resource-name text-ellipsis" :title="resource.name">{{ resource.name }}</div>
               <div class="resource-meta">
-                <el-tag size="mini" :type="!resource.isFree ? 'success' : 'warning'" effect="plain">
+                <el-articleTag size="mini" :type="!resource.isFree ? 'success' : 'warning'" effect="plain">
                   {{ !resource.isFree ? '免费' : '付费' }}
-                </el-tag>
+                </el-articleTag>
                 
               </div>
             </div>
@@ -100,9 +100,9 @@
             <svg-icon :icon-class="currentResource.categoryIcon"></svg-icon>
           </div>
           <h3 class="resource-title">{{ currentResource.name }}</h3>
-          <el-tag size="small" :type="!currentResource.isFree ? 'success' : 'warning'" effect="plain">
+          <el-articleTag size="small" :type="!currentResource.isFree ? 'success' : 'warning'" effect="plain">
             {{ !currentResource.isFree ? '免费' : '付费' }}
-          </el-tag>
+          </el-articleTag>
         </div>
 
         <el-descriptions  border>

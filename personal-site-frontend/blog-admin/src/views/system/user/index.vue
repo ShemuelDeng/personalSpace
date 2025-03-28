@@ -68,9 +68,9 @@
         <el-table-column label="登录方式" align="center" prop="ipLocation" >
           <template #default="{ row }">
             <span v-for="item in loginTypes">
-                <el-tag :type="item.style" v-if="row.loginType === item.value">
+                <el-articleTag :type="item.style" v-if="row.loginType === item.value">
                   {{ item.label}}
-              </el-tag>
+              </el-articleTag>
             </span>
           </template>
         </el-table-column>
@@ -78,9 +78,9 @@
         <el-table-column label="登录地址" align="center" prop="ipLocation" show-overflow-tooltip />
         <el-table-column label="状态" align="center" width="80">
           <template #default="{ row }">
-            <el-tag :type="row.status === 1 ? 'success' : 'danger'">
+            <el-articleTag :type="row.status === 1 ? 'success' : 'danger'">
               {{ row.status === 1 ? '启用' : '禁用' }}
-            </el-tag>
+            </el-articleTag>
           </template>
         </el-table-column>
         <el-table-column label="最后登录时间" align="center" prop="lastLoginTime" width="160" />

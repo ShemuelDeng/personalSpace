@@ -59,9 +59,9 @@
         <el-table-column label="分类" align="center" prop="categoryName" />
         <el-table-column label="标签" align="center" width="200">
           <template #default="scope">
-            <el-tag v-for="tag in scope.row.tags" :key="tag.id" class="mx-1" size="small">
-              {{ tag.name }}
-            </el-tag>
+            <el-articleTag v-for="articleTag in scope.row.tags" :key="articleTag.id" class="mx-1" size="small">
+              {{ articleTag.name }}
+            </el-articleTag>
           </template>
         </el-table-column>
         <el-table-column label="发布状态" align="center" prop="status">
@@ -74,18 +74,18 @@
         <el-table-column label="是否推荐" align="center">
           <template #default="{ row }">
             <span v-for="item in yesNoOptions">
-              <el-tag :type="item.style" v-if="row.isRecommend === Number(item.value)">
+              <el-articleTag :type="item.style" v-if="row.isRecommend === Number(item.value)">
                 {{ item.label }}
-              </el-tag>
+              </el-articleTag>
             </span>
           </template>
         </el-table-column>
         <el-table-column label="是否置顶" align="center">
           <template #default="{ row }">
             <span v-for="item in yesNoOptions">
-              <el-tag :type="item.style" v-if="row.isStick === Number(item.value)">
+              <el-articleTag :type="item.style" v-if="row.isStick === Number(item.value)">
                 {{ item.label }}
-              </el-tag>
+              </el-articleTag>
             </span>
           </template>
         </el-table-column>
@@ -128,7 +128,7 @@
         <el-row :gutter="20" class="mb-20">
           <el-col :span="12">
             <el-form-item label="分类" prop="categoryName">
-              <el-tag
+              <el-articleTag
                 type="success"
                 v-show="form.categoryName"
                 style="margin: 0 1rem 0 0"
@@ -136,7 +136,7 @@
                 @close="removeCategory()"
               >
                 {{ form.categoryName }}
-              </el-tag>
+              </el-articleTag>
               <!-- 分类选项 -->
               <el-popover
                 placement="bottom-start"
@@ -155,7 +155,7 @@
                 <!-- 分类 -->
                 <div class="popover-container">
                   <div>添加分类</div>
-                  <el-tag
+                  <el-articleTag
                     v-for="(item, index) of categoryOptions"
                     :key="index"
                     style="margin-left: 3px; margin-top: 2px"
@@ -163,7 +163,7 @@
                     @click="addCategory(item.name)"
                   >
                     {{ item.name }}
-                  </el-tag>
+                  </el-articleTag>
                 </div>
                 <template #reference>
                   <el-button type="success" plain> 添加分类 </el-button>
@@ -174,7 +174,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="标签" prop="tags">
-              <el-tag
+              <el-articleTag
                 v-for="(item, index) of form.tags"
                 :key="index"
                 style="margin: 0 1rem 0 0"
@@ -182,7 +182,7 @@
                 @close="removeTag(item)"
               >
                 {{ item }}
-              </el-tag>
+              </el-articleTag>
               <!-- 标签选项 -->
               <el-popover
                 placement="bottom-start"
@@ -201,14 +201,14 @@
                 <!-- 标签 -->
                 <div class="popover-container">
                   <div>添加标签</div>
-                  <el-tag
+                  <el-articleTag
                     v-for="(item, index) of tagOptions"
                     :key="index"
                     style="margin-left: 3px; margin-top: 2px"
                     @click="addTag(item.name)"
                   >
                     {{ item.name }}
-                  </el-tag>
+                  </el-articleTag>
                 </div>
                 <template #reference>
                   <el-button type="primary" plain> 添加标签 </el-button>
@@ -358,7 +358,7 @@ import { ElMessage, ElMessageBox,ElLoading  } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 import UploadImage from '@/components/Upload/Image.vue'
 import { getCategoryListApi } from '@/api/article/category'
-import { getTagListApi } from '@/api/article/tag'
+import { getTagListApi } from '@/api/article/articleTag'
 import {
   getArticleListApi, getDetailApi, deleteArticleApi,
   addArticleApi, updateArticleApi, updateStatusApi, reptileArticleApi
@@ -481,16 +481,16 @@ const rules = reactive<FormRules>({
   ]
 })
 
-const removeTag = (tag: string) => {
-  form.tags = form.tags.filter((item: string) => item !== tag)
+const removeTag = (articleTag: string) => {
+  form.tags = form.tags.filter((item: string) => item !== articleTag)
 }
 
-const addTag = (tag: any) => {
-  if (form.tags.includes(tag)) {
+const addTag = (articleTag: any) => {
+  if (form.tags.includes(articleTag)) {
     ElMessage.warning('标签已存在')
     return
   }
-  form.tags.push(tag)
+  form.tags.push(articleTag)
 }
 
 const saveTag = () => {
@@ -873,7 +873,7 @@ const beforeAvatarUpload = (file: File) => {
     }
   }
 
-  .el-tag {
+  .el-articleTag {
     margin-right: 8px;
     margin-bottom: 8px;
   }

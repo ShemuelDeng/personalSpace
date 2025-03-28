@@ -53,9 +53,9 @@
                 <el-table-column label="存储平台" align="center" prop="platform">
                     <template #default="scope">
                         <span v-for="item in ossOptions">
-                            <el-tag :type="item.style" v-if="scope.row.platform === item.value">
+                            <el-articleTag :type="item.style" v-if="scope.row.platform === item.value">
                                 {{ item.label }}
-                            </el-tag>
+                            </el-articleTag>
                         </span>
                     </template>
                 </el-table-column>

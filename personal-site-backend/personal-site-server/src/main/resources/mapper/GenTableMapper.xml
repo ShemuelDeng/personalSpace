@@ -26,7 +26,7 @@
                 )
          -->
         <if test="tableName != null and tableName != ''">
-            AND lower(table_name) like concat('%', lower(#{tableName}), '%')
+            AND lower(table_name) = #{tableName}
         </if>
         order by create_time desc
         <if test="offset != null">
@@ -104,31 +104,17 @@
     
     <insert id="insertGenTableBatch">
         insert into gen_table_column (
-            table_id, column_name, column_comment, column_type, java_type,
-            java_field, is_pk, is_required, is_insert, is_edit,
-            is_list, is_query, query_type, html_type, sort
+        table_id, column_name, column_comment, column_type, java_type,
+        java_field, is_pk, is_required, is_insert, is_edit,
+        is_list, is_query, query_type, html_type, sort
         ) values
-        <foreach collection="list" item="item" separator=",">
-        (
+        <foreach collection="columns" item="item" separator=",">
+            (
             #{item.tableId}, #{item.columnName}, #{item.columnComment}, #{item.columnType}, #{item.javaType},
             #{item.javaField}, #{item.isPk}, #{item.isRequired}, #{item.isInsert}, #{item.isEdit},
             #{item.isList}, #{item.isQuery}, #{item.queryType}, #{item.htmlType}, #{item.sort}
-        )
+            )
         </foreach>
-        ON DUPLICATE KEY UPDATE
-        column_comment = VALUES(column_comment),
-        column_type = VALUES(column_type),
-        java_type = VALUES(java_type),
-        java_field = VALUES(java_field),
-        is_pk = VALUES(is_pk),
-        is_required = VALUES(is_required),
-        is_insert = VALUES(is_insert),
-        is_edit = VALUES(is_edit),
-        is_list = VALUES(is_list),
-        is_query = VALUES(is_query),
-        query_type = VALUES(query_type),
-        html_type = VALUES(html_type),
-        sort = VALUES(sort);
     </insert>
     
     <select id="selectGenTableByName" parameterType="String" resultType="com.shemuel.site.entity.GenTable">

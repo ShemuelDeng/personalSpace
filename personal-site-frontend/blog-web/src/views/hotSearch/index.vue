@@ -53,7 +53,7 @@
                 <div class="card-content">
                   <div class="title-wrap">
                     <a :href="item.url" target="_blank" class="title">{{ item.keyword }}</a>
-                    <span class="hot-tag" v-if="item.tag">{{ item.tag }}</span>
+                    <span class="hot-articleTag" v-if="item.articleTag">{{ item.articleTag }}</span>
                   </div>
                   <div class="card-footer">
                     <span class="hot-value" v-if="item.hotValue">
@@ -406,7 +406,7 @@
               }
             }
   
-            .hot-tag {
+            .hot-articleTag {
               padding: 3px 8px;
               border-radius: 6px;
               background: rgba($primary, 0.1);

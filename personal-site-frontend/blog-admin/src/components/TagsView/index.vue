@@ -2,21 +2,21 @@
   <div class="tags-view-container" :class="settingsStore.tagsStyle">
     <el-scrollbar ref="scrollbarRef" class="tags-view-wrapper" wrap-class="scrollbar-wrapper">
       <router-link
-        v-for="tag in tagsViewStore.visitedViews"
-        :key="tag.path"
-        :class="isActive(tag) ? 'active' : ''"
+        v-for="articleTag in tagsViewStore.visitedViews"
+        :key="articleTag.path"
+        :class="isActive(articleTag) ? 'active' : ''"
         class="tags-view-item"
-        :to="{ path: tag.path, query: tag.query }"
-        @contextmenu.prevent="openMenu($event, tag)"
+        :to="{ path: articleTag.path, query: articleTag.query }"
+        @contextmenu.prevent="openMenu($event, articleTag)"
       >
-        <el-icon v-if="tag.meta?.icon" class="tag-icon">
-          <component :is="tag.meta.icon" />
+        <el-icon v-if="articleTag.meta?.icon" class="articleTag-icon">
+          <component :is="articleTag.meta.icon" />
         </el-icon>
-        {{ tag.meta?.title }}
+        {{ articleTag.meta?.title }}
         <el-icon 
-          v-if="!isAffix(tag)" 
+          v-if="!isAffix(articleTag)"
           class="close-icon"
-          @click.prevent.stop="closeSelectedTag(tag)"
+          @click.prevent.stop="closeSelectedTag(articleTag)"
         >
           <Close />
         </el-icon>
@@ -76,12 +76,12 @@ const left = ref(0)
 const top = ref(0)
 const selectedTag = ref<any>(null)
 
-const isActive = (tag: any) => {
-  return tag.path === route.path
+const isActive = (articleTag: any) => {
+  return articleTag.path === route.path
 }
 
-const isAffix = (tag: any) => {
-  return tag?.meta?.affix
+const isAffix = (articleTag: any) => {
+  return articleTag?.meta?.affix
 }
 
 // 关闭选中标签
@@ -149,12 +149,12 @@ const toLastView = () => {
 }
 
 // 打开右键菜单
-const openMenu = (e: MouseEvent, tag: any) => {
+const openMenu = (e: MouseEvent, articleTag: any) => {
   const menuMinWidth = 105
   const offsetLeft = document.documentElement.clientWidth - e.clientX
   const offsetTop = document.documentElement.clientHeight - e.clientY
   visible.value = true
-  selectedTag.value = tag
+  selectedTag.value = articleTag
   left.value = offsetLeft > menuMinWidth ? e.clientX : e.clientX - menuMinWidth
   top.value = offsetTop > 36 ? e.clientY : e.clientY - 36
 }
@@ -336,7 +336,7 @@ onBeforeUnmount(() => {
   }
 }
 
-.tag-icon {
+.articleTag-icon {
   margin-right: 4px;
   width: 14px;
   height: 14px;
@@ -477,7 +477,7 @@ onBeforeUnmount(() => {
           box-shadow: -4px 4px 0 4px #fff;
         }
 
-        .tag-icon {
+        .articleTag-icon {
           color: inherit;
         }
       }

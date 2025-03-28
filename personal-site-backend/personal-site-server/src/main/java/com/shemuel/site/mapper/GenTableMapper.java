@@ -4,6 +4,7 @@ package com.shemuel.site.mapper;
 import com.shemuel.site.entity.GenTable;
 import com.shemuel.site.entity.GenTableColumn;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public interface GenTableMapper {
     
     List<GenTable> selectDbTableList(GenTable genTable);
     
-    int insertGenTableBatch(List<GenTableColumn> columns);
+    int insertGenTableBatch(@Param("columns") List<GenTableColumn> columns);
     
     int selectDbTableCount(GenTable genTable);
     

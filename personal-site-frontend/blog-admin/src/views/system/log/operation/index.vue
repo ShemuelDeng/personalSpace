@@ -103,9 +103,9 @@
         >
           <template #default="scope">
             <span v-for="item in methodStyle" :key="item.name">
-              <el-tag v-if="scope.row.type === item.name" :type="item.type">{{
+              <el-articleTag v-if="scope.row.type === item.name" :type="item.type">{{
                 scope.row.type
-              }}</el-tag>
+              }}</el-articleTag>
             </span>
           </template>
         </el-table-column>
@@ -115,7 +115,7 @@
         <el-table-column align="center" label="请求耗时" width="150">
           <template #default="scope">
             <span
-              ><el-tag type="info">{{ scope.row.spendTime }} ms</el-tag></span
+              ><el-articleTag type="info">{{ scope.row.spendTime }} ms</el-articleTag></span
             >
           </template>
         </el-table-column>

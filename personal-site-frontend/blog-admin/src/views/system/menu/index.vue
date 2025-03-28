@@ -30,9 +30,9 @@
         </el-table-column>
         <el-table-column label="类型" align="center" width="80">
           <template #default="{ row }">
-            <el-tag :type="row.type === MenuTypeEnum.CATALOG ? 'primary' : row.type === MenuTypeEnum.MENU ? 'success' : 'info'">
+            <el-articleTag :type="row.type === MenuTypeEnum.CATALOG ? 'primary' : row.type === MenuTypeEnum.MENU ? 'success' : 'info'">
               {{ row.type === MenuTypeEnum.CATALOG ? '目录' : row.type === MenuTypeEnum.MENU ? '菜单' : '按钮' }}
-            </el-tag>
+            </el-articleTag>
           </template>
         </el-table-column>
         <el-table-column label="路由地址" prop="path" show-overflow-tooltip />
@@ -42,9 +42,9 @@
      
         <el-table-column label="状态" align="center" width="80">
           <template #default="{ row }">
-            <el-tag :type="row.hidden === 0 ? 'success' : 'info'">
+            <el-articleTag :type="row.hidden === 0 ? 'success' : 'info'">
               {{ row.hidden === 0 ? '显示' : '隐藏' }}
-            </el-tag>
+            </el-articleTag>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="200" align="center">

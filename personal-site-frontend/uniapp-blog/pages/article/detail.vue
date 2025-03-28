@@ -11,7 +11,7 @@
     <view class="article-header">
       <image :src="article.cover" mode="aspectFill" class="cover-image"></image>
       <view class="header-content">
-        <view class="category-tag">{{article.category.name}}</view>
+        <view class="category-articleTag">{{article.category.name}}</view>
         <text class="title">{{article.title}}</text>
         <view class="meta">
           <text class="date">{{article.createTime}}</text>
@@ -41,7 +41,7 @@
       
       <!-- 文章标签 -->
       <view class="article-tags">
-        <text class="tag" v-for="(tag, index) in article.tags" :key="index">#{{tag.name}}</text>
+        <text class="articleTag" v-for="(articleTag, index) in article.tags" :key="index">#{{articleTag.name}}</text>
       </view>
     </view>
 
@@ -170,7 +170,7 @@ export default {
     right: 0;
     bottom: 0;
     
-    .category-tag {
+    .category-articleTag {
       display: inline-block;
       font-size: 24rpx;
       color: #fff;
@@ -255,7 +255,7 @@ export default {
     flex-wrap: wrap;
     gap: 20rpx;
     
-    .tag {
+    .articleTag {
       font-size: 24rpx;
       color: #2979ff;
       background-color: rgba(41, 121, 255, 0.1);

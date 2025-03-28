@@ -34,12 +34,12 @@
       </h4>
       <div class="hot-tags">
         <router-link 
-          v-for="tag in tags" 
-          :key="tag.id"
-          :to="`/tags?tagId=${tag.id}&tagName=${tag.name}`"
-          class="hot-tag"
+          v-for="articleTag in tags"
+          :key="articleTag.id"
+          :to="`/tags?tagId=${articleTag.id}&tagName=${articleTag.name}`"
+          class="hot-articleTag"
         >
-          {{ tag.name }}
+          {{ articleTag.name }}
         </router-link>
       </div>
     </div>
@@ -435,7 +435,7 @@ export default {
   gap: 10px;
 }
 
-.hot-tag {
+.hot-articleTag {
   padding: 6px 12px;
   background-color: #f4f4f5;
   border-radius: 20px;
