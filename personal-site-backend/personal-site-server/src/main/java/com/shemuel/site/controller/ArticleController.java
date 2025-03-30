@@ -1,6 +1,7 @@
 package com.shemuel.site.controller;
 
 import java.util.List;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import com.shemuel.site.dto.SaveArticleDTO;
 import com.shemuel.site.service.ArticleSyncService;
@@ -21,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Tag(name = "核心文章数据管理")
 public class ArticleController {
+
+    private final ThreadPoolExecutor commonThreadPool;
 
     private final ArticleService articleService;
     private final ArticleSyncService articleSyncService;
@@ -56,13 +59,17 @@ public class ArticleController {
     }
 
     @PostMapping("/sync/csdn/{id}")
-    @Operation(summary = "同步文章到CSDN平台")
-    public RestResult<Object> syncToCSDN(@PathVariable("id") Integer id) {
+    @Operation(summary = "同步文章到CSDN,掘金平台")
+    public RestResult<Object> syncToOtherPlatForm(@PathVariable("id") Integer id) {
         Article article = articleService.getById(id);
         if (article == null) {
             return RestResult.error("文章不存在");
         }
-        boolean result = articleSyncService.syncToCSDN(article);
-        return result ? RestResult.success("同步成功") : RestResult.error("同步失败");
+        commonThreadPool.execute(()->{
+//            articleSyncService.syncToCSDN(article);
+            articleSyncService.syncToJuejin(article);
+        });
+        return RestResult.success("任务提交成功");
     }
+
 }

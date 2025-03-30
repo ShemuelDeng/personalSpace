@@ -10,4 +10,11 @@ public interface ArticleSyncService {
      * @return 同步结果
      */
     boolean syncToCSDN(Article article);
+
+    /**
+     * 同步文章到掘金平台
+     * @param article 文章信息
+     * @return 同步结果
+     */
+    boolean syncToJuejin(Article article);
 }
