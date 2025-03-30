@@ -59,7 +59,7 @@ public class ArticleController {
     }
 
     @PostMapping("/sync/csdn/{id}")
-    @Operation(summary = "同步文章到CSDN,掘金平台")
+    @Operation(summary = "同步文章到CSDN,掘金,知乎平台")
     public RestResult<Object> syncToOtherPlatForm(@PathVariable("id") Integer id) {
         Article article = articleService.getById(id);
         if (article == null) {
@@ -67,7 +67,8 @@ public class ArticleController {
         }
         commonThreadPool.execute(()->{
 //            articleSyncService.syncToCSDN(article);
-            articleSyncService.syncToJuejin(article);
+//            articleSyncService.syncToJuejin(article);
+            articleSyncService.syncToZhihu(article);
         });
         return RestResult.success("任务提交成功");
     }

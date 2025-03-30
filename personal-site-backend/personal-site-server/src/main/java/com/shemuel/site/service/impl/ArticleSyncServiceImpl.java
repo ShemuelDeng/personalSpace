@@ -3,6 +3,7 @@ package com.shemuel.site.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.shemuel.site.dto.CsdnArticleDTO;
 import com.shemuel.site.dto.JuejinArticleDTO;
+import com.shemuel.site.dto.ZhihuArticleDTO;
 import com.shemuel.site.entity.Article;
 import com.shemuel.site.service.ArticleSyncService;
 import com.shemuel.site.utils.OkHttpClientInstance;
@@ -32,6 +33,11 @@ public class ArticleSyncServiceImpl implements ArticleSyncService {
     private static final String JUEJIN_PUBLISH_URL = "https://api.juejin.cn/content_api/v1/article/publish?aid=26081&uuid=7277531885797787195";
     private static final String JUEJIN_COOKIE_FILE_PATH = "cookie/juejin.cookie";
     private static final String JUEJIN_HEADER_FILE_PATH = "cookie/juejin.header";
+
+    private static final String ZHIHU_CREATE_DRAFT_URL = "https://zhuanlan.zhihu.com/api/articles/drafts";
+    private static final String ZHIHU_SET_TOPIC_URL = "https://zhuanlan.zhihu.com/api/articles/%s/topics";
+    private static final String ZHIHU_PUBLISH_URL = "https://www.zhihu.com/api/v4/content/publish";
+    private static final String ZHIHU_HEADER_FILE_PATH = "cookie/zhihu.header";
 
     private OkHttpClientInstance client = new OkHttpClientInstance();
 
@@ -180,6 +186,58 @@ public class ArticleSyncServiceImpl implements ArticleSyncService {
         } catch (Exception e) {
             log.error("Error reading CSDN cookie file: {}", e.getMessage(), e);
             return null;
+        }
+    }
+
+    @Override
+    public boolean syncToZhihu(Article article) {
+        try {
+            // 读取Header
+            String[] headers = readHeaderFromFile(ZHIHU_HEADER_FILE_PATH);
+            if (headers == null) {
+                log.error("Failed to read Zhihu headers");
+                return false;
+            }
+
+            // 1. 创建文章草稿
+            ZhihuArticleDTO.CreateDraftRequest createDraftRequest = new ZhihuArticleDTO.CreateDraftRequest();
+            createDraftRequest.setContent(article.getHtmlContent());
+            createDraftRequest.setTitle(article.getTitle());
+
+            String createDraftJson = JSON.toJSONString(createDraftRequest);
+            String createDraftResponseString = client.doPostJson(ZHIHU_CREATE_DRAFT_URL, createDraftJson, buildRequestHeader(headers), null);
+            log.info("创建知乎草稿响应: {}", createDraftResponseString);
+
+            ZhihuArticleDTO.CreateDraftResponse createDraftResponse = JSON.parseObject(createDraftResponseString, ZhihuArticleDTO.CreateDraftResponse.class);
+            String draftId = createDraftResponse.getId();
+            if (draftId == null) {
+                log.error("创建知乎草稿失败");
+                return false;
+            }
+
+            // 2. 设置文章主题
+            ZhihuArticleDTO.TopicRequest topicRequest = new ZhihuArticleDTO.TopicRequest();
+            String setTopicUrl = String.format(ZHIHU_SET_TOPIC_URL, draftId);
+            String setTopicResponseString = client.doPostJson(setTopicUrl, JSON.toJSONString(topicRequest), buildRequestHeader(headers), null);
+            log.info("设置知乎文章主题响应: {}", setTopicResponseString);
+
+            // 3. 发布文章
+            ZhihuArticleDTO.PublishRequest publishRequest = new ZhihuArticleDTO.PublishRequest();
+            publishRequest.getData().getDraft().setId(draftId);
+
+            String publishResponseString = client.doPostJson(ZHIHU_PUBLISH_URL, JSON.toJSONString(publishRequest), buildRequestHeader(headers), new String[0]);
+            log.info("发布知乎文章响应: {}", publishResponseString);
+
+            ZhihuArticleDTO.PublishResponse publishResponse = JSON.parseObject(publishResponseString, ZhihuArticleDTO.PublishResponse.class);
+            if (publishResponse.getCode() != 0) {
+                log.error("发布知乎文章失败: {}", publishResponse.getMessage());
+                return false;
+            }
+
+            return true;
+        } catch (Exception e) {
+            log.error("Error syncing article to Zhihu: {}", e.getMessage(), e);
+            return false;
         }
     }
 }

@@ -17,4 +17,6 @@ public interface ArticleSyncService {
      * @return 同步结果
      */
     boolean syncToJuejin(Article article);
+
+    boolean syncToZhihu(Article article);
 }
