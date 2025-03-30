@@ -10,6 +10,13 @@
           :loading="copying">
           复制为HTML
         </el-button>
+        <el-input
+          v-model="publishForm.title"
+          placeholder="输入文章的标题..."
+          size="small"
+          style="margin-top: 10px; width: 100%;"
+          clearable>  
+        </el-input>
         <el-button
           type="text"
           size="small"
@@ -38,6 +45,7 @@
           :subfield="true"
           :defaultOpen="'preview'"
           :style="{ height: '100%' }"
+          ref="mavonEditor"
         />
       </div>
       
@@ -145,7 +153,7 @@ import '@toast-ui/editor/dist/toastui-editor.css';
 import { mavonEditor } from 'mavon-editor';
 import 'mavon-editor/dist/css/index.css';
 import axios from 'axios';
-import { BASE_URL, API_ENDPOINTS, CURRENT_USER_ID } from '@/api/config';
+import { BASE_URL, API_ENDPOINTS } from '@/api/config';
 
 export default {
   name: 'MarkdownEditor',
@@ -235,9 +243,10 @@ export default {
   methods: {
     async fetchUserTags() {
       try {
-        const response = await axios.get(`${BASE_URL}${API_ENDPOINTS.USER.TAG(CURRENT_USER_ID)}`);
-        if (response.data && response.data.data) {
-          this.commonTags = response.data.data;
+        const response = await axios.get(`${BASE_URL}${API_ENDPOINTS.TAG.LIST}`);
+        if (response.data ) {
+          console.log(response.data)
+          this.commonTags = response.data.data.records;
         }
       } catch (error) {
         console.error('获取用户标签失败:', error);
@@ -247,9 +256,9 @@ export default {
 
     async fetchUserCategories() {
       try {
-        const response = await axios.get(`${BASE_URL}${API_ENDPOINTS.USER.CATEGORY(CURRENT_USER_ID)}`);
-        if (response.data && response.data.data) {
-          this.categories = response.data.data;
+        const response = await axios.get(`${BASE_URL}${API_ENDPOINTS.CATEGORY.LIST}`);
+        if (response.data ) {
+          this.categories = response.data.data.records;
         }
       } catch (error) {
         console.error('获取用户分类失败:', error);
@@ -299,14 +308,18 @@ export default {
               return existingTag ? existingTag.id : tagId; // 如果是新标签，直接使用标签ID或名称
             });
 
+            // 获取HTML内容
+            const htmlContent = this.htmlPreview || '';
+
             // 发布文章
-            await axios.post(`${BASE_URL}${API_ENDPOINTS.ARTICLE.ADD}`, {
-              userId: CURRENT_USER_ID,
+            await axios.post(`${BASE_URL}${API_ENDPOINTS.ARTICLE.CREATE}`, {
+              userId: 1,
               tagIds, // 使用构建好的tagIds数组
               categoryId: selectedCategory.id, // 使用选中分类的ID
               title: this.publishForm.title,
               summary: this.publishForm.summary,
               content: this.markdownContent,
+              htmlContent, // 添加HTML内容
               coverImage: this.publishForm.coverImage,
               status: 'draft'
             });
@@ -381,7 +394,8 @@ export default {
     updatePreview() {
       this.$emit('input', this.markdownContent);
       if (this.$refs.mavonEditor && this.$refs.mavonEditor.d_render) {
-        this.$emit('html-change', this.$refs.mavonEditor.d_render);
+        this.htmlPreview = this.$refs.mavonEditor.d_render;
+        this.$emit('html-change', this.htmlPreview);
       }
     },
     copyAsHtml() {

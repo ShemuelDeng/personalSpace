@@ -62,7 +62,7 @@ export default {
         { path: '/', icon: 'el-icon-s-home', title: '首页&简介' },
         { path: '/tech-stack', icon: 'el-icon-s-management', title: '技术栈' },
         { path: '/notes', icon: 'el-icon-notebook-1', title: '灵感笔记' },
-        { path: '/tech-articles', icon: 'el-icon-document', title: '技术文章' },
+        { path: '/articles', icon: 'el-icon-document', title: '技术文章' },
         { path: '/life-photos', icon: 'el-icon-picture', title: '生活相册' },
         { path: '/workspace', icon: 'el-icon-office-building', title: '工作空间' },
         { path: '/navigation', icon: 'el-icon-guide', title: '导航站' },

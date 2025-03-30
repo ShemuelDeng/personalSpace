@@ -1,18 +1,12 @@
 <template>
   <div class="editor-view">
-    <h1>内容编辑器</h1>
-    <p class="editor-description">支持Markdown和富文本编辑，可一键复制为HTML格式</p>
+    <h1>开始你的创作吧！</h1>
     
     <markdown-editor 
       v-model="content" 
       @html-change="htmlContent = $event"
       :initial-value="initialContent"
     />
-    
-    <div class="editor-actions">
-      <el-button type="success" @click="saveContent">保存内容</el-button>
-      <el-button @click="resetContent">重置</el-button>
-    </div>
   </div>
 </template>
 

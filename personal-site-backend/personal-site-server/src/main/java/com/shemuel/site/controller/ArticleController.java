@@ -2,6 +2,8 @@ package com.shemuel.site.controller;
 
 import java.util.List;
 
+import com.shemuel.site.dto.SaveArticleDTO;
+import com.shemuel.site.service.ArticleSyncService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class ArticleController {
 
     private final ArticleService articleService;
+    private final ArticleSyncService articleSyncService;
 
     @GetMapping("/list")
     @Operation(summary = "获取核心文章数据列表")
@@ -36,8 +39,8 @@ public class ArticleController {
 
     @PostMapping("/add")
     @Operation(summary = "添加核心文章数据")
-    public RestResult<Object> add(@RequestBody Article article) {
-        return RestResult.success(articleService.insert(article));
+    public RestResult<Object> add(@RequestBody SaveArticleDTO articleDTO) {
+        return RestResult.success(articleService.insert(articleDTO));
     }
 
     @PutMapping("/update")
@@ -50,5 +53,16 @@ public class ArticleController {
     @Operation(summary = "删除核心文章数据")
     public RestResult<Object> remove(@PathVariable List<Integer> ids) {
         return RestResult.success(articleService.deleteByIds(ids));
+    }
+
+    @PostMapping("/sync/csdn/{id}")
+    @Operation(summary = "同步文章到CSDN平台")
+    public RestResult<Object> syncToCSDN(@PathVariable("id") Integer id) {
+        Article article = articleService.getById(id);
+        if (article == null) {
+            return RestResult.error("文章不存在");
+        }
+        boolean result = articleSyncService.syncToCSDN(article);
+        return result ? RestResult.success("同步成功") : RestResult.error("同步失败");
     }
 }

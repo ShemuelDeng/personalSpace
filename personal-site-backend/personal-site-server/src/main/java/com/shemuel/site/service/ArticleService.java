@@ -1,5 +1,6 @@
 package com.shemuel.site.service;
 
+import com.shemuel.site.dto.SaveArticleDTO;
 import com.shemuel.site.entity.Article;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -19,10 +20,11 @@ public interface ArticleService extends IService<Article> {
      */
     List<Article> selectList(Article article);
 
+    
     /**
-     * 新增核心文章数据
+     * 新增核心文章数据（包含标签关联）
      */
-    boolean insert(Article article);
+    boolean insert(SaveArticleDTO articleDTO);
 
     /**
      * 修改核心文章数据

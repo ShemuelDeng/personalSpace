@@ -1,6 +1,11 @@
 package com.shemuel.site.service.impl;
 
 import java.util.List;
+
+import com.shemuel.site.dto.SaveArticleDTO;
+import com.shemuel.site.mapper.ArticleTagRelationMapper;
+import com.shemuel.site.service.ArticleTagRelationService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.shemuel.site.mapper.ArticleMapper;
 import com.shemuel.site.entity.Article;
@@ -10,6 +15,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 核心文章数据 服务实现类
@@ -17,6 +23,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> implements ArticleService {
+
+    private final ArticleTagRelationService articleTagRelationService;
 
     /**
      * 查询核心文章数据分页列表
@@ -28,7 +36,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         wrapper.eq(article.getId() != null, Article::getId, article.getId());
         wrapper.eq(article.getUserId() != null, Article::getUserId, article.getUserId());
         wrapper.eq(article.getSeriesId() != null, Article::getSeriesId, article.getSeriesId());
-        wrapper.eq(article.getTagId() != null, Article::getTagId, article.getTagId());
         wrapper.eq(article.getCategoryId() != null, Article::getCategoryId, article.getCategoryId());
         wrapper.eq(article.getTitle() != null, Article::getTitle, article.getTitle());
         wrapper.eq(article.getSummary() != null, Article::getSummary, article.getSummary());
@@ -53,7 +60,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         wrapper.eq(article.getId() != null, Article::getId, article.getId());
         wrapper.eq(article.getUserId() != null, Article::getUserId, article.getUserId());
         wrapper.eq(article.getSeriesId() != null, Article::getSeriesId, article.getSeriesId());
-        wrapper.eq(article.getTagId() != null, Article::getTagId, article.getTagId());
         wrapper.eq(article.getCategoryId() != null, Article::getCategoryId, article.getCategoryId());
         wrapper.eq(article.getTitle() != null, Article::getTitle, article.getTitle());
         wrapper.eq(article.getSummary() != null, Article::getSummary, article.getSummary());
@@ -68,12 +74,26 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         return list(wrapper);
     }
 
+    
     /**
-     * 新增核心文章数据
+     * 新增核心文章数据（包含标签关联）
      */
     @Override
-    public boolean insert(Article article) {
-        return save(article);
+    @Transactional
+    public boolean insert(SaveArticleDTO articleDTO) {
+        // 转换DTO为实体
+        Article article = new Article();
+        BeanUtils.copyProperties(articleDTO, article);
+        
+        // 保存文章
+        boolean saved = save(article);
+        
+        // 如果文章保存成功且有标签，则保存文章标签关联
+        if (saved && articleDTO.getTagIds() != null && !articleDTO.getTagIds().isEmpty()) {
+            articleTagRelationService.batchSave(article.getId(), articleDTO.getTagIds());
+        }
+        
+        return saved;
     }
 
     /**

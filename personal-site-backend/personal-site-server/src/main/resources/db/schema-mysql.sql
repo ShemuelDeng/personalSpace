@@ -249,6 +249,30 @@ CREATE TABLE article (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '核心文章数据';
 
 
+-- 文章标签关联表
+CREATE TABLE article_tag_relation (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '关联ID',
+  article_id INT UNSIGNED NOT NULL COMMENT '文章ID',
+  tag_id INT UNSIGNED NOT NULL COMMENT '标签ID',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+
+    -- 外键约束
+  FOREIGN KEY fk_relation_article (article_id)
+      REFERENCES article(id)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE,
+
+  FOREIGN KEY fk_relation_tag (tag_id)
+      REFERENCES user_tag(id)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE,
+
+            -- 确保文章-标签对唯一
+  UNIQUE KEY uniq_article_tag (article_id, tag_id),
+
+                    -- 索引
+  INDEX idx_tag_id (tag_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='文章标签关联表';
 
 
 

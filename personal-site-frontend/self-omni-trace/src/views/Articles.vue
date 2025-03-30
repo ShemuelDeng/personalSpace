@@ -41,6 +41,16 @@
             </div>
           </template>
         </el-table-column>
+        <el-table-column
+          label="操作"
+          width="120">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              type="primary"
+              @click.stop="handleSyncToCSDN(scope.row)">同步到CSDN</el-button>
+          </template>
+        </el-table-column>
       </el-table>
       
       <!-- 分页 -->
@@ -137,6 +147,40 @@ export default {
       if (!date) return ''
       const d = new Date(date)
       return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+    },
+    
+    async handleSyncToCSDN(article) {
+      try {
+        // 阻止事件冒泡，避免触发行点击事件
+        event.stopPropagation()
+        
+        // 显示加载中提示
+        const loading = this.$loading({
+          lock: true,
+          text: '正在同步到CSDN...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        })
+        
+        // 调用同步接口
+        const response = await axios.post(`${BASE_URL}${API_ENDPOINTS.ARTICLE.SYNC_CSDN}${article.id}`)
+        
+        // 关闭加载提示
+        loading.close()
+        
+        // 根据返回结果显示不同提示
+        if (response.data.code === 200) {
+          this.$message.success('文章已成功同步到CSDN')
+        } else {
+          this.$message.error(`同步失败: ${response.data.message || '未知错误'}`)
+        }
+      } catch (error) {
+        // 关闭可能存在的加载提示
+        this.$loading().close()
+        
+        console.error('同步到CSDN失败:', error)
+        this.$message.error('同步到CSDN失败: ' + (error.response?.data?.message || error.message || '未知错误'))
+      }
     }
   }
 }

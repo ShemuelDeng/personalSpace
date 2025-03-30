@@ -1,21 +1,20 @@
-package com.shemuel.site.entity;
+package com.shemuel.site.dto;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
-import java.time.LocalDateTime;
+
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
-@TableName("article")
-@Tag(name = "核心文章数据对象")
-public class Article implements Serializable {
+@Tag(name = "保存文章视图对象")
+public class SaveArticleDTO implements Serializable {
 
-    @TableId(type = IdType.AUTO)
     @Schema(description = "文章ID")
     private Integer id;
 
@@ -28,6 +27,9 @@ public class Article implements Serializable {
 
     @Schema(description = "所属分类ID")
     private Integer categoryId;
+
+    @Schema(description = "标签合集")
+    private List<Integer> tagIds;
 
     @Schema(description = "文章标题")
     private String title;

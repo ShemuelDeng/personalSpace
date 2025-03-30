@@ -1,0 +1,17 @@
+sec-ch-ua-platform:"Windows"
+x-ca-signature-headers:x-ca-key,x-ca-nonce
+x-ca-key:203803574
+sec-ch-ua:"Chromium";v="134", "Not:A-Brand";v="24", "Google Chrome";v="134"
+x-ca-nonce:4e6e690f-2e91-4451-925e-a16ffbe9f26c
+sec-ch-ua-mobile:?0
+x-ca-signature:rarWmbdbYLDxqpOj5E3rvliP2ZdcVuulPWwxrMjUicc=
+user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36
+accept:*/*
+content-type:application/json
+origin:https://editor.csdn.net
+sec-fetch-site:same-site
+sec-fetch-mode:cors
+sec-fetch-dest:empty
+referer:https://editor.csdn.net/
+accept-encoding:gzip, deflate, br, zstd
+accept-language:zh-CN,zh;q=0.9,en;q=0.8

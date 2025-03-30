@@ -17,6 +17,11 @@
       <option name="url" value="http://172.16.6.11:8081/repository/vv-fw-public/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Central Repository" />
+      <option name="url" value="https://repo.maven.apache.org/maven2" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="repo1-repository" />
       <option name="name" value="repo1 Repository" />
       <option name="url" value="http://172.16.6.11:8081/repository/vv-fw-public/" />
