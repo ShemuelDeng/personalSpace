@@ -68,7 +68,8 @@ public class ArticleController {
         commonThreadPool.execute(()->{
 //            articleSyncService.syncToCSDN(article);
 //            articleSyncService.syncToJuejin(article);
-            articleSyncService.syncToZhihu(article);
+//            articleSyncService.syncToZhihu(article);
+            articleSyncService.syncToTouTiao(article);
         });
         return RestResult.success("任务提交成功");
     }

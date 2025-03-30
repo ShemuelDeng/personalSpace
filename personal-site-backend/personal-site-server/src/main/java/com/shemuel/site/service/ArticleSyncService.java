@@ -19,4 +19,6 @@ public interface ArticleSyncService {
     boolean syncToJuejin(Article article);
 
     boolean syncToZhihu(Article article);
+
+    boolean syncToTouTiao(Article article);
 }
