@@ -1,121 +1,131 @@
 <template>
   <div class="articles-container">
-    <!-- 左侧文章列表 -->
-    <div class="article-list">
-      <el-table
-        :data="articles"
-        style="width: 100%"
-        @row-click="handleArticleClick">
-        <el-table-column
-          prop="coverImage"
-          label="封面"
-          width="180">
-          <template slot-scope="scope">
-            <el-image
-              style="width: 160px; height: 90px"
-              :src="scope.row.coverImage"
-              fit="cover">
-              <div slot="error" class="image-slot">
-                <i class="el-icon-picture-outline"></i>
-              </div>
-            </el-image>
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="title"
-          label="标题"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="summary"
-          label="摘要">
-        </el-table-column>
-        <el-table-column
-          label="统计信息"
-          width="200">
-          <template slot-scope="scope">
-            <div class="article-stats">
-              <span><i class="el-icon-view"></i> {{ scope.row.viewCount }}</span>
-              <span><i class="el-icon-star-off"></i> {{ scope.row.likeCount }}</span>
-              <span><i class="el-icon-collection"></i> {{ scope.row.saveCount }}</span>
+    <div class="article-cards">
+      <div 
+        v-for="article in articles" 
+        :key="article.id" 
+        class="article-card"
+        @click="viewArticleDetail(article.id)">
+        <div class="article-cover">
+          <el-image
+            :src="article.coverImage || getRandomCover()"
+            fit="cover">
+            <div slot="error" class="image-slot">
+              <i class="el-icon-picture-outline"></i>
             </div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          width="120">
-          <template slot-scope="scope">
+          </el-image>
+        </div>
+        <div class="article-info">
+          <h3 class="article-title">{{ article.title }}</h3>
+          <p class="article-summary">{{ article.summary }}</p>
+          <div class="article-meta">
+            <div class="article-stats">
+              <span><i class="el-icon-view"></i> {{ article.viewCount }}</span>
+              <span><i class="el-icon-star-off"></i> {{ article.likeCount }}</span>
+              <span><i class="el-icon-collection"></i> {{ article.saveCount }}</span>
+            </div>
+            <div class="article-date">{{ formatDate(article.createdAt) }}</div>
+          </div>
+          <div class="article-actions">
             <el-button
               size="mini"
               type="primary"
-              @click.stop="handleSyncToCSDN(scope.row)">同步到CSDN</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      
-      <!-- 分页 -->
-      <div class="pagination-container">
-        <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-sizes="[10, 20, 30, 50]"
-          :page-size="pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total">
-        </el-pagination>
+              @click.stop="handleSyncToCSDN(article)">同步到CSDN</el-button>
+          </div>
+        </div>
       </div>
     </div>
     
-    <!-- 右侧文章内容 -->
-    <div class="article-content" v-if="selectedArticle">
-      <div class="article-header">
-        <h1>{{ selectedArticle.title }}</h1>
-        <div class="article-meta">
-          <span>发布时间：{{ formatDate(selectedArticle.createdAt) }}</span>
-          <span>更新时间：{{ formatDate(selectedArticle.updatedAt) }}</span>
-        </div>
-      </div>
-      <mavon-editor
-        v-model="selectedArticle.content"
-        :subfield="false"
-        :defaultOpen="'preview'"
-        :toolbarsFlag="false"
-        :boxShadow="false"
-        class="md-editor"
-      />
+    <!-- 加载更多 -->
+    <div class="load-more" v-if="hasMore">
+      <p v-if="loading">加载中...</p>
+      <el-button v-else @click="loadMore" type="text">加载更多</el-button>
     </div>
-    <div class="article-content empty" v-else>
-      <el-empty description="请选择一篇文章查看"></el-empty>
+    <div class="no-more" v-else>
+      <p>没有更多文章了</p>
     </div>
   </div>
 </template>
 
 <script>
-import { mavonEditor } from 'mavon-editor'
-import 'mavon-editor/dist/css/index.css'
 import axios from 'axios'
 import { BASE_URL, API_ENDPOINTS } from '@/api/config'
 
 export default {
   name: 'ArticlesList',
-  components: {
-    mavonEditor
-  },
   data() {
     return {
       articles: [],
-      selectedArticle: null,
       currentPage: 1,
-      pageSize: 10,
-      total: 0
+      pageSize: 5, // 每次加载5篇文章
+      total: 0,
+      loading: false,
+      hasMore: true,
+      // 封面图片数组
+      coverImages: [
+        require('@/assets/cover1.png'),
+        require('@/assets/cover2.png'),
+        require('@/assets/cover3.png'),
+        require('@/assets/cover4.png')
+      ],
+      // 是否已添加滚动监听
+      scrollListenerAdded: false
     }
   },
   created() {
     this.fetchArticles()
   },
+  mounted() {
+    // 添加滚动监听
+    this.addScrollListener()
+  },
+  beforeDestroy() {
+    // 移除滚动监听
+    this.removeScrollListener()
+  },
   methods: {
-    async fetchArticles() {
+    // 添加滚动监听
+    addScrollListener() {
+      if (!this.scrollListenerAdded) {
+        window.addEventListener('scroll', this.handleScroll)
+        this.scrollListenerAdded = true
+      }
+    },
+    // 移除滚动监听
+    removeScrollListener() {
+      window.removeEventListener('scroll', this.handleScroll)
+      this.scrollListenerAdded = false
+    },
+    // 处理滚动事件
+    handleScroll() {
+      // 如果正在加载或没有更多数据，则不处理
+      if (this.loading || !this.hasMore) return
+      
+      // 检查是否滚动到底部
+      const scrollHeight = document.documentElement.scrollHeight
+      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+      const clientHeight = document.documentElement.clientHeight
+      
+      // 当距离底部100px时加载更多
+      if (scrollHeight - scrollTop - clientHeight < 100) {
+        this.loadMore()
+      }
+    },
+    // 获取随机封面图片
+    getRandomCover() {
+      const index = Math.floor(Math.random() * this.coverImages.length)
+      return this.coverImages[index]
+    },
+    // 加载更多文章
+    loadMore() {
+      this.currentPage++
+      this.fetchArticles(true)
+    },
+    // 获取文章列表
+    async fetchArticles(append = false) {
+      if (this.loading) return
+      
+      this.loading = true
       try {
         const response = await axios.get(`${BASE_URL}${API_ENDPOINTS.ARTICLE.LIST}`, {
           params: {
@@ -123,25 +133,29 @@ export default {
             size: this.pageSize
           }
         })
-        console.log(response)
-        this.articles = response.data.data.records
-        this.total = response.data.total
-        console.log(this.articles)
+        
+        const newArticles = response.data.data.records || []
+        this.total = response.data.data.total || 0
+        
+        // 如果是追加模式，则将新文章添加到现有列表中
+        if (append) {
+          this.articles = [...this.articles, ...newArticles]
+        } else {
+          this.articles = newArticles
+        }
+        
+        // 判断是否还有更多文章
+        this.hasMore = this.articles.length < this.total
       } catch (error) {
         console.error('获取文章列表失败:', error)
         this.$message.error('获取文章列表失败')
+      } finally {
+        this.loading = false
       }
     },
-    handleArticleClick(row) {
-      this.selectedArticle = row
-    },
-    handleSizeChange(val) {
-      this.pageSize = val
-      this.fetchArticles()
-    },
-    handleCurrentChange(val) {
-      this.currentPage = val
-      this.fetchArticles()
+    // 查看文章详情（在新标签页打开）
+    viewArticleDetail(articleId) {
+      this.$router.push(`/article/${articleId}`)
     },
     formatDate(date) {
       if (!date) return ''
@@ -188,75 +202,135 @@ export default {
 
 <style scoped>
 .articles-container {
-  display: flex;
-  height: 100%;
-  gap: 20px;
   padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.article-list {
+.article-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.article-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.article-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.article-cover {
+  height: 180px;
+  overflow: hidden;
+}
+
+.article-cover .el-image {
+  width: 100%;
+  height: 100%;
+}
+
+.image-slot {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background: #f5f7fa;
+  color: #909399;
+  font-size: 30px;
+}
+
+.article-info {
+  padding: 15px;
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-width: 600px;
-  max-width: 800px;
 }
 
-.article-content {
-  flex: 1;
-  padding: 20px;
-  background: #fff;
-  border-radius: 4px;
-  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
-  overflow-y: auto;
-}
-
-.article-content.empty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.article-header {
-  margin-bottom: 20px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #eee;
-}
-
-.article-header h1 {
+.article-title {
   margin: 0 0 10px 0;
-  font-size: 24px;
+  font-size: 18px;
   color: #303133;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.article-summary {
+  color: #606266;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 15px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
 }
 
 .article-meta {
-  color: #909399;
-  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid #ebeef5;
 }
 
-.article-meta span {
-  margin-right: 20px;
+.article-date {
+  color: #909399;
+  font-size: 12px;
 }
 
 .article-stats {
   display: flex;
-  gap: 15px;
+  gap: 10px;
 }
 
 .article-stats span {
   color: #909399;
+  font-size: 12px;
 }
 
 .article-stats i {
-  margin-right: 5px;
+  margin-right: 3px;
 }
 
-.pagination-container {
-  margin-top: 20px;
+.article-actions {
+  margin-top: 10px;
   text-align: right;
 }
 
-.md-editor {
-  height: calc(100% - 100px);
+.load-more, .no-more {
+  text-align: center;
+  margin: 20px 0;
+  color: #909399;
+}
+
+/* 响应式调整 */
+@media screen and (max-width: 768px) {
+  .article-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .article-cover {
+    height: 200px;
+  }
 }
 </style>
