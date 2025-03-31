@@ -15,9 +15,14 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -44,9 +49,9 @@ public class ArticleSyncServiceImpl implements ArticleSyncService {
     private static final String ZHIHU_PUBLISH_URL = "https://www.zhihu.com/api/v4/content/publish";
     private static final String ZHIHU_HEADER_FILE_PATH = "cookie/zhihu.header";
 
-    private OkHttpClientInstance client = new OkHttpClientInstance();
+    private OkHttpClientInstance client = OkHttpClientInstance.getInstance();
 
-
+    private final RestTemplate restTemplate;
 
     @Override
     public boolean syncToJuejin(Article article) {
@@ -68,7 +73,6 @@ public class ArticleSyncServiceImpl implements ArticleSyncService {
 
 
             String createDraftJson = JSON.toJSONString(createRequest);
-
 
             String createDraftResponseString = client.doPostJson(JUEJIN_CREATE_DRAFT_URL, createDraftJson, buildRequestHeader( headers), cookies);
             log.info("创建草稿相应: {}", createDraftResponseString);
@@ -246,6 +250,9 @@ public class ArticleSyncServiceImpl implements ArticleSyncService {
         }
     }
 
+    public static void main(String[] args) {
+        System.out.println(TOUTIAO_CREATE_DRAFT_URL.length());
+    }
 
     private static final String TOUTIAO_CREATE_DRAFT_URL = "https://mp.toutiao.com/mp/agw/article/publish?source=mp&type=article&aid=1231&msToken=Gbu0ObV-OYxiJWKQQXmiAc8fiWGZfWHHH21u2FQaytFt6CahOLumTQdQxYioKBMpCDFmh4-mI5jD1S90uRIzApXSIrhGMVdC1JvoAMguvvIZpaZ39uaq2nQtxLp2DQSXNFCykjvdUIzA-Huncl-MzD5atyVQkgKKpLzfdN9RipOj9D9nx3Vdsw%3D%3D&a_bogus=EX4nDtywdNmfadarYOBbSRKlFADlrsuydBTdbox6HKF%2FGHFTMKN7pCjknPLWXoZUZmBt2qAHJfb3YVjbQseslFokLmkkuDUSwU2I97vohqNdTevsDrDpCLszKwBYUcsx-52fiCgRWGMqgjA5Vr9EAQanw%2FXJ5cuB%2Fr-vV1LGEoymUWWjin2Va3fhzhlH";
 //    private static final String TOUTIAO_PUBLISH_URL = "https://mp.toutiao.com/mp/agw/article/publish?source=mp&type=article&aid=1231";
@@ -262,120 +269,104 @@ public class ArticleSyncServiceImpl implements ArticleSyncService {
                 return false;
             }
 
+
             // 1. 创建文章草稿
-            Map<String, String> createDraftParams = new HashMap<>();
-            createDraftParams.put("source", "0");
-            createDraftParams.put("content", article.getHtmlContent());
-            createDraftParams.put("title", article.getTitle());
-            createDraftParams.put("search_creation_info", "{\"searchTopOne\":0,\"abstract\":\"\",\"clue_id\":\"\"}");
-            // 生成一个唯一的title_id
+            // 构建表单参数
+            MultiValueMap<String, String> createDraftParams = new LinkedMultiValueMap<>();
+            createDraftParams.add("source", "0");
+            createDraftParams.add("content", article.getHtmlContent());
+            createDraftParams.add("title", article.getTitle());
+            createDraftParams.add("search_creation_info", "{\"searchTopOne\":0,\"abstract\":\"\",\"clue_id\":\"\"}");
             String titleId = System.currentTimeMillis() + "_" + (Math.random() * 10000000000L);
-            createDraftParams.put("title_id", titleId);
-            createDraftParams.put("extra", "{\"content_word_cnt\":"+countWords(article.getHtmlContent())+",\"is_multi_title\":0,\"sub_titles\":[],\"gd_ext\":{\"entrance\":\"\",\"from_page\":\"publisher_mp\",\"enter_from\":\"PC\",\"device_platform\":\"mp\",\"is_message\":0},\"tuwen_wtt_transfer_switch\":\"1\"}");
-            createDraftParams.put("mp_editor_stat", "{}");
-            createDraftParams.put("is_refute_rumor", "0");
-            createDraftParams.put("save", "0");
-            createDraftParams.put("timer_status", "0");
-            // 修改coverType为2，与成功请求保持一致
-            createDraftParams.put("draft_form_data", "{\"coverType\":2}");
-            createDraftParams.put("pgc_feed_covers", "[]");
-            createDraftParams.put("article_ad_type", "3");
-            createDraftParams.put("is_fans_article", "0");
-            createDraftParams.put("govern_forward", "0");
-            createDraftParams.put("praise", "0");
-            createDraftParams.put("disable_praise", "0");
-            createDraftParams.put("tree_plan_article", "0");
-            createDraftParams.put("claim_exclusive", "0");
-            // 记录完整的请求参数，便于调试
+            createDraftParams.add("title_id", titleId);
+            createDraftParams.add("extra", "{\"content_word_cnt\":"+countWords(article.getHtmlContent())+",\"is_multi_title\":0,\"sub_titles\":[],\"gd_ext\":{\"entrance\":\"\",\"from_page\":\"publisher_mp\",\"enter_from\":\"PC\",\"device_platform\":\"mp\",\"is_message\":0},\"tuwen_wtt_transfer_switch\":\"1\"}");
+            createDraftParams.add("mp_editor_stat", "{}");
+            createDraftParams.add("is_refute_rumor", "0");
+            createDraftParams.add("save", "0");
+            createDraftParams.add("timer_status", "0");
+            createDraftParams.add("draft_form_data", "{\"coverType\":1}");
+            createDraftParams.add("pgc_feed_covers", "[]");
+            createDraftParams.add("article_ad_type", "3");
+            createDraftParams.add("is_fans_article", "0");
+            createDraftParams.add("govern_forward", "0");
+            createDraftParams.add("praise", "0");
+            createDraftParams.add("disable_praise", "0");
+            createDraftParams.add("tree_plan_article", "0");
+            createDraftParams.add("claim_exclusive", "0");
             log.info("创建头条草稿请求参数: {}", createDraftParams);
 
-            FormBody.Builder formBuilder = new FormBody.Builder();
-            for (Map.Entry<String, String> entry : createDraftParams.entrySet()) {
-                formBuilder.add(entry.getKey(), entry.getValue());
-            }
-
-            Request.Builder createDraftRequestBuilder = new Request.Builder()
-                    .url(TOUTIAO_CREATE_DRAFT_URL)
-                    .post(formBuilder.build());
-
-            // 添加请求头
+            // 构建请求头
+            HttpHeaders createDraftHeaders = new HttpHeaders();
+            createDraftHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
             for (String header : headers) {
                 if (!header.trim().isEmpty()) {
                     String[] parts = header.split(":", 2);
                     if (parts.length == 2) {
-                        createDraftRequestBuilder.addHeader(parts[0].trim(), parts[1].trim());
+                        createDraftHeaders.add(parts[0].trim(), parts[1].trim());
                     }
                 }
             }
 
-            OkHttpClient client = new OkHttpClient();
-            Response createDraftResponse = client.newCall(createDraftRequestBuilder.build()).execute();
-            String createDraftResponseString = createDraftResponse.body().string();
-            log.info("创建头条草稿响应: {}", createDraftResponseString);
+            // 发送创建草稿请求
+            HttpEntity<MultiValueMap<String, String>> createDraftRequest =
+                    new HttpEntity<>(createDraftParams, createDraftHeaders);
+            ResponseEntity<Map> createDraftResponse = restTemplate.postForEntity(
+                    TOUTIAO_CREATE_DRAFT_URL,
+                    createDraftRequest,
+                    Map.class
+            );
 
-            Map<String, Object> createDraftResult = JSON.parseObject(createDraftResponseString);
-            if ((int) createDraftResult.get("code") != 0) {
-                log.error("创建头条草稿失败: {}", createDraftResult.get("message"));
+            log.info("创建头条草稿响应: {}", createDraftResponse.getBody());
+            if ((int) createDraftResponse.getBody().get("code") != 0) {
+                log.error("创建头条草稿失败: {}", createDraftResponse.getBody().get("message"));
                 return false;
             }
 
-            Map<String, Object> data = (Map<String, Object>) createDraftResult.get("data");
+            // 解析返回的pgc_id
+            Map<String, Object> data = (Map<String, Object>) createDraftResponse.getBody().get("data");
             String pgcId = (String) data.get("pgc_id");
 
             // 2. 发布文章
-            Map<String, String> publishParams = new HashMap<>();
-            publishParams.put("pgc_id", pgcId);
-            publishParams.put("source", "0");
-            publishParams.put("content", article.getHtmlContent());
-            publishParams.put("title", article.getTitle());
-            publishParams.put("search_creation_info", "{\"searchTopOne\":0,\"abstract\":\"\",\"clue_id\":\"\"}");
-            // 使用与创建草稿相同的title_id
-            publishParams.put("title_id", titleId);
-            // 修改extra参数，确保与成功请求一致
-            publishParams.put("extra", "{\"content_word_cnt\":"+countWords(article.getHtmlContent())+",\"is_multi_title\":0,\"sub_titles\":[],\"gd_ext\":{\"entrance\":\"\",\"from_page\":\"publisher_mp\",\"enter_from\":\"PC\",\"device_platform\":\"mp\",\"is_message\":0},\"tuwen_wtt_trans_flag\":\"1\",\"info_source\":{\"source_type\":-1}}");
-            publishParams.put("mp_editor_stat", "{}");
-            publishParams.put("is_refute_rumor", "0");
-            publishParams.put("save", "1");
-            publishParams.put("timer_status", "0");
-            // 修改coverType为1，与成功请求保持一致
-            publishParams.put("draft_form_data", "{\"coverType\":1}");
-            publishParams.put("pgc_feed_covers", "[]");
-            // 记录完整的请求参数，便于调试
+            MultiValueMap<String, String> publishParams = new LinkedMultiValueMap<>();
+            publishParams.add("pgc_id", pgcId);
+            publishParams.add("source", "0");
+            publishParams.add("content", article.getHtmlContent());
+            publishParams.add("title", article.getTitle());
+            publishParams.add("search_creation_info", "{\"searchTopOne\":0,\"abstract\":\"\",\"clue_id\":\"\"}");
+            publishParams.add("title_id", titleId);
+            publishParams.add("extra", "{\"content_word_cnt\":"+countWords(article.getHtmlContent())+",\"is_multi_title\":0,\"sub_titles\":[],\"gd_ext\":{\"entrance\":\"\",\"from_page\":\"publisher_mp\",\"enter_from\":\"PC\",\"device_platform\":\"mp\",\"is_message\":0},\"tuwen_wtt_trans_flag\":\"1\",\"info_source\":{\"source_type\":-1}}");
+            publishParams.add("mp_editor_stat", "{}");
+            publishParams.add("is_refute_rumor", "0");
+            publishParams.add("save", "1");
+            publishParams.add("timer_status", "0");
+            publishParams.add("draft_form_data", "{\"coverType\":1}");
+            publishParams.add("pgc_feed_covers", "[]");
+            publishParams.add("article_ad_type", "3");
+            publishParams.add("is_fans_article", "0");
+            publishParams.add("govern_forward", "0");
+            publishParams.add("praise", "0");
+            publishParams.add("disable_praise", "0");
+            publishParams.add("tree_plan_article", "0");
+            publishParams.add("claim_exclusive", "0");
             log.info("发布头条文章请求参数: {}", publishParams);
-            publishParams.put("article_ad_type", "3");
-            publishParams.put("is_fans_article", "0");
-            publishParams.put("govern_forward", "0");
-            publishParams.put("praise", "0");
-            publishParams.put("disable_praise", "0");
-            publishParams.put("tree_plan_article", "0");
-            publishParams.put("claim_exclusive", "0");
 
-            FormBody.Builder publishFormBuilder = new FormBody.Builder();
-            for (Map.Entry<String, String> entry : publishParams.entrySet()) {
-                publishFormBuilder.add(entry.getKey(), entry.getValue());
-            }
+            // 复用相同的请求头
+            HttpHeaders publishHeaders = new HttpHeaders();
+            publishHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            publishHeaders.putAll(createDraftHeaders);
 
-            Request.Builder publishRequestBuilder = new Request.Builder()
-                    .url(TOUTIAO_CREATE_DRAFT_URL)
-                    .post(publishFormBuilder.build());
+            // 发送发布请求
+            HttpEntity<MultiValueMap<String, String>> publishRequest =
+                    new HttpEntity<>(publishParams, publishHeaders);
+            ResponseEntity<Map> publishResponse = restTemplate.postForEntity(
+                    TOUTIAO_CREATE_DRAFT_URL,  // 注意：这里应该确认是否是正确的发布URL
+                    publishRequest,
+                    Map.class
+            );
 
-            // 添加请求头
-            for (String header : headers) {
-                if (!header.trim().isEmpty()) {
-                    String[] parts = header.split(":", 2);
-                    if (parts.length == 2) {
-                        publishRequestBuilder.addHeader(parts[0].trim(), parts[1].trim());
-                    }
-                }
-            }
-
-            Response publishResponse = client.newCall(publishRequestBuilder.build()).execute();
-            String publishResponseString = publishResponse.body().string();
-            log.info("发布头条文章响应: {}", publishResponseString);
-
-            Map<String, Object> publishResult = JSON.parseObject(publishResponseString);
-            if ((int) publishResult.get("code") != 0) {
-                log.error("发布头条文章失败: {}", publishResult.get("message"));
+            log.info("发布头条文章响应: {}", publishResponse.getBody());
+            if ((int) publishResponse.getBody().get("code") != 0) {
+                log.error("发布头条文章失败: {}", publishResponse.getBody().get("message"));
                 return false;
             }
 

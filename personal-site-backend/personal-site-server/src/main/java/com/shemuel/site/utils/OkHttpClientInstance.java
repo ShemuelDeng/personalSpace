@@ -22,6 +22,19 @@ import java.util.concurrent.TimeUnit;
  **/
 @Slf4j
 public class OkHttpClientInstance {
+    private static volatile OkHttpClientInstance instance;
+    private OkHttpClientInstance() {}
+
+    public static OkHttpClientInstance getInstance() {
+        if (instance == null) {
+            synchronized (OkHttpClientInstance.class) {
+                if (instance == null) {
+                    instance = new OkHttpClientInstance();
+                }
+            }
+        }
+        return instance;
+    }
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private static final MediaType XML = MediaType.parse("application/xml; charset=utf-8");
 

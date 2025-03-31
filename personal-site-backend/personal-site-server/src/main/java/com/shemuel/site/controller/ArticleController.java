@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import com.shemuel.site.dto.SaveArticleDTO;
-import com.shemuel.site.service.ArticleSyncService;
+import com.shemuel.site.dto.SyncArticleToOtherPlatFormRequest;
+import com.shemuel.site.tools.ArticleSynchronizer;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import com.shemuel.site.entity.Article;
 import com.shemuel.site.service.ArticleService;
@@ -26,7 +28,9 @@ public class ArticleController {
     private final ThreadPoolExecutor commonThreadPool;
 
     private final ArticleService articleService;
-    private final ArticleSyncService articleSyncService;
+
+
+    private final List<ArticleSynchronizer> articleSynchronizers;
 
     @GetMapping("/list")
     @Operation(summary = "获取核心文章数据列表")
@@ -58,18 +62,19 @@ public class ArticleController {
         return RestResult.success(articleService.deleteByIds(ids));
     }
 
-    @PostMapping("/sync/csdn/{id}")
+    @PostMapping("/sync/csdn/")
     @Operation(summary = "同步文章到CSDN,掘金,知乎平台")
-    public RestResult<Object> syncToOtherPlatForm(@PathVariable("id") Integer id) {
-        Article article = articleService.getById(id);
+    public RestResult<Object> syncToOtherPlatForm(@RequestBody @Validated SyncArticleToOtherPlatFormRequest request) {
+        Article article = articleService.getById(request.getArticleId());
         if (article == null) {
             return RestResult.error("文章不存在");
         }
         commonThreadPool.execute(()->{
-//            articleSyncService.syncToCSDN(article);
-//            articleSyncService.syncToJuejin(article);
-//            articleSyncService.syncToZhihu(article);
-            articleSyncService.syncToTouTiao(article);
+            for (ArticleSynchronizer articleSynchronizer : articleSynchronizers) {
+                if (request.getPlatformIds().contains(articleSynchronizer.getPlatformInfo().getPlatformType())){
+                    articleSynchronizer.syncArticle(article);
+                }
+            }
         });
         return RestResult.success("任务提交成功");
     }
