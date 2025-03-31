@@ -319,8 +319,6 @@ CREATE TABLE `third_party_platform` (
     `update_draft_url` varchar(4000) DEFAULT NULL COMMENT '更新草稿URL',
     `set_topic_url` varchar(4000) DEFAULT NULL COMMENT '设置主题URL',
     `publish_article_url` varchar(4000) DEFAULT NULL COMMENT '发布文章URL',
-    `header` text DEFAULT NULL COMMENT '请求头信息',
-    `cookie` text DEFAULT NULL COMMENT 'cookie信息',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_platform` (`platform_type`) COMMENT '平台唯一索引'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='第三方平台信息表';
@@ -337,4 +335,16 @@ CREATE TABLE `article_sync_record` (
     KEY `idx_article_id` (`article_id`) COMMENT '文章ID索引',
     KEY `idx_platform_id` (`platform_id`) COMMENT '平台ID索引',
     KEY `idx_sync_time` (`sync_time`) COMMENT '同步时间索引'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文章同步记录表';
+
+
+CREATE TABLE `third_party_platform_auth_info` (
+   `id` int NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+   `user_id` BIGINT NOT NULL COMMENT '用户id',
+   `platform_id` int NOT NULL COMMENT '平台ID，关联third_party_platform.id',
+   `header` text DEFAULT NULL COMMENT '请求头信息',
+   `cookie` text DEFAULT NULL COMMENT 'cookie信息',
+   PRIMARY KEY (`id`),
+   KEY `idx_user_id` (`user_id`) COMMENT '用户id',
+   KEY `idx_platform_id` (`platform_id`) COMMENT '平台ID索引'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文章同步记录表';
