@@ -314,7 +314,7 @@ INSERT INTO user_tag (user_id, name, tag_type) VALUES
 CREATE TABLE `third_party_platform` (
     `id` int NOT NULL AUTO_INCREMENT COMMENT '主键ID',
     `platform_type` tinyint NOT NULL COMMENT '平台：1-稀土掘金；2-今日头条；3-知乎；4-CSDN',
-    `platform_name` tinyint NOT NULL COMMENT '平台名称：1-稀土掘金；2-今日头条；3-知乎；4-CSDN',
+    `platform_name` varchar(400) NOT NULL COMMENT '平台名称：1-稀土掘金；2-今日头条；3-知乎；4-CSDN',
     `create_draft_url` varchar(4000) DEFAULT NULL COMMENT '创建草稿URL',
     `update_draft_url` varchar(4000) DEFAULT NULL COMMENT '更新草稿URL',
     `set_topic_url` varchar(4000) DEFAULT NULL COMMENT '设置主题URL',
@@ -325,6 +325,7 @@ CREATE TABLE `third_party_platform` (
 
 CREATE TABLE `article_sync_record` (
     `id` int NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    `user_id` BIGINT NOT NULL COMMENT '用户id',
     `article_id` varchar(64) NOT NULL COMMENT '文章ID',
     `article_title` varchar(100) NOT NULL COMMENT '文章标题',
     `platform_id` int NOT NULL COMMENT '平台ID，关联third_party_platform.id',
@@ -347,4 +348,4 @@ CREATE TABLE `third_party_platform_auth_info` (
    PRIMARY KEY (`id`),
    KEY `idx_user_id` (`user_id`) COMMENT '用户id',
    KEY `idx_platform_id` (`platform_id`) COMMENT '平台ID索引'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文章同步记录表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='第三方平台认证信息表';

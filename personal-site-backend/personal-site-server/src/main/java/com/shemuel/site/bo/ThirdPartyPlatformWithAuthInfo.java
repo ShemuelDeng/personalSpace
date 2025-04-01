@@ -1,19 +1,18 @@
-package com.shemuel.site.entity;
+package com.shemuel.site.bo;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
-import java.time.LocalDateTime;
+
 import java.io.Serializable;
 
 @Data
 @TableName("third_party_platform")
 @Tag(name = "第三方平台信息表对象")
-public class ThirdPartyPlatform implements Serializable {
+public class ThirdPartyPlatformWithAuthInfo implements Serializable {
 
     @TableId(type = IdType.AUTO)
     @Schema(description = "主键ID")
@@ -23,7 +22,7 @@ public class ThirdPartyPlatform implements Serializable {
     private Integer platformType;
 
     @Schema(description = "平台名称：1-稀土掘金；2-今日头条；3-知乎；4-CSDN")
-    private Integer platformName;
+    private String platformName;
 
     @Schema(description = "创建草稿URL")
     private String createDraftUrl;
@@ -36,4 +35,12 @@ public class ThirdPartyPlatform implements Serializable {
 
     @Schema(description = "发布文章URL")
     private String publishArticleUrl;
+
+    private String header;
+
+    private String cookie;
+
+    @Schema(description = "")
+    private Long userId;
+
 }

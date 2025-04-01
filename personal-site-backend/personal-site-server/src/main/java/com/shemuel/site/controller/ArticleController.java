@@ -3,8 +3,10 @@ package com.shemuel.site.controller;
 import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import com.shemuel.site.bo.ThirdPartyPlatformWithAuthInfo;
 import com.shemuel.site.dto.SaveArticleDTO;
 import com.shemuel.site.dto.SyncArticleToOtherPlatFormRequest;
+import com.shemuel.site.service.ArticleSyncService;
 import com.shemuel.site.tools.ArticleSynchronizer;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,6 +33,8 @@ public class ArticleController {
 
 
     private final List<ArticleSynchronizer> articleSynchronizers;
+
+    private final ArticleSyncService articleSyncService;
 
     @GetMapping("/list")
     @Operation(summary = "获取核心文章数据列表")
@@ -62,7 +66,7 @@ public class ArticleController {
         return RestResult.success(articleService.deleteByIds(ids));
     }
 
-    @PostMapping("/sync/csdn/")
+    @PostMapping("/sync/third-platform/")
     @Operation(summary = "同步文章到CSDN,掘金,知乎平台")
     public RestResult<Object> syncToOtherPlatForm(@RequestBody @Validated SyncArticleToOtherPlatFormRequest request) {
         Article article = articleService.getById(request.getArticleId());
@@ -70,12 +74,18 @@ public class ArticleController {
             return RestResult.error("文章不存在");
         }
         commonThreadPool.execute(()->{
-            for (ArticleSynchronizer articleSynchronizer : articleSynchronizers) {
-                if (request.getPlatformIds().contains(articleSynchronizer.getPlatformInfo().getPlatformType())){
-                    articleSynchronizer.syncArticle(article);
-                }
-            }
+
         });
+        for (ArticleSynchronizer articleSynchronizer : articleSynchronizers) {
+            ThirdPartyPlatformWithAuthInfo platformInfo = articleSynchronizer.getPlatformInfo();
+            if (platformInfo == null){
+                continue;
+            }
+            if (request.getPlatformIds().contains(platformInfo.getPlatformType())){
+                articleSynchronizer.syncArticle(article);
+            }
+        }
+
         return RestResult.success("任务提交成功");
     }
 

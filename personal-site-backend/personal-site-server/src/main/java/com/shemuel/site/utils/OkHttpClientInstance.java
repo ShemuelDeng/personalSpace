@@ -2,16 +2,13 @@ package com.shemuel.site.utils;
 
 
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSON;
+import com.shemuel.site.common.RestResult;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.FormBody;
-import okhttp3.Headers;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import okhttp3.*;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -35,13 +32,18 @@ public class OkHttpClientInstance {
         }
         return instance;
     }
-    private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    private static final MediaType APPLICATION_JSON = MediaType.parse("application/json; charset=utf-8");
     private static final MediaType XML = MediaType.parse("application/xml; charset=utf-8");
 
-    private OkHttpClient okHttpClient = new OkHttpClient();
+    private OkHttpClient okHttpClient  = new OkHttpClient();
 
     {
-        okHttpClient = okHttpClient.newBuilder().connectTimeout(10, TimeUnit.SECONDS).callTimeout(60,TimeUnit.SECONDS).build();
+        okHttpClient = okHttpClient
+                .newBuilder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .protocols(Collections.singletonList(Protocol.HTTP_1_1))
+                .callTimeout(60,TimeUnit.SECONDS)
+                .build();
     }
 
     /**
@@ -145,8 +147,8 @@ public class OkHttpClientInstance {
      * @param json 请求数据, json 字符串
      * @return string
      */
-    public String doPostJson(String url, String json, Map<String, String> headMap, String[] cookie) {
-        return exectePostWithCookie(url, json, JSON, headMap,cookie);
+    public RestResult<String> doPostJson(String url, String json, Map<String, String> headMap, String[] cookie) {
+        return exectePostWithCookie(url, json, APPLICATION_JSON, headMap,cookie);
     }
 
     /**
@@ -172,15 +174,15 @@ public class OkHttpClientInstance {
         }
     }
 
-    private String exectePostWithCookie(String url, String data, MediaType contentType, Map<String, String> headMap, String[] cookie) {
+    private RestResult<String> exectePostWithCookie(String url, String data, MediaType contentType, Map<String, String> headMap, String[] cookie) {
         RequestBody requestBody = RequestBody.create(contentType, data);
         if (headMap != null) {
             Headers setHeaders = SetHeadersAndCookie(headMap, cookie);
             Request request = new Request.Builder().url(url).headers(setHeaders).post(requestBody).build();
-            return execute(request,0);
+            return execute(request);
         }else{
             Request request = new Request.Builder().url(url).post(requestBody).build();
-            return execute(request,0);
+            return execute(request);
         }
     }
 
@@ -211,9 +213,10 @@ public class OkHttpClientInstance {
             }
         }
 
-        if (cookie != null ){
+        if (cookie != null && cookie.length != 0){
             for (String cook : cookie) {
-                headersbuilder.add("Cookie", cook.trim());
+                if (StringUtils.isEmpty(cook)) continue;
+                headersbuilder.add("Cookie", cook.trim().replace("\r","").replace("\t",""));
 
             }
         }
@@ -241,5 +244,26 @@ public class OkHttpClientInstance {
             }
         }
         return "";
+    }
+
+    private RestResult<String> execute(Request request) {
+        Response response = null;
+        try {
+            response = okHttpClient.newCall(request).execute();
+            String bodyString = response.body().string();
+            if (response.isSuccessful()) {
+                return  RestResult.success(bodyString);
+            } else {
+                log.error("OK http response:code:{} {},url:{}",response.code(), com.alibaba.fastjson.JSON.toJSONString(response), request.url());
+                return RestResult.error(response.code(), bodyString);
+            }
+        } catch (Exception e) {
+            log.error("ok http error", e);
+            return RestResult.error(500, e.getMessage());
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+        }
     }
 }

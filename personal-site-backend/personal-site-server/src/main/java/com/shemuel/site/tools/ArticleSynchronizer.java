@@ -1,12 +1,17 @@
 package com.shemuel.site.tools;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.shemuel.site.bo.SyncArticleResult;
+import com.shemuel.site.bo.ThirdPartyPlatformWithAuthInfo;
+import com.shemuel.site.common.RestResult;
 import com.shemuel.site.entity.Article;
 import com.shemuel.site.entity.ArticleSyncRecord;
 import com.shemuel.site.entity.ThirdPartyPlatform;
+import com.shemuel.site.entity.ThirdPartyPlatformAuthInfo;
 import com.shemuel.site.exception.BusinessException;
+import com.shemuel.site.mapper.ThirdPartyPlatformAuthInfoMapper;
 import com.shemuel.site.mapper.ThirdPartyPlatformMapper;
 import com.shemuel.site.service.ArticleSyncRecordService;
 import com.shemuel.site.utils.OkHttpClientInstance;
@@ -14,8 +19,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @Author: 公众号: 加瓦点灯
@@ -26,7 +33,7 @@ import java.util.Map;
 public abstract class ArticleSynchronizer {
 
     @Resource
-    private ThirdPartyPlatformMapper thirdPartyPlatformMapper;
+    private ThirdPartyPlatformAuthInfoMapper thirdPartyPlatformAuthInfoMapper;
     @Resource
     private ArticleSyncRecordService articleSyncRecordService;
 
@@ -38,43 +45,43 @@ public abstract class ArticleSynchronizer {
      * @param thirdPartyPlatform 其他平台的信息， 包含保存文章草稿url, 更新文章草稿url, header, cookied等等
      * @return
      */
-    protected abstract SyncArticleResult doSyncArticle(Article article, ThirdPartyPlatform thirdPartyPlatform);
+    protected abstract RestResult doSyncArticle(Article article, ThirdPartyPlatformWithAuthInfo thirdPartyPlatform);
 
-    public abstract ThirdPartyPlatform getPlatformInfo();
+    public abstract ThirdPartyPlatformWithAuthInfo getPlatformInfo();
 
     public void syncArticle(Article article){
 
-        ThirdPartyPlatform platformInfo = getPlatformInfo();
+        ThirdPartyPlatformWithAuthInfo platformInfo = getPlatformInfo();
 
         ArticleSyncRecord queryExistDto = new ArticleSyncRecord();
         queryExistDto.setArticleTitle(article.getTitle());
         queryExistDto.setPlatformId(platformInfo.getId());
+        queryExistDto.setUserId(StpUtil.getLoginIdAsLong());
+        queryExistDto.setSyncResult(1);
         // 先判断是否同步过
         if (articleSyncRecordService.selectList(queryExistDto).size() > 0) {
             log.info("标题:{}, 已经同步过了,平台:{}", platformInfo.getPlatformName());
             return;
         }
         // 执行同步逻辑
-        SyncArticleResult syncArticleResult = doSyncArticle(article, platformInfo);
+        RestResult syncArticleResult = doSyncArticle(article, platformInfo);
         // 记录同步日志
         ArticleSyncRecord record = queryExistDto;
+        record.setUserId(StpUtil.getLoginIdAsLong());
         record.setArticleId(article.getId().toString());
         record.setArticleTitle(article.getTitle());
         record.setPlatformId(platformInfo.getId());
-        record.setSyncResult(syncArticleResult.isSuccess() ? 1 : 0);
-        record.setSyncFailReason(JSON.toJSONString(syncArticleResult.getFailReason()));
+        record.setSyncResult(RestResult.isSuccess(syncArticleResult) ? 1 : 0);
+        if (!RestResult.isSuccess(syncArticleResult)){
+            record.setSyncFailReason(JSON.toJSONString(syncArticleResult));
+        }
         record.setSyncTime(LocalDateTime.now());
         articleSyncRecordService.insert(record);
     }
 
-    protected ThirdPartyPlatform getPlatformById(Integer id){
-        LambdaQueryWrapper<ThirdPartyPlatform> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(ThirdPartyPlatform::getPlatformType, id);
-        ThirdPartyPlatform thirdPartyPlatform = thirdPartyPlatformMapper.selectOne(wrapper);
-        if (thirdPartyPlatform == null) {
-            throw  new BusinessException("不存在的平台");
-        }
-        return thirdPartyPlatform;
+    protected ThirdPartyPlatformWithAuthInfo getPlatformById(Integer platformType){
+
+        return thirdPartyPlatformAuthInfoMapper.selectByUserId( StpUtil.getLoginIdAsLong(), platformType);
     }
 
     protected Map<String,String> buildRequestHeader(String dbHeader) {
@@ -98,6 +105,9 @@ public abstract class ArticleSynchronizer {
     protected String[] transferCookieToArray(String cookie) {
         String[] cookies = cookie.split("\n");
 
-        return cookies;
+        return Arrays.stream(cookies)
+                .map(c -> c.trim().replace("\t","").replace("\r",""))
+                .toArray(String[]::new);
+
     }
 }

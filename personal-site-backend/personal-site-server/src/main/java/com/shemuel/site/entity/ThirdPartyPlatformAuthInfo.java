@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 import java.io.Serializable;
 
 @Data
-@TableName("article_sync_record")
-@Tag(name = "文章同步记录表对象")
-public class ArticleSyncRecord implements Serializable {
+@TableName("third_party_platform_auth_info")
+@Tag(name = "第三方平台认证信息表对象")
+public class ThirdPartyPlatformAuthInfo implements Serializable {
 
     @TableId(type = IdType.AUTO)
     @Schema(description = "主键ID")
@@ -22,21 +22,12 @@ public class ArticleSyncRecord implements Serializable {
     @Schema(description = "用户id")
     private Long userId;
 
-    @Schema(description = "文章ID")
-    private String articleId;
-
-    @Schema(description = "文章标题")
-    private String articleTitle;
-
     @Schema(description = "平台ID，关联third_party_platform.id")
     private Integer platformId;
 
-    @Schema(description = "同步结果：0-失败；1-成功")
-    private Integer syncResult;
+    @Schema(description = "请求头信息")
+    private String header;
 
-    @Schema(description = "同步失败原因（仅当sync_result=0时有效）")
-    private String syncFailReason;
-
-    @Schema(description = "同步时间")
-    private LocalDateTime syncTime;
+    @Schema(description = "cookie信息")
+    private String cookie;
 }

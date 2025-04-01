@@ -2,9 +2,12 @@ package com.shemuel.site.common;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.springframework.http.HttpStatus;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 @Data
 public class RestResult<T> {
@@ -47,10 +50,23 @@ public class RestResult<T> {
         restResult.setMessage(message);
         return restResult;
     }
+
+    public static <T> RestResult<T> fail(String message) {
+        return error(message);
+    }
     public static <T> RestResult<T> error(Integer code, String message) {
         RestResult<T> restResult = new RestResult<>();
         restResult.setCode(code);
         restResult.setMessage(message);
         return restResult;
+    }
+
+
+    public static <T> RestResult<T> fail(Integer code, String message) {
+
+        return error(code, message);
+    }
+    public static boolean isSuccess(RestResult restResult){
+        return Objects.equals(HttpStatus.OK.value(), Optional.ofNullable(restResult).map(RestResult::getCode).orElse(null));
     }
 }

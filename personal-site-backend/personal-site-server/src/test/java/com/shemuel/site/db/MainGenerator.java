@@ -38,7 +38,7 @@ public class MainGenerator {
 
     @Test
     public void generate() {
-        doGenerate("article_sync_record","third_party_platform");
+        doGenerate("third_party_platform_auth_info");
     }
 
     private void doGenerate(String... tableNames) {

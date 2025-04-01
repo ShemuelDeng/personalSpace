@@ -1,6 +1,7 @@
 package com.shemuel.site.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.shemuel.site.common.RestResult;
 import com.shemuel.site.dto.CsdnArticleDTO;
 import com.shemuel.site.dto.JuejinArticleDTO;
 import com.shemuel.site.dto.ZhihuArticleDTO;
@@ -74,10 +75,14 @@ public class ArticleSyncServiceImpl implements ArticleSyncService {
 
             String createDraftJson = JSON.toJSONString(createRequest);
 
-            String createDraftResponseString = client.doPostJson(JUEJIN_CREATE_DRAFT_URL, createDraftJson, buildRequestHeader( headers), cookies);
+            RestResult<String> createDraftResponseString = client.doPostJson(JUEJIN_CREATE_DRAFT_URL, createDraftJson, buildRequestHeader( headers), cookies);
             log.info("创建草稿相应: {}", createDraftResponseString);
 
-            JuejinArticleDTO.CreateDraftResponse createDraftResponse = JSON.parseObject(createDraftResponseString, JuejinArticleDTO.CreateDraftResponse.class);
+            if (!RestResult.isSuccess(createDraftResponseString)){
+                return false;
+            }
+
+            JuejinArticleDTO.CreateDraftResponse createDraftResponse = JSON.parseObject(createDraftResponseString.getData(), JuejinArticleDTO.CreateDraftResponse.class);
             if (createDraftResponse.getErr_no() != 0){
                 log.error("创建草稿失败: {}", createDraftResponseString);
             }
@@ -87,7 +92,7 @@ public class ArticleSyncServiceImpl implements ArticleSyncService {
             request.setDraft_id(draftId);
 
 
-            String publishResponseString = client.doPostJson(JUEJIN_PUBLISH_URL, JSON.toJSONString(request), buildRequestHeader(headers), cookies);
+            RestResult publishResponseString = client.doPostJson(JUEJIN_PUBLISH_URL, JSON.toJSONString(request), buildRequestHeader(headers), cookies);
             log.info("发布文章结果：{}", publishResponseString);
             return true;
 
@@ -160,7 +165,7 @@ public class ArticleSyncServiceImpl implements ArticleSyncService {
             csdnArticle.setContent(article.getHtmlContent());
             csdnArticle.setDescription(article.getSummary());
 
-            String createCsdnArticleResponse = client.doPostJson(CSDN_API_URL, JSON.toJSONString(csdnArticle), buildRequestHeader(headersString), cookies);
+            RestResult createCsdnArticleResponse = client.doPostJson(CSDN_API_URL, JSON.toJSONString(csdnArticle), buildRequestHeader(headersString), cookies);
             log.info("csdn 发布文章结果{}",createCsdnArticleResponse);
             return true;
         } catch (Exception e) {
@@ -214,10 +219,10 @@ public class ArticleSyncServiceImpl implements ArticleSyncService {
             createDraftRequest.setTitle(article.getTitle());
 
             String createDraftJson = JSON.toJSONString(createDraftRequest);
-            String createDraftResponseString = client.doPostJson(ZHIHU_CREATE_DRAFT_URL, createDraftJson, buildRequestHeader(headers), null);
+            RestResult<String> createDraftResponseString = client.doPostJson(ZHIHU_CREATE_DRAFT_URL, createDraftJson, buildRequestHeader(headers), null);
             log.info("创建知乎草稿响应: {}", createDraftResponseString);
 
-            ZhihuArticleDTO.CreateDraftResponse createDraftResponse = JSON.parseObject(createDraftResponseString, ZhihuArticleDTO.CreateDraftResponse.class);
+            ZhihuArticleDTO.CreateDraftResponse createDraftResponse = JSON.parseObject(createDraftResponseString.getData(), ZhihuArticleDTO.CreateDraftResponse.class);
             String draftId = createDraftResponse.getId();
             if (draftId == null) {
                 log.error("创建知乎草稿失败");
@@ -227,17 +232,17 @@ public class ArticleSyncServiceImpl implements ArticleSyncService {
             // 2. 设置文章主题
             ZhihuArticleDTO.TopicRequest topicRequest = new ZhihuArticleDTO.TopicRequest();
             String setTopicUrl = String.format(ZHIHU_SET_TOPIC_URL, draftId);
-            String setTopicResponseString = client.doPostJson(setTopicUrl, JSON.toJSONString(topicRequest), buildRequestHeader(headers), null);
+            RestResult setTopicResponseString = client.doPostJson(setTopicUrl, JSON.toJSONString(topicRequest), buildRequestHeader(headers), null);
             log.info("设置知乎文章主题响应: {}", setTopicResponseString);
 
             // 3. 发布文章
             ZhihuArticleDTO.PublishRequest publishRequest = new ZhihuArticleDTO.PublishRequest();
             publishRequest.getData().getDraft().setId(draftId);
 
-            String publishResponseString = client.doPostJson(ZHIHU_PUBLISH_URL, JSON.toJSONString(publishRequest), buildRequestHeader(headers), new String[0]);
+            RestResult<String> publishResponseString = client.doPostJson(ZHIHU_PUBLISH_URL, JSON.toJSONString(publishRequest), buildRequestHeader(headers), new String[0]);
             log.info("发布知乎文章响应: {}", publishResponseString);
 
-            ZhihuArticleDTO.PublishResponse publishResponse = JSON.parseObject(publishResponseString, ZhihuArticleDTO.PublishResponse.class);
+            ZhihuArticleDTO.PublishResponse publishResponse = JSON.parseObject(publishResponseString.getData(), ZhihuArticleDTO.PublishResponse.class);
             if (publishResponse.getCode() != 0) {
                 log.error("发布知乎文章失败: {}", publishResponse.getMessage());
                 return false;

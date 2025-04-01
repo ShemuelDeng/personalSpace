@@ -1,6 +1,9 @@
 package com.shemuel.site.tools;
 
+import com.alibaba.fastjson.JSON;
 import com.shemuel.site.bo.SyncArticleResult;
+import com.shemuel.site.bo.ThirdPartyPlatformWithAuthInfo;
+import com.shemuel.site.common.RestResult;
 import com.shemuel.site.entity.Article;
 import com.shemuel.site.entity.ThirdPartyPlatform;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +32,7 @@ public class TouTiaoArticleSync extends ArticleSynchronizer{
     private RestTemplate restTemplate;
 
     @Override
-    public SyncArticleResult doSyncArticle(Article article, ThirdPartyPlatform thirdPartyPlatform) {
+    public RestResult doSyncArticle(Article article, ThirdPartyPlatformWithAuthInfo thirdPartyPlatform) {
         try {
             // 构建表单参数
             MultiValueMap<String, String> createDraftParams = new LinkedMultiValueMap<>();
@@ -58,7 +61,8 @@ public class TouTiaoArticleSync extends ArticleSynchronizer{
             // 构建请求头
             HttpHeaders createDraftHeaders = new HttpHeaders();
             createDraftHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-            for (String header : thirdPartyPlatform.getHeader()) {
+            String[] headerArray = thirdPartyPlatform.getHeader().split("\n");
+            for (String header : headerArray) {
                 if (!header.trim().isEmpty()) {
                     String[] parts = header.split(":", 2);
                     if (parts.length == 2) {
@@ -79,7 +83,7 @@ public class TouTiaoArticleSync extends ArticleSynchronizer{
             log.info("创建头条草稿响应: {}", createDraftResponse.getBody());
             if ((int) createDraftResponse.getBody().get("code") != 0) {
                 log.error("创建头条草稿失败: {}", createDraftResponse.getBody().get("message"));
-                return SyncArticleResult.fail("创建头条草稿失败");
+                return RestResult.fail("创建头条草稿失败" + JSON.toJSONString(createDraftResponse.getBody()));
             }
 
             // 解析返回的pgc_id
@@ -127,18 +131,18 @@ public class TouTiaoArticleSync extends ArticleSynchronizer{
             log.info("发布头条文章响应: {}", publishResponse.getBody());
             if ((int) publishResponse.getBody().get("code") != 0) {
                 log.error("发布头条文章失败: {}", publishResponse.getBody().get("message"));
-                return SyncArticleResult.fail("发布头条文章失败");
+                return RestResult.fail("发布头条文章失败" + JSON.toJSONString(publishResponse.getBody()));
             }
 
-            return SyncArticleResult.success();
+            return RestResult.success();
         } catch (Exception e) {
             log.error("Error syncing article to Toutiao: {}", e.getMessage(), e);
-            return SyncArticleResult.fail("同步到头条失败");
+            return RestResult.fail("同步到头条失败" + e.getMessage());
         }
     }
 
     @Override
-    public ThirdPartyPlatform getPlatformInfo() {
+    public ThirdPartyPlatformWithAuthInfo getPlatformInfo() {
        return getPlatformById(2);
     }
 

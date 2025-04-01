@@ -32,8 +32,6 @@ public class ThirdPartyPlatformServiceImpl extends ServiceImpl<ThirdPartyPlatfor
         wrapper.eq(thirdPartyPlatform.getUpdateDraftUrl() != null, ThirdPartyPlatform::getUpdateDraftUrl, thirdPartyPlatform.getUpdateDraftUrl());
         wrapper.eq(thirdPartyPlatform.getSetTopicUrl() != null, ThirdPartyPlatform::getSetTopicUrl, thirdPartyPlatform.getSetTopicUrl());
         wrapper.eq(thirdPartyPlatform.getPublishArticleUrl() != null, ThirdPartyPlatform::getPublishArticleUrl, thirdPartyPlatform.getPublishArticleUrl());
-        wrapper.eq(thirdPartyPlatform.getHeader() != null, ThirdPartyPlatform::getHeader, thirdPartyPlatform.getHeader());
-        wrapper.eq(thirdPartyPlatform.getCookie() != null, ThirdPartyPlatform::getCookie, thirdPartyPlatform.getCookie());
         return page(PageUtil.getPage(), wrapper);
     }
 
@@ -51,8 +49,6 @@ public class ThirdPartyPlatformServiceImpl extends ServiceImpl<ThirdPartyPlatfor
         wrapper.eq(thirdPartyPlatform.getUpdateDraftUrl() != null, ThirdPartyPlatform::getUpdateDraftUrl, thirdPartyPlatform.getUpdateDraftUrl());
         wrapper.eq(thirdPartyPlatform.getSetTopicUrl() != null, ThirdPartyPlatform::getSetTopicUrl, thirdPartyPlatform.getSetTopicUrl());
         wrapper.eq(thirdPartyPlatform.getPublishArticleUrl() != null, ThirdPartyPlatform::getPublishArticleUrl, thirdPartyPlatform.getPublishArticleUrl());
-        wrapper.eq(thirdPartyPlatform.getHeader() != null, ThirdPartyPlatform::getHeader, thirdPartyPlatform.getHeader());
-        wrapper.eq(thirdPartyPlatform.getCookie() != null, ThirdPartyPlatform::getCookie, thirdPartyPlatform.getCookie());
         return list(wrapper);
     }
 
