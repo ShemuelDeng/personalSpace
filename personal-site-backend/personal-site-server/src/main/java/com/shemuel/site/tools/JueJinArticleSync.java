@@ -50,7 +50,13 @@ public class JueJinArticleSync extends ArticleSynchronizer{
 
             RestResult publishResponseString = httpClient.doPostJson(thirdPartyPlatform.getPublishArticleUrl(), JSON.toJSONString(request), buildRequestHeader(thirdPartyPlatform.getHeader()), transferCookieToArray(thirdPartyPlatform.getCookie()));
             log.info("发布文章结果：{}", publishResponseString);
+            JuejinArticleDTO.CreateDraftResponse publishResutl =JSON.parseObject(publishResponseString.getData().toString(), JuejinArticleDTO.CreateDraftResponse.class);
+            if (publishResutl.getErr_no() != 0){
+                return RestResult.fail(publishResutl.getErr_msg());
+
+            }
             return publishResponseString;
+
         } catch (Exception e) {
             log.error("Error syncing article to Juejin: {}", e.getMessage(), e);
             return RestResult.error("同步到掘金失败"+e.getMessage());

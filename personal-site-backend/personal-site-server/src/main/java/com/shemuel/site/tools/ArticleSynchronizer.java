@@ -16,10 +16,12 @@ import com.shemuel.site.mapper.ThirdPartyPlatformMapper;
 import com.shemuel.site.service.ArticleSyncRecordService;
 import com.shemuel.site.utils.OkHttpClientInstance;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -60,7 +62,7 @@ public abstract class ArticleSynchronizer {
         queryExistDto.setSyncResult(1);
         // 先判断是否同步过
         if (articleSyncRecordService.selectList(queryExistDto).size() > 0) {
-            log.info("标题:{}, 已经同步过了,平台:{}", platformInfo.getPlatformName());
+            log.info("标题:{}, 已经同步过了,平台:{}", article.getTitle(),  platformInfo.getPlatformName());
             return;
         }
         // 执行同步逻辑
@@ -72,7 +74,9 @@ public abstract class ArticleSynchronizer {
         record.setArticleTitle(article.getTitle());
         record.setPlatformId(platformInfo.getId());
         record.setSyncResult(RestResult.isSuccess(syncArticleResult) ? 1 : 0);
-        if (!RestResult.isSuccess(syncArticleResult)){
+        if (RestResult.isSuccess(syncArticleResult)){
+            record.setSyncFailReason("同步成功");
+        }else{
             record.setSyncFailReason(JSON.toJSONString(syncArticleResult));
         }
         record.setSyncTime(LocalDateTime.now());
@@ -85,13 +89,15 @@ public abstract class ArticleSynchronizer {
     }
 
     protected Map<String,String> buildRequestHeader(String dbHeader) {
+        if (StringUtils.isEmpty(dbHeader)) return  new HashMap<>();
         String[] headers = dbHeader.split("\n");
 
         Map<String,String> headerMap = new HashMap<>();
         // 添加headers
         for (String header : headers) {
             if (!header.trim().isEmpty()) {
-                String[] parts = header.split(":", 2);
+                String[] parts = header.replace("\r","").replace("\t","").split(":", 2);
+
                 if (parts.length == 2) {
                     headerMap.put(parts[0].trim(), parts[1].trim());
                 }
@@ -103,6 +109,9 @@ public abstract class ArticleSynchronizer {
 
 
     protected String[] transferCookieToArray(String cookie) {
+        if (StringUtils.isEmpty(cookie)){
+            return null;
+        }
         String[] cookies = cookie.split("\n");
 
         return Arrays.stream(cookies)

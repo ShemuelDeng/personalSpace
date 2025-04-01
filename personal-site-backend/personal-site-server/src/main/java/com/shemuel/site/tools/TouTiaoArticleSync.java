@@ -40,7 +40,7 @@ public class TouTiaoArticleSync extends ArticleSynchronizer{
             createDraftParams.add("content", article.getHtmlContent());
             createDraftParams.add("title", article.getTitle());
             createDraftParams.add("search_creation_info", "{\"searchTopOne\":0,\"abstract\":\"\",\"clue_id\":\"\"}");
-            String titleId = System.currentTimeMillis() + "_" + (Math.random() * 10000000000L);
+            String titleId = "1743343554268_1820780999397388";
             createDraftParams.add("title_id", titleId);
             createDraftParams.add("extra", "{\"content_word_cnt\":" + countWords(article.getHtmlContent()) + ",\"is_multi_title\":0,\"sub_titles\":[],\"gd_ext\":{\"entrance\":\"\",\"from_page\":\"publisher_mp\",\"enter_from\":\"PC\",\"device_platform\":\"mp\",\"is_message\":0},\"tuwen_wtt_transfer_switch\":\"1\"}");
             createDraftParams.add("mp_editor_stat", "{}");
@@ -64,7 +64,7 @@ public class TouTiaoArticleSync extends ArticleSynchronizer{
             String[] headerArray = thirdPartyPlatform.getHeader().split("\n");
             for (String header : headerArray) {
                 if (!header.trim().isEmpty()) {
-                    String[] parts = header.split(":", 2);
+                    String[] parts = header.trim().replace("\r","").replace("\t","").split(":", 2);
                     if (parts.length == 2) {
                         createDraftHeaders.add(parts[0].trim(), parts[1].trim());
                     }
