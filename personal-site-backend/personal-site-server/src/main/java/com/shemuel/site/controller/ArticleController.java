@@ -17,6 +17,11 @@ import com.shemuel.site.service.ArticleService;
 import com.shemuel.site.common.RestResult;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 核心文章数据 控制器
@@ -66,16 +71,13 @@ public class ArticleController {
         return RestResult.success(articleService.deleteByIds(ids));
     }
 
-    @PostMapping("/sync/third-platform/")
+    @PostMapping("/sync/third-platform")
     @Operation(summary = "同步文章到CSDN,掘金,知乎平台")
-    public RestResult<Object> syncToOtherPlatForm(@RequestBody @Validated SyncArticleToOtherPlatFormRequest request) {
+    public RestResult<Object> syncToOtherPlatForm(@RequestBody @Validated SyncArticleToOtherPlatFormRequest request, HttpServletRequest httpRequest) {
         Article article = articleService.getById(request.getArticleId());
         if (article == null) {
             return RestResult.error("文章不存在");
         }
-        commonThreadPool.execute(()->{
-
-        });
         for (ArticleSynchronizer articleSynchronizer : articleSynchronizers) {
             ThirdPartyPlatformWithAuthInfo platformInfo = articleSynchronizer.getPlatformInfo();
             if (platformInfo == null){
@@ -85,6 +87,7 @@ public class ArticleController {
                 articleSynchronizer.syncArticle(article);
             }
         }
+
 
         return RestResult.success("任务提交成功");
     }

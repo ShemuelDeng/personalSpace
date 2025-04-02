@@ -8,11 +8,11 @@ export const API_ENDPOINTS = {
   // 文章相关接口
   ARTICLE: {
     LIST: '/api/article/list',  // 获取文章列表
-    DETAIL: '/api/article/detail/',  // 获取文章详情，需要拼接文章ID
+    DETAIL: '/api/article/',  // 获取文章详情，需要拼接文章ID
     CREATE: '/api/article/add',  // 创建文章
     UPDATE: '/api/article/update/',  // 更新文章，需要拼接文章ID
     DELETE: '/api/article/delete/',  // 删除文章，需要拼接文章ID
-    SYNC_CSDN: '/api/article/sync/csdn/',  // 同步文章到CSDN，需要拼接文章ID
+    SYNC_THIRD_PLATFORM: '/api/article/sync/third-platform',  // 同步文章到CSDN，需要拼接文章ID
   },
   
   // 标签相关接口

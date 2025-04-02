@@ -1,5 +1,27 @@
 <template>
   <div class="articles-container">
+    <!-- 多平台同步弹框 -->
+    <el-dialog
+      title="同步到第三方平台"
+      :visible.sync="syncDialogVisible"
+      width="500px"
+      @close="handleSyncDialogClose">
+      <div class="platform-list">
+        <div
+          v-for="platform in platforms"
+          :key="platform.id"
+          class="platform-item"
+          :class="{ 'selected': selectedPlatforms.includes(platform.id) }"
+          @click="togglePlatform(platform.id)">
+          <img :src="platform.icon" :alt="platform.name" class="platform-icon">
+          <span class="platform-name">{{ platform.name }}</span>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="syncDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleConfirmSync" :loading="syncing">确 定</el-button>
+      </span>
+    </el-dialog>
     <div class="article-cards">
       <div 
         v-for="article in articles" 
@@ -30,7 +52,7 @@
             <el-button
               size="mini"
               type="primary"
-              @click.stop="handleSyncToCSDN(article)">同步到CSDN</el-button>
+              @click.stop="handleSyncToThirdPlatform(article)">同步到第三方平台</el-button>
           </div>
         </div>
       </div>
@@ -50,6 +72,10 @@
 <script>
 import axios from 'axios'
 import { BASE_URL, API_ENDPOINTS } from '@/api/config'
+import juejinIcon from '@/assets/platform-icons/juejin.svg'
+import toutiaoIcon from '@/assets/platform-icons/toutiao.svg'
+import zhihuIcon from '@/assets/platform-icons/zhihu.svg'
+import csdnIcon from '@/assets/platform-icons/csdn.svg'
 
 export default {
   name: 'ArticlesList',
@@ -69,7 +95,18 @@ export default {
         require('@/assets/cover4.png')
       ],
       // 是否已添加滚动监听
-      scrollListenerAdded: false
+      scrollListenerAdded: false,
+      // 同步相关数据
+      syncDialogVisible: false,
+      currentArticle: null,
+      syncing: false,
+      selectedPlatforms: [],
+      platforms: [
+        { id: 1, name: '稀土掘金', icon: juejinIcon },
+        { id: 2, name: '今日头条', icon: toutiaoIcon },
+        { id: 3, name: '知乎', icon: zhihuIcon },
+        { id: 4, name: 'CSDN', icon: csdnIcon }
+      ]
     }
   },
   created() {
@@ -163,37 +200,55 @@ export default {
       return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
     },
     
-    async handleSyncToCSDN(article) {
+    // 打开同步弹框
+    handleSyncToThirdPlatform(article) {
+      event.stopPropagation()
+      this.currentArticle = article
+      this.syncDialogVisible = true
+    },
+
+    // 切换平台选择状态
+    togglePlatform(platformId) {
+      const index = this.selectedPlatforms.indexOf(platformId)
+      if (index === -1) {
+        this.selectedPlatforms.push(platformId)
+      } else {
+        this.selectedPlatforms.splice(index, 1)
+      }
+    },
+
+    // 关闭弹框时重置状态
+    handleSyncDialogClose() {
+      this.selectedPlatforms = []
+      this.currentArticle = null
+      this.syncing = false
+    },
+
+    // 确认同步到选中的平台
+    async handleConfirmSync() {
+      if (this.selectedPlatforms.length === 0) {
+        this.$message.warning('请至少选择一个平台')
+        return
+      }
+
+      this.syncing = true
       try {
-        // 阻止事件冒泡，避免触发行点击事件
-        event.stopPropagation()
-        
-        // 显示加载中提示
-        const loading = this.$loading({
-          lock: true,
-          text: '正在同步到CSDN...',
-          spinner: 'el-icon-loading',
-          background: 'rgba(0, 0, 0, 0.7)'
+        const response = await axios.post(`${BASE_URL}${API_ENDPOINTS.ARTICLE.SYNC_THIRD_PLATFORM}`, {
+          platformIds: this.selectedPlatforms,
+          articleId: this.currentArticle.id
         })
-        
-        // 调用同步接口
-        const response = await axios.post(`${BASE_URL}${API_ENDPOINTS.ARTICLE.SYNC_CSDN}${article.id}`)
-        
-        // 关闭加载提示
-        loading.close()
-        
-        // 根据返回结果显示不同提示
+
         if (response.data.code === 200) {
-          this.$message.success('文章已成功同步到CSDN')
+          this.$message.success('文章已成功同步到选中平台')
+          this.syncDialogVisible = false
         } else {
           this.$message.error(`同步失败: ${response.data.message || '未知错误'}`)
         }
       } catch (error) {
-        // 关闭可能存在的加载提示
-        this.$loading().close()
-        
-        console.error('同步到CSDN失败:', error)
-        this.$message.error('同步到CSDN失败: ' + (error.response?.data?.message || error.message || '未知错误'))
+        console.error('同步到第三方平台失败:', error)
+        this.$message.error('同步失败: ' + (error.response?.data?.message || error.message || '未知错误'))
+      } finally {
+        this.syncing = false
       }
     }
   }
@@ -323,6 +378,45 @@ export default {
   color: #909399;
 }
 
+/* 平台选择弹框样式 */
+.platform-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  padding: 10px;
+}
+
+.platform-item {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border: 1px solid #dcdfe6;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.platform-item:hover {
+  border-color: #409eff;
+  background-color: #f5f7fa;
+}
+
+.platform-item.selected {
+  border-color: #409eff;
+  background-color: #ecf5ff;
+}
+
+.platform-icon {
+  width: 32px;
+  height: 32px;
+  margin-right: 10px;
+}
+
+.platform-name {
+  font-size: 14px;
+  color: #606266;
+}
+
 /* 响应式调整 */
 @media screen and (max-width: 768px) {
   .article-cards {
@@ -331,6 +425,10 @@ export default {
   
   .article-cover {
     height: 200px;
+  }
+
+  .platform-list {
+    grid-template-columns: 1fr;
   }
 }
 </style>

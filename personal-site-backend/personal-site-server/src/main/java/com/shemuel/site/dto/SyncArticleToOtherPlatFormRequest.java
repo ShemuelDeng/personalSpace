@@ -17,9 +17,11 @@ public class SyncArticleToOtherPlatFormRequest {
 
     @NotEmpty
     @NotNull
+    @Schema(description = "平台：1-稀土掘金；2-今日头条；3-知乎；4-CSDN")
     private List<Integer> platformIds;
 
     @NotNull
+    @Schema(description = "文章id")
     private Integer articleId;
 
 }
