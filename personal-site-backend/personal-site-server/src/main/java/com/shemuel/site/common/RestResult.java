@@ -12,16 +12,16 @@ import java.util.Optional;
 @Data
 public class RestResult<T> {
 
-    @Schema(name = "状态码")
+    @Schema(description = "状态码")
     private Integer code;
 
-    @Schema(name = "消息")
+    @Schema(description = "消息")
     private String message;
 
-    @Schema(name = "数据")
+    @Schema(description = "数据")
     private T data;
 
-    @Schema(name = "额外信息")
+    @Schema(description = "额外信息")
     private Map<String,Object> extra = new HashMap<>();
 
     public RestResult<T> putExtra(String key, Object value) {

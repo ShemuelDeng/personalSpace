@@ -14,7 +14,9 @@ export const API_ENDPOINTS = {
     DELETE: '/api/article/delete/',  // 删除文章，需要拼接文章ID
     SYNC_THIRD_PLATFORM: '/api/article/sync/third-platform',  // 同步文章到CSDN，需要拼接文章ID
   },
-  
+  ARTICLE_SYNC: {
+    LIST: '/api/article-sync-record/list'
+  },
   // 标签相关接口
   TAG: {
     LIST: '/api/user-tag/list',  // 获取标签列表

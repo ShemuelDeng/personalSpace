@@ -53,6 +53,10 @@
               size="mini"
               type="primary"
               @click.stop="handleSyncToThirdPlatform(article)">同步到第三方平台</el-button>
+            <el-button
+              size="mini"
+              type="info"
+              @click.stop="viewSyncRecords(article.id)">查看同步结果</el-button>
           </div>
         </div>
       </div>
@@ -224,6 +228,11 @@ export default {
       this.syncing = false
     },
 
+    // 查看同步记录
+    viewSyncRecords(articleId) {
+      this.$router.push(`/article-sync-records?articleId=${articleId}`)
+    },
+
     // 确认同步到选中的平台
     async handleConfirmSync() {
       if (this.selectedPlatforms.length === 0) {
@@ -264,9 +273,12 @@ export default {
 
 .article-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: 1fr;
   gap: 20px;
   margin-bottom: 30px;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .article-card {
@@ -277,10 +289,16 @@ export default {
   transition: transform 0.3s, box-shadow 0.3s;
   cursor: pointer;
   display: flex;
-  flex-direction: column;
-  height: 100%;
+  flex-direction: row;
+  height: 220px;
 }
 
+.article-cover {
+  width: 300px;
+  height: 100%;
+  flex-shrink: 0;
+  order: 2;
+}
 .article-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 5px 15px rgba(0,0,0,0.2);
@@ -308,10 +326,12 @@ export default {
 }
 
 .article-info {
-  padding: 15px;
+  padding: 20px;
   flex: 1;
   display: flex;
   flex-direction: column;
+  order: 1;
+  text-align: left;
 }
 
 .article-title {
@@ -423,8 +443,19 @@ export default {
     grid-template-columns: 1fr;
   }
   
+  .article-card {
+    flex-direction: column;
+    height: auto;
+  }
+
   .article-cover {
+    width: 100%;
     height: 200px;
+    order: 1;
+  }
+
+  .article-info {
+    order: 2;
   }
 
   .platform-list {

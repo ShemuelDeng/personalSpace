@@ -1,6 +1,10 @@
 package com.shemuel.site.service.impl;
 
 import java.util.List;
+import java.util.Objects;
+
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import com.shemuel.site.mapper.ThirdPartyPlatformAuthInfoMapper;
 import com.shemuel.site.entity.ThirdPartyPlatformAuthInfo;
@@ -61,7 +65,19 @@ public class ThirdPartyPlatformAuthInfoServiceImpl extends ServiceImpl<ThirdPart
      */
     @Override
     public boolean update(ThirdPartyPlatformAuthInfo thirdPartyPlatformAuthInfo) {
-        return updateById(thirdPartyPlatformAuthInfo);
+        if (thirdPartyPlatformAuthInfo == null || thirdPartyPlatformAuthInfo.getPlatformId() == null) {
+            return false;
+        }
+
+        LambdaUpdateWrapper<ThirdPartyPlatformAuthInfo> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper
+                // 根据 platformId 定位记录
+                .eq(ThirdPartyPlatformAuthInfo::getPlatformId, thirdPartyPlatformAuthInfo.getPlatformId())
+                // 动态设置非空字段
+                .set(StringUtils.isNotEmpty(thirdPartyPlatformAuthInfo.getHeader()), ThirdPartyPlatformAuthInfo::getHeader, thirdPartyPlatformAuthInfo.getHeader())
+                .set( StringUtils.isNotEmpty(thirdPartyPlatformAuthInfo.getCookie()), ThirdPartyPlatformAuthInfo::getCookie, thirdPartyPlatformAuthInfo.getCookie());
+
+        return update(updateWrapper);
     }
 
     /**

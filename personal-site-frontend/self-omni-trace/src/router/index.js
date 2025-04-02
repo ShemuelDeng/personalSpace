@@ -41,6 +41,11 @@ const routes = [
         path: '/article/:id',
         component: () => import('@/views/ArticleDetail.vue'),
         meta: { title: '文章详情' }
+      },
+      {
+        path: '/article-sync-records',
+        component: () => import('@/views/ArticleSyncRecords.vue'),
+        meta: { title: '同步记录' }
       }
     ]
   }

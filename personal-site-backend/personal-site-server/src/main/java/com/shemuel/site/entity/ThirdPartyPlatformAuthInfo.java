@@ -22,7 +22,7 @@ public class ThirdPartyPlatformAuthInfo implements Serializable {
     @Schema(description = "用户id")
     private Long userId;
 
-    @Schema(description = "平台ID，关联third_party_platform.id")
+    @Schema(description = "平台ID，关联third_party_platform.id, 1: 稀土掘金； 2： 今日头条；3： 知乎；4：csdn")
     private Integer platformId;
 
     @Schema(description = "请求头信息")

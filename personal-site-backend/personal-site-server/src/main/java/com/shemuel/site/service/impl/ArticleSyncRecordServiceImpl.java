@@ -1,6 +1,12 @@
 package com.shemuel.site.service.impl;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.shemuel.site.entity.ThirdPartyPlatform;
+import com.shemuel.site.service.ThirdPartyPlatformService;
 import org.springframework.stereotype.Service;
 import com.shemuel.site.mapper.ArticleSyncRecordMapper;
 import com.shemuel.site.entity.ArticleSyncRecord;
@@ -18,11 +24,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ArticleSyncRecordServiceImpl extends ServiceImpl<ArticleSyncRecordMapper, ArticleSyncRecord> implements ArticleSyncRecordService {
 
+    private final ThirdPartyPlatformService thirdPartyPlatformService;
+
     /**
      * 查询文章同步记录表分页列表
      */
     @Override
     public IPage<ArticleSyncRecord> selectPage(ArticleSyncRecord articleSyncRecord) {
+
+        List<ThirdPartyPlatform> thirdPartyPlatforms = thirdPartyPlatformService.selectList(new ThirdPartyPlatform());
+        Map<Integer, String> nameMap = thirdPartyPlatforms.stream().collect(Collectors.toMap(ThirdPartyPlatform::getId, ThirdPartyPlatform::getPlatformName));
+
         LambdaQueryWrapper<ArticleSyncRecord> wrapper = new LambdaQueryWrapper<>();
         // 构建查询条件
         wrapper.eq(articleSyncRecord.getId() != null, ArticleSyncRecord::getId, articleSyncRecord.getId());
@@ -32,7 +44,14 @@ public class ArticleSyncRecordServiceImpl extends ServiceImpl<ArticleSyncRecordM
         wrapper.eq(articleSyncRecord.getSyncResult() != null, ArticleSyncRecord::getSyncResult, articleSyncRecord.getSyncResult());
         wrapper.eq(articleSyncRecord.getSyncFailReason() != null, ArticleSyncRecord::getSyncFailReason, articleSyncRecord.getSyncFailReason());
         wrapper.eq(articleSyncRecord.getSyncTime() != null, ArticleSyncRecord::getSyncTime, articleSyncRecord.getSyncTime());
-        return page(PageUtil.getPage(), wrapper);
+        Page<ArticleSyncRecord> pageResult = page(PageUtil.getPage(), wrapper);
+        List<ArticleSyncRecord> collect = pageResult.getRecords().stream().map(o -> {
+            o.setPlatformName(nameMap.get(o.getPlatformId()));
+            return o;
+        }).collect(Collectors.toList());
+        pageResult.setRecords(collect);
+
+        return pageResult;
     }
 
     /**

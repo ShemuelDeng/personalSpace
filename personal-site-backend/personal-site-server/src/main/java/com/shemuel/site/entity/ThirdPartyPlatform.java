@@ -23,7 +23,7 @@ public class ThirdPartyPlatform implements Serializable {
     private Integer platformType;
 
     @Schema(description = "平台名称：1-稀土掘金；2-今日头条；3-知乎；4-CSDN")
-    private Integer platformName;
+    private String platformName;
 
     @Schema(description = "创建草稿URL")
     private String createDraftUrl;

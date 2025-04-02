@@ -68,6 +68,7 @@ export default {
         { path: '/navigation', icon: 'el-icon-guide', title: '导航站' },
         { path: '/timeline', icon: 'el-icon-time', title: '时间轴' },
         { path: '/projects', icon: 'el-icon-s-cooperation', title: '项目' },
+        { path: '/article-sync-records', icon: 'el-icon-document-copy', title: '文章同步记录' },
         { path: '/editor', icon: 'el-icon-edit', title: '编辑器' },
         { path: '/demo', icon: 'el-icon-s-platform', title: 'demo' },
         { path: '/friends', icon: 'el-icon-user', title: '友链' }
