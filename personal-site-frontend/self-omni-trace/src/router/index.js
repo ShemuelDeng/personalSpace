@@ -46,6 +46,11 @@ const routes = [
         path: '/article-sync-records',
         component: () => import('@/views/ArticleSyncRecords.vue'),
         meta: { title: '同步记录' }
+      },
+      {
+        path: '/resume',
+        component: () => import('@/views/ResumeView.vue'),
+        meta: { title: '个人简历' }
       }
     ]
   }
