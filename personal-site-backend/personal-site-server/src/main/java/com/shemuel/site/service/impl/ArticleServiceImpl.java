@@ -32,6 +32,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Override
     public IPage<Article> selectPage(Article article) {
         LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
+        // 选择除content和htmlContent之外的所有字段
+        wrapper.select(Article.class, info -> !info.getColumn().equals("content") && !info.getColumn().equals("html_content"));
         // 构建查询条件
         wrapper.eq(article.getId() != null, Article::getId, article.getId());
         wrapper.eq(article.getUserId() != null, Article::getUserId, article.getUserId());
@@ -57,6 +59,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Override
     public List<Article> selectList(Article article) {
         LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
+        // 选择除content和htmlContent之外的所有字段
+        wrapper.select(Article.class, info -> !info.getColumn().equals("content") && !info.getColumn().equals("html_content"));
         // 构建查询条件
         wrapper.eq(article.getId() != null, Article::getId, article.getId());
         wrapper.eq(article.getUserId() != null, Article::getUserId, article.getUserId());

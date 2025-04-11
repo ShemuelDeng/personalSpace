@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
+import router from '@/router'
 
 // 创建axios实例
 const service = axios.create({
@@ -15,7 +16,7 @@ service.interceptors.request.use(
     // 在请求发送前可以进行一些处理，比如添加token
     const token = localStorage.getItem('token')
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`
+      config.headers['Authorization'] = `${token}`
     }
     return config
   },
@@ -31,8 +32,17 @@ service.interceptors.response.use(
     const res = response.data
     // 这里可以根据后端的响应结构进行统一处理
     if (res.code !== 200) {
-      Message.error(res.message || '请求失败')
-      return Promise.reject(new Error(res.message || '请求失败'))
+        if (res.code === 401){
+            localStorage.setItem('token', null)
+            // 保存当前页面路径
+            const currentPath = router.currentRoute.fullPath
+            router.push({
+                path: '/login',
+                query: { redirect: currentPath }
+            })
+        }
+        Message.error(res.message || '请求失败')
+        return Promise.reject(new Error(res.message || '请求失败'))
     }
     return res
   },

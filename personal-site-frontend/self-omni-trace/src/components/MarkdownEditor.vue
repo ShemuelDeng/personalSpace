@@ -2,6 +2,13 @@
   <div class="editor-container" :class="{ 'fullscreen': isFullScreen }">
     <div class="editor-header">
       <div class="editor-actions">
+        <el-input
+          v-model="publishForm.title"
+          placeholder="输入文章的标题..."
+          size="small"
+          style="width: 400px; margin-right: 10px;"
+          clearable>  
+        </el-input>
         <el-button 
           type="primary" 
           size="small" 
@@ -10,26 +17,19 @@
           :loading="copying">
           复制为HTML
         </el-button>
-        <el-input
-          v-model="publishForm.title"
-          placeholder="输入文章的标题..."
-          size="small"
-          style="margin-top: 10px; width: 100%;"
-          clearable>  
-        </el-input>
-        <el-button
-          type="text"
-          size="small"
-          icon="el-icon-full-screen"
-          @click="toggleFullScreen">
-          {{ isFullScreen ? '退出全屏' : '全屏编辑' }}
-        </el-button>
         <el-button
           type="primary"
           size="small"
           icon="el-icon-upload"
           @click="showPublishDialog">
           发布文章
+        </el-button>
+        <el-button
+          type="text"
+          size="small"
+          icon="el-icon-full-screen"
+          @click="toggleFullScreen">
+          {{ isFullScreen ? '退出全屏' : '全屏编辑' }}
         </el-button>
       </div>
     </div>
