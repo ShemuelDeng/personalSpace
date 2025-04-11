@@ -38,6 +38,9 @@ spring:
     sql:
       init:
         schema-locations: classpath:db/schema-h2.sql
+  web:
+    resources:
+      static-locations: classpath:/static/
 #  mvc:
 #    static-path-pattern: /statics/**
 #    resources:
@@ -64,6 +67,7 @@ springdoc:
     title: 接口文档
     version: 1.0.0
     description: 接口文档
+
 
 
 

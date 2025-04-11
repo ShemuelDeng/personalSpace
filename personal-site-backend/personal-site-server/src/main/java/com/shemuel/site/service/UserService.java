@@ -35,14 +35,13 @@ public class UserService {
                 throw  new BusinessException(500, "邮箱已被注册");
             } else if (e.getMessage().contains("idx_phone")) {
                 throw  new BusinessException(500, "手机号已被注册");
-            }else if (e.getMessage().contains("idx_username")) {
+            }else {
                 throw  new BusinessException(500, "用户名已被注册");
             }
         }catch (Exception e){
             log.error("用户注册失败", e);
-
+            throw new BusinessException("服务异常");
         }
-        throw new BusinessException();
     }
 
     public Optional<UserProfile> findByIdentifier(String identifier) {

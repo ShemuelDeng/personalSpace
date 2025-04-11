@@ -5,7 +5,7 @@
       <div class="login-left">
         <img src="@/assets/logo.png" alt="Logo" class="brand-logo">
         <h2 class="brand-title">欢迎使用</h2>
-        <p class="brand-desc">您的个人空间管理系统</p>
+        <p class="brand-desc">意识档案馆</p>
       </div>
       
       <!-- 右侧登录区域 -->
@@ -101,6 +101,8 @@
 </template>
 
 <script>
+import { AUTH_API } from '@/api/auth'
+
 export default {
   data() {
     // 确认密码验证
@@ -168,57 +170,116 @@ export default {
   },
   methods: {
     // 账号密码登录
-    handleAccountLogin() {
-      this.$refs.accountForm.validate(valid => {
+    async handleAccountLogin() {
+      try {
+        const valid = await this.$refs.accountForm.validate()
         if (valid) {
-          // TODO: 实现登录逻辑
-          localStorage.setItem('token', 'your_auth_token')
-          this.$router.push('/home')
+          const response = await AUTH_API.login(this.accountForm.username, this.accountForm.password)
+          console.log(response)
+          if (response.code === 200) {
+            const tokenInfo = response.data
+            localStorage.setItem('token', tokenInfo.tokenValue)
+            this.$message.success('登录成功')
+            this.$router.push('/home')
+          } else {
+            this.$message.error(response.data.msg || '登录失败')
+            // this.refreshCaptcha()
+          }
         }
-      })
+      } catch (error) {
+        this.$message.error('登录失败，请稍后重试')
+        console.error('登录错误:', error)
+      }
     },
 
     // 手机号登录
-    handlePhoneLogin() {
-      this.$refs.phoneForm.validate(valid => {
+    async handlePhoneLogin() {
+      try {
+        const valid = await this.$refs.phoneForm.validate()
         if (valid) {
-          // TODO: 实现手机号登录逻辑
-          localStorage.setItem('token', 'your_auth_token')
-          this.$router.push('/home')
+          const response = await AUTH_API.login(this.phoneForm.phone, this.phoneForm.smsCode)
+          if (response.data.code === 200) {
+            const tokenInfo = response.data.data
+            localStorage.setItem('token', tokenInfo.tokenValue)
+            // this.$message.success('登录成功')
+            this.$router.push('/home')
+          } else {
+            this.$message.error(response.data.msg || '登录失败')
+          }
         }
-      })
+      } catch (error) {
+        this.$message.error('登录失败，请稍后重试')
+        console.error('登录错误:', error)
+      }
     },
 
     // 注册
-    handleRegister() {
-      this.$refs.registerForm.validate(valid => {
-        if (valid) {
-          // TODO: 实现注册逻辑
-          this.isLogin = true
-          this.$message.success('注册成功，请登录')
-        }
-      })
+    async handleRegister() {
+      // try {
+      //   const valid = await this.$refs.registerForm.validate()
+      //   if (valid) {
+      //     const registerData = {
+      //       username: this.registerForm.username,
+      //       password: this.registerForm.password,
+      //       phone: this.registerForm.phone,
+      //       smsCode: this.registerForm.smsCode
+      //     }
+      //     const response = await AUTH_API.register(registerData)
+      //     if (response.data.code === 200) {
+      //       this.$message.success('注册成功，请登录')
+      //       this.isLogin = true
+      //       this.$nextTick(() => {
+      //         this.$refs.accountForm?.resetFields()
+      //       })
+      //     } else {
+      //       this.$message.error(response.data.msg || '注册失败')
+      //     }
+      //   }
+      // } catch (error) {
+      //   this.$message.error('注册失败，请稍后重试')
+      //   console.error('注册错误:', error)
+      // }
     },
 
     // 刷新图形验证码
-    refreshCaptcha() {
-      // TODO: 实现刷新验证码逻辑
+    async refreshCaptcha() {
+      try {
+        const response = await AUTH_API.getCaptcha()
+        const blob = new Blob([response.data], { type: 'image/jpeg' })
+        const captchaUrl = URL.createObjectURL(blob)
+        const captchaImg = this.$el.querySelector('.captcha-img')
+        if (captchaImg) {
+          captchaImg.src = captchaUrl
+        }
+      } catch (error) {
+        console.error('获取验证码失败:', error)
+      }
     },
 
     // 发送短信验证码
-    sendSmsCode() {
+    async sendSmsCode() {
       if (!this.phoneForm.phone) {
         this.$message.warning('请先输入手机号')
         return
       }
-      // TODO: 实现发送验证码逻辑
-      this.smsTimer = 60
-      const timer = setInterval(() => {
-        this.smsTimer--
-        if (this.smsTimer <= 0) {
-          clearInterval(timer)
+      try {
+        const response = await AUTH_API.sendSmsCode(this.phoneForm.phone)
+        if (response.data.code === 200) {
+          this.$message.success('验证码发送成功')
+          this.smsTimer = 60
+          const timer = setInterval(() => {
+            this.smsTimer--
+            if (this.smsTimer <= 0) {
+              clearInterval(timer)
+            }
+          }, 1000)
+        } else {
+          this.$message.error(response.data.msg || '发送验证码失败')
         }
-      }, 1000)
+      } catch (error) {
+        this.$message.error('发送验证码失败，请稍后重试')
+        console.error('发送验证码错误:', error)
+      }
     },
 
     // 发送注册短信验证码

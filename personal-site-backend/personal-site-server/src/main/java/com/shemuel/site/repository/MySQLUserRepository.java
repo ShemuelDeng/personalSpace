@@ -38,6 +38,9 @@ public class MySQLUserRepository implements UserRepository {
         LambdaQueryWrapper<UserProfile> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(UserProfile::getEmail, identifier);
         UserProfile userProfile = userProfileMapper.selectOne(queryWrapper);
+        if (userProfile == null){
+          return findByUsername(identifier);
+        }
         return Optional.ofNullable(userProfile);
     }
 

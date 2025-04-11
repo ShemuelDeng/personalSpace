@@ -102,8 +102,8 @@
 </template>
 
 <script>
-import axios from 'axios'
-import { BASE_URL, API_ENDPOINTS } from '@/api/config'
+import request from '@/utils/request'
+import { API_ENDPOINTS } from '@/api/config'
 
 export default {
   name: 'ArticleSyncRecords',
@@ -144,14 +144,14 @@ export default {
       try {
         // 从路由参数中获取文章ID
         const articleId = this.$route.query.articleId
-        const response = await axios.get(`${BASE_URL}${API_ENDPOINTS.ARTICLE_SYNC.LIST}`, {
+        const response = await request.get(API_ENDPOINTS.ARTICLE_SYNC.LIST, {
           params: {
             current: this.currentPage,
             size: this.pageSize,
             articleId: articleId
           }
         })
-        const { records, total } = response.data.data
+        const { records, total } = response.data
         this.records = records
         this.total = total
       } catch (error) {
@@ -205,7 +205,7 @@ export default {
         //await this.settingFormRef.validate()
         this.submitting = true
         
-        await axios.put(`${BASE_URL}/api/third-party-platform-auth-info/update`, this.settingForm)
+        await request.put('/api/third-party-platform-auth-info/update', this.settingForm)
         this.$message.success('配置更新成功')
         this.dialogVisible = false
       } catch (error) {

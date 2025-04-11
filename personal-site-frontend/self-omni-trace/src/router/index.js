@@ -62,4 +62,32 @@ const router = new VueRouter({
   routes
 })
 
+// 全局导航守卫
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('token')
+  if (to.path === '/login') {
+    // 如果已登录且要去登录页，重定向到首页
+    if (token) {
+      next('/')
+    } else {
+      next()
+    }
+  } else {
+    // 检查页面是否需要登录权限
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+      // 需要登录权限但未登录，重定向到登录页
+      if (!token) {
+        next({
+          path: '/login',
+          query: { redirect: to.fullPath }
+        })
+      } else {
+        next()
+      }
+    } else {
+      next()
+    }
+  }
+})
+
 export default router

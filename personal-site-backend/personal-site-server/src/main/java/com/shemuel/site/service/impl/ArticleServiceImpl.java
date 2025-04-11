@@ -47,6 +47,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         wrapper.eq(article.getSaveCount() != null, Article::getSaveCount, article.getSaveCount());
         wrapper.eq(article.getCreatedAt() != null, Article::getCreatedAt, article.getCreatedAt());
         wrapper.eq(article.getUpdatedAt() != null, Article::getUpdatedAt, article.getUpdatedAt());
+        wrapper.orderByDesc(Article::getUpdatedAt);
         return page(PageUtil.getPage(), wrapper);
     }
 

@@ -74,8 +74,8 @@
 </template>
 
 <script>
-import axios from 'axios'
-import { BASE_URL, API_ENDPOINTS } from '@/api/config'
+import request from '@/utils/request'
+import { API_ENDPOINTS } from '@/api/config'
 import juejinIcon from '@/assets/platform-icons/juejin.svg'
 import toutiaoIcon from '@/assets/platform-icons/toutiao.svg'
 import zhihuIcon from '@/assets/platform-icons/zhihu.svg'
@@ -168,15 +168,15 @@ export default {
       
       this.loading = true
       try {
-        const response = await axios.get(`${BASE_URL}${API_ENDPOINTS.ARTICLE.LIST}`, {
+        const response = await request.get(API_ENDPOINTS.ARTICLE.LIST, {
           params: {
             page: this.currentPage,
             size: this.pageSize
           }
         })
-        
-        const newArticles = response.data.data.records || []
-        this.total = response.data.data.total || 0
+        console.log(response)
+        const newArticles = response.data.records || []
+        this.total = response.data.total || 0
         
         // 如果是追加模式，则将新文章添加到现有列表中
         if (append) {
@@ -242,11 +242,12 @@ export default {
 
       this.syncing = true
       try {
-        const response = await axios.post(`${BASE_URL}${API_ENDPOINTS.ARTICLE.SYNC_THIRD_PLATFORM}`, {
+        const response = await request.post(API_ENDPOINTS.ARTICLE.SYNC_THIRD_PLATFORM, {
           platformIds: this.selectedPlatforms,
           articleId: this.currentArticle.id
         })
 
+ 
         if (response.data.code === 200) {
           this.$message.success('文章已成功同步到选中平台')
           this.syncDialogVisible = false

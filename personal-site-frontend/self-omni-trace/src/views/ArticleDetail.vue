@@ -31,8 +31,8 @@
 <script>
 import { mavonEditor } from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
-import axios from 'axios'
-import { BASE_URL, API_ENDPOINTS } from '@/api/config'
+import request from '@/utils/request'
+import { API_ENDPOINTS } from '@/api/config'
 
 export default {
   name: 'ArticleDetail',
@@ -56,8 +56,8 @@ export default {
     async fetchArticleDetail(id) {
       this.loading = true
       try {
-        const response = await axios.get(`${BASE_URL}${API_ENDPOINTS.ARTICLE.DETAIL}${id}`)
-        this.article = response.data.data
+        const response = await request.get(`${API_ENDPOINTS.ARTICLE.DETAIL}${id}`)
+        this.article = response.data
       } catch (error) {
         console.error('获取文章详情失败:', error)
         this.$message.error('获取文章详情失败')

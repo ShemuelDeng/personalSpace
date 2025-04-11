@@ -38,6 +38,9 @@ spring:
     sql:
       init:
         schema-locations: classpath:db/schema-mysql.sql
+  web:
+    resources:
+      static-locations: classpath:/static/
 #  mvc:
 #    static-path-pattern: /statics/**
 #    resources:

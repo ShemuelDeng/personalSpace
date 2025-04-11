@@ -327,6 +327,7 @@ export default {
             this.handlePublishDialogClose();
             this.$message.success('发布成功！');
             this.$emit('article-published');
+            this.$router.push("/articles")
           } catch (error) {
             console.error('发布文章失败:', error);
             this.$message.error('发布文章失败，请重试');
