@@ -3,6 +3,10 @@ package com.shemuel.site.controller;
 import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import cn.dev33.satoken.SaManager;
+import cn.dev33.satoken.context.SaTokenContext;
+import cn.dev33.satoken.stp.SaTokenInfo;
+import cn.dev33.satoken.stp.StpUtil;
 import com.shemuel.site.bo.ThirdPartyPlatformWithAuthInfo;
 import com.shemuel.site.dto.SaveArticleDTO;
 import com.shemuel.site.dto.SyncArticleToOtherPlatFormRequest;
@@ -78,16 +82,23 @@ public class ArticleController {
         if (article == null) {
             return RestResult.error("文章不存在");
         }
+
+        SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
+        commonThreadPool.execute(()-> {
+
+
+
+        });
+
         for (ArticleSynchronizer articleSynchronizer : articleSynchronizers) {
             ThirdPartyPlatformWithAuthInfo platformInfo = articleSynchronizer.getPlatformInfo();
             if (platformInfo == null){
                 continue;
             }
             if (request.getPlatformIds().contains(platformInfo.getPlatformType())){
-                articleSynchronizer.syncArticle(article);
+                    articleSynchronizer.syncArticle(article);
             }
         }
-
 
         return RestResult.success("任务提交成功");
     }

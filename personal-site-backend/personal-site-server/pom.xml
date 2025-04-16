@@ -164,7 +164,7 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>
-                    <include>static/**</include>
+                    <include>**/**</include> <!-- 保险起见可以包含所有 -->
                 </includes>
             </resource>
         </resources>
