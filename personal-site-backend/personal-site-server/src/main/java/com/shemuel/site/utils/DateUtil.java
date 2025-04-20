@@ -7,8 +7,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * 时间工具类
@@ -359,5 +361,20 @@ public class DateUtil {
             sb.append(second).append("秒");
         }
         return sb.toString();
+    }
+
+    public static String getDateWithWeek() {
+        // 获取当前日期
+        LocalDate today = LocalDate.now();
+
+        // 格式化日期
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formattedDate = today.format(dateFormatter);
+
+        // 获取星期几
+        DayOfWeek dayOfWeek = today.getDayOfWeek();
+        String dayName = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.CHINA); // 中文星期
+
+        return formattedDate + " " + dayName;
     }
 }

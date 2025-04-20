@@ -76,4 +76,14 @@ knife4j:
           - com.shemuel
 
 
+wx:
+  appid: wx7b4a5857a94deb45
+  secret: b43d4aacccdf8200e48a207ea7748eb5
+  openIds: o5Vf67DEFy-mHQ3UZJcU6Gyf1T5c
+  templateId:
+    gold: mylZLVa52KIvhJtZjS0kmvjxNesvjzngU1Ll0GMx9Lw
+
+gaode:
+  api:
+    key: dc9a8412cdc58d95c2ab7e5aa87323b6
 
