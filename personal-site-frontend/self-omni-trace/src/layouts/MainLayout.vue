@@ -67,7 +67,7 @@ export default {
         { path: '/workspace', icon: 'el-icon-office-building', title: '工作空间' },
         { path: '/resume', icon: 'el-icon-user', title: '个人简历' },
         // { path: '/navigation', icon: 'el-icon-guide', title: '导航站' },
-        // { path: '/timeline', icon: 'el-icon-time', title: '时间轴' },
+        { path: '/timeline', icon: 'el-icon-time', title: '时间轴' },
         // { path: '/projects', icon: 'el-icon-s-cooperation', title: '项目' },
         { path: '/article-sync-records', icon: 'el-icon-document-copy', title: '文章同步记录' },
         { path: '/editor', icon: 'el-icon-edit', title: '编辑器' },

@@ -154,6 +154,7 @@ import { mavonEditor } from 'mavon-editor';
 import 'mavon-editor/dist/css/index.css';
 import axios from 'axios';
 import { BASE_URL, API_ENDPOINTS } from '@/api/config';
+import request from '@/utils/request';
 
 export default {
   name: 'MarkdownEditor',
@@ -243,10 +244,13 @@ export default {
   methods: {
     async fetchUserTags() {
       try {
-        const response = await axios.get(`${BASE_URL}${API_ENDPOINTS.TAG.LIST}`);
-        if (response.data ) {
+        const response = await request({
+          url: API_ENDPOINTS.TAG.LIST,
+          method: 'get'
+        });
+        if (response.data) {
           console.log(response.data)
-          this.commonTags = response.data.data.records;
+          this.commonTags = response.data.records;
         }
       } catch (error) {
         console.error('获取用户标签失败:', error);
@@ -256,9 +260,12 @@ export default {
 
     async fetchUserCategories() {
       try {
-        const response = await axios.get(`${BASE_URL}${API_ENDPOINTS.CATEGORY.LIST}`);
-        if (response.data ) {
-          this.categories = response.data.data.records;
+        const response = await request({
+          url: API_ENDPOINTS.CATEGORY.LIST,
+          method: 'get'
+        });
+        if (response.data) {
+          this.categories = response.data.records;
         }
       } catch (error) {
         console.error('获取用户分类失败:', error);

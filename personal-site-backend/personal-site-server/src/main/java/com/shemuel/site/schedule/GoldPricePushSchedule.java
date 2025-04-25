@@ -52,7 +52,7 @@ public class GoldPricePushSchedule {
     /**
      * 工作日的每天下午4点执行（周一到周五 16:00:00）
      */
-    @Scheduled(cron = "0 0 16 ? * MON-FRI")
+    @Scheduled(cron = "0 0 17 ? * MON-FRI")
 //    @Scheduled(cron = "0 * * * * *")
     public void pushGoldPrice() {
         AccessTokenDTO accessToken = getAccessToken();

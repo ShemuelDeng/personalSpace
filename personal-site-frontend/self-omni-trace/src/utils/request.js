@@ -31,24 +31,32 @@ service.interceptors.response.use(
   response => {
     const res = response.data
     // 这里可以根据后端的响应结构进行统一处理
-    if (res.code !== 200) {
-        if (res.code === 401){
-            localStorage.setItem('token', null)
-            // 保存当前页面路径
-            const currentPath = router.currentRoute.fullPath
-            router.push({
-                path: '/login',
-                query: { redirect: currentPath }
-            })
-        }
-        Message.error(res.message || '请求失败')
-        return Promise.reject(new Error(res.message || '请求失败'))
-    }
     return res
   },
   error => {
-    console.error('响应错误：', error)
-    Message.error(error.message || '请求失败')
+    if (error.response) {
+      const { status } = error.response
+      if (status === 401) {
+        localStorage.setItem('token', null)
+        console.log('token过期1111')
+
+          // 2. 避免重复跳转
+          if (router.currentRoute.path !== '/login') {
+              const currentPath = router.currentRoute.fullPath
+              router.replace({
+                  path: '/login',
+                  query: { redirect: currentPath }
+              })
+          }
+      }
+
+      // 可选：根据其他状态码处理不同错误
+      Message.error(error.response.data?.message || '请求失败')
+    } else {
+      // 处理网络错误或无响应的情况
+      // Message.error('网络错误或服务器无响应')
+        console.log('网络错误或服务器无响应', error)
+    }
     return Promise.reject(error)
   }
 )

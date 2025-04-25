@@ -11,7 +11,7 @@ public class CorsConfig implements WebMvcConfigurer {
         registry.addMapping("/**") // 所有接口
         .allowCredentials(true) // 是否发送 Cookie
         .allowedOriginPatterns("*") // 支持域
-        .allowedMethods(new String[]{"GET", "POST", "PUT", "DELETE"}) // 支持方法
+        .allowedMethods(new String[]{"GET", "POST", "PUT", "DELETE","OPTIONS"}) // 支持方法
         .allowedHeaders("*")
         .exposedHeaders("*");
     }
