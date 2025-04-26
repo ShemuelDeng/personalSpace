@@ -36,7 +36,7 @@ export const API_ENDPOINTS = {
   // 用户相关接口
   USER: {
     LOGIN: '/auth/login',  // 用户登录
-    LOGOUT: '/auth/logout',  // 用户登出
+    LOGOUT: '/api/user/logout',  // 用户登出
     PROFILE: '/api/users/profile',  // 获取用户信息
   }
 }

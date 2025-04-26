@@ -65,9 +65,12 @@ const router = new VueRouter({
 // 全局导航守卫
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
+  // 检查token是否有效（不为null、undefined或'null'字符串）
+  const isValidToken = token && token !== 'null'
+  
   if (to.path === '/login') {
     // 如果已登录且要去登录页，重定向到首页
-    if (token) {
+    if (isValidToken) {
       next('/')
     } else {
       next()
@@ -76,7 +79,7 @@ router.beforeEach((to, from, next) => {
     // 检查页面是否需要登录权限
     if (to.matched.some(record => record.meta.requiresAuth)) {
       // 需要登录权限但未登录，重定向到登录页
-      if (!token) {
+      if (!isValidToken) {
         next({
           path: '/login',
           query: { redirect: to.fullPath }

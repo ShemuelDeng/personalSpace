@@ -36,8 +36,9 @@
             <a href="https://juejin.cn/user/objectx" target="_blank" class="social-icon">
               <i class="el-icon-medal-1"></i>
             </a>
-            <a href="https://zhihu.com/people/objectx" target="_blank" class="social-icon">
-              <i class="el-icon-notebook-2"></i>
+            <a href="javascript:;" class="social-icon logout-btn" @click="handleLogout">
+              <i class="el-icon-switch-button"></i>
+              <span v-show="!isCollapse">退出登录</span>
             </a>
           </div>
         </div>
@@ -53,6 +54,9 @@
 </template>
 
 <script>
+import { API_ENDPOINTS } from '../api/config';
+import request from '@/utils/request';
+
 export default {
   name: 'MainLayout',
   data() {
@@ -79,6 +83,25 @@ export default {
   methods: {
     toggleSidebar() {
       this.isCollapse = !this.isCollapse;
+    },
+    
+    async handleLogout() {
+      try {
+        // 调用登出接口
+        await request.post(API_ENDPOINTS.USER.LOGOUT);
+        // 登出成功，清除本地存储的用户信息
+        localStorage.removeItem('token');
+        localStorage.removeItem('userInfo');
+        
+        // 提示用户登出成功
+        this.$message.success('退出登录成功');
+        
+        // 跳转到登录页面
+        this.$router.push('/login');
+      } catch (error) {
+        console.error('退出登录失败:', error);
+        this.$message.error('退出登录失败，请重试');
+      }
     }
   },
   mounted() {
@@ -219,6 +242,16 @@ export default {
 
 .social-icon:hover {
   color: #409EFF;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.logout-btn:hover {
+  color: #F56C6C;
 }
 
 /* 响应式布局 */

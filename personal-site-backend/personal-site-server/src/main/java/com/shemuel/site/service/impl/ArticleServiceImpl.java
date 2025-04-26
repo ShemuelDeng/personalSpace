@@ -2,6 +2,7 @@ package com.shemuel.site.service.impl;
 
 import java.util.List;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.shemuel.site.dto.SaveArticleDTO;
 import com.shemuel.site.mapper.ArticleTagRelationMapper;
 import com.shemuel.site.service.ArticleTagRelationService;
@@ -31,6 +32,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
      */
     @Override
     public IPage<Article> selectPage(Article article) {
+        Long userId = StpUtil.getLoginIdAsLong();
+        article.setUserId(userId);
         LambdaQueryWrapper<Article> wrapper = new LambdaQueryWrapper<>();
         // 选择除content和htmlContent之外的所有字段
         wrapper.select(Article.class, info -> !info.getColumn().equals("content") && !info.getColumn().equals("html_content"));

@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
-import router from '@/router'
 
 // 创建axios实例
 const service = axios.create({
@@ -15,7 +14,8 @@ service.interceptors.request.use(
   config => {
     // 在请求发送前可以进行一些处理，比如添加token
     const token = localStorage.getItem('token')
-    if (token) {
+    // 确保token有效（不为null或'null'字符串）
+    if (token && token !== 'null') {
       config.headers['Authorization'] = `${token}`
     }
     return config
@@ -37,17 +37,17 @@ service.interceptors.response.use(
     if (error.response) {
       const { status } = error.response
       if (status === 401) {
-        localStorage.setItem('token', null)
-        console.log('token过期1111')
-
-          // 2. 避免重复跳转
-          if (router.currentRoute.path !== '/login') {
-              const currentPath = router.currentRoute.fullPath
-              router.replace({
-                  path: '/login',
-                  query: { redirect: currentPath }
-              })
-          }
+        // 移除token而不是设置为'null'字符串
+        localStorage.removeItem('token')
+        console.log('token已过期，需要重新登录')
+        // 导入路由并立即跳转到登录页面
+        import('@/router').then(module => {
+          const router = module.default
+          router.push({
+            path: '/login',
+            query: { redirect: router.currentRoute.fullPath }
+          })
+        })
       }
 
       // 可选：根据其他状态码处理不同错误

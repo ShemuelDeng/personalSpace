@@ -189,7 +189,7 @@ export default {
         this.hasMore = this.articles.length < this.total
       } catch (error) {
         console.error('获取文章列表失败:', error)
-        this.$message.error('获取文章列表失败')
+        // this.$message.error('获取文章列表失败')
       } finally {
         this.loading = false
       }
