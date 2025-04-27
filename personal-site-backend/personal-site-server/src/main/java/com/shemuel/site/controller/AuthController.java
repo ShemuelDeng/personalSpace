@@ -67,7 +67,7 @@ public class AuthController {
 
 
 
-    @PostMapping("/password/recall")
+    @PostMapping("/password/reset")
     public SaResult resetPassword(@RequestBody @Validated UserPasswordResetDTO userLoginDTO) {
         UserProfile userProfile = authService.checkCaptcha(userLoginDTO.getIdentifier(), userLoginDTO.getCaptcha());
         authService.updatePassword(userProfile, userLoginDTO.getNewPassword());
