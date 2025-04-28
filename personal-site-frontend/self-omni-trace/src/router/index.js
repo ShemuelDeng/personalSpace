@@ -51,6 +51,11 @@ const routes = [
         path: '/resume',
         component: () => import('@/views/ResumeView.vue'),
         meta: { title: '个人简历' }
+      },
+      {
+        path: '/timeline',
+        component: () => import('@/views/TimelineView.vue'),
+        meta: { title: '时间轴' }
       }
     ]
   }

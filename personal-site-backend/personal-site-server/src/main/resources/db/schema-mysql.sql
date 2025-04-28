@@ -349,3 +349,21 @@ CREATE TABLE `third_party_platform_auth_info` (
    KEY `idx_user_id` (`user_id`) COMMENT '用户id',
    KEY `idx_platform_id` (`platform_id`) COMMENT '平台ID索引'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='第三方平台认证信息表';
+
+
+CREATE TABLE timeline_event (
+    id int UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+    user_id BIGINT NOT NULL COMMENT '用户ID',
+    event_date DATE NOT NULL COMMENT '事件日期',
+    event_year INT NOT NULL COMMENT '事件年份',
+    title VARCHAR(255) NOT NULL COMMENT '事件标题',
+    content TEXT COMMENT '事件内容（最长2000字）',
+    location VARCHAR(255) COMMENT '发生位置',
+    images TEXT COMMENT '图片链接，支持多个，用逗号或JSON存',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+
+    KEY idx_user_id (user_id),
+    KEY idx_event_year (event_year),
+    KEY idx_event_date (event_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='时间轴大事件表';

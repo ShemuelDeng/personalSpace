@@ -33,6 +33,15 @@ export const API_ENDPOINTS = {
     IMAGE: '/api/upload/image',  // 图片上传
   },
   
+  // 时间轴大事件相关接口
+  TIMELINE: {
+    LIST: '/api/timeline-event/list',  // 获取时间轴事件列表
+    DETAIL: '/api/timeline-event/',  // 获取时间轴事件详情，需要拼接ID
+    CREATE: '/api/timeline-event/add',  // 创建时间轴事件
+    UPDATE: '/api/timeline-event/update',  // 更新时间轴事件
+    DELETE: '/api/timeline-event/delete/',  // 删除时间轴事件，需要拼接ID
+  },
+  
   // 用户相关接口
   USER: {
     LOGIN: '/auth/login',  // 用户登录
