@@ -64,9 +64,9 @@ export default {
       isCollapse: false,
       menuItems: [
         { path: '/', icon: 'el-icon-s-home', title: '首页&简介' },
-        { path: '/tech-stack', icon: 'el-icon-s-management', title: '技术栈' },
+        { path: '/chat', icon: 'el-icon-s-management', title: '唠一会儿' },
         { path: '/notes', icon: 'el-icon-notebook-1', title: '灵感笔记' },
-        { path: '/articles', icon: 'el-icon-document', title: '技术文章' },
+        { path: '/articles', icon: 'el-icon-document', title: '我的文章' },
         { path: '/life-photos', icon: 'el-icon-picture', title: '生活相册' },
         { path: '/workspace', icon: 'el-icon-office-building', title: '工作空间' },
         { path: '/resume', icon: 'el-icon-user', title: '个人简历' },
@@ -74,9 +74,7 @@ export default {
         { path: '/timeline', icon: 'el-icon-time', title: '时间轴' },
         // { path: '/projects', icon: 'el-icon-s-cooperation', title: '项目' },
         { path: '/article-sync-records', icon: 'el-icon-document-copy', title: '文章同步记录' },
-        { path: '/editor', icon: 'el-icon-edit', title: '编辑器' },
-        { path: '/demo', icon: 'el-icon-s-platform', title: 'demo' },
-        { path: '/friends', icon: 'el-icon-user', title: '友链' }
+        { path: '/editor', icon: 'el-icon-edit', title: '编辑器' }
       ]
     }
   },

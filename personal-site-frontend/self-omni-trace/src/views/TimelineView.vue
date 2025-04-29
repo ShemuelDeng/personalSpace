@@ -1,7 +1,7 @@
 <template>
   <div class="timeline-container">
     <div class="timeline-header">
-      <h2>个人时间轴</h2>
+      <h2>时间轴</h2>
       <el-button type="primary" size="small" @click="showAddDialog">添加大事件</el-button>
     </div>
 
@@ -271,5 +271,14 @@ export default {
   object-fit: cover;
   border-radius: 4px;
   cursor: pointer;
+}
+
+/* 覆盖Element Plus时间轴时间戳样式，使其左对齐 */
+:deep(.el-timeline-item__timestamp) {
+  text-align: left !important;
+  display: block;
+  margin-bottom: 8px;
+  color: #909399;
+  font-size: 13px;
 }
 </style>
