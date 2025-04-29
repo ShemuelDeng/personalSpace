@@ -87,3 +87,17 @@ gaode:
   api:
     key: dc9a8412cdc58d95c2ab7e5aa87323b6
 
+
+dromara:
+  x-file-storage: #文件存储配置
+    default-platform: qiniu-kodo-1 #默认使用的存储平台
+    thumbnail-suffix: ".min.jpg" #缩略图后缀，例如【.min.jpg】【.png】
+    #对应平台的配置写在这里，注意缩进要对齐
+    qiniu-kodo:
+      - platform: qiniu-kodo-1 # 存储平台标识
+        enable-storage: true  # 启用存储
+        access-key:
+        secret-key:
+        bucket-name: shemuel
+        domain: svgvr6xwy.hd-bkt.clouddn.com/ # 访问域名，注意“/”结尾，例如：http://abc.hn-bkt.clouddn.com/
+        base-path: base/ # 基础路径

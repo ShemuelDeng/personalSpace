@@ -1,6 +1,15 @@
 const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
   transpileDependencies: true,
+  configureWebpack: {
+    plugins: [
+      new (require('webpack').DefinePlugin)({
+        'process.env': {
+          VUE_APP_BASE_API: JSON.stringify(process.env.VUE_APP_BASE_API)
+        }
+      })
+    ]
+  },
   publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
   outputDir: '../../personal-site-backend/personal-site-server/src/main/resources/static/', // 直接输出到Spring Boot静态目录
   parallel: false, // 禁用thread-loader，解决Node.js高版本兼容性问题

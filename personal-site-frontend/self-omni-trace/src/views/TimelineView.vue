@@ -61,11 +61,10 @@
         </el-form-item>
         <el-form-item label="上传图片">
           <el-upload
-            action="/api/file/upload"
             list-type="picture-card"
-            :on-success="handleUploadSuccess"
-            :on-error="handleUploadError"
-            :on-remove="handleRemove"
+            :http-request="handleUpload"
+            :headers="uploadHeaders"
+            :data="uploadData"
             multiple
           >
             <el-icon><Plus /></el-icon>
@@ -82,6 +81,7 @@
 
 <script>
 import { getTimelineEventsApi, addTimelineEventApi } from '@/api/timeline'
+import { uploadFileApi } from '@/api/file'
 
 export default {
   name: 'TimelineView',
@@ -109,6 +109,9 @@ export default {
     }
   },
   computed: {
+    baseApi() {
+      return process.env.VUE_APP_BASE_API
+    },
     // 根据当前选中的年份过滤事件
     filteredEvents() {
       if (!this.activeYear) return []
@@ -122,6 +125,18 @@ export default {
     this.fetchTimelineEvents()
   },
   methods: {
+    handleUpload(file) {
+      const formData = new FormData()
+      formData.append('file', file.file)
+      return uploadFileApi(formData)
+      .then(res => {
+        this.handleUploadSuccess(res)
+      })
+      .catch(err => {
+        console.log('上传图片出错11:', err)
+        this.handleUploadError(err)
+      })
+    },
     // 获取时间轴事件数据
     async fetchTimelineEvents() {
       try {
@@ -186,10 +201,11 @@ export default {
     },
 
     // 处理图片上传成功
-    handleUploadSuccess(response, file) {
+    handleUploadSuccess(response) {
+      console.log('图片上传成功', response)
       if (response.code === 200) {
-        const fileUrl = response.data
-        file.url = fileUrl // 设置文件的URL
+        const fileUrl = response.data.url;
+        // file.url = fileUrl // 设置文件的URL
         this.uploadedImages.push(fileUrl)
         this.eventForm.images = this.uploadedImages.join(',')
         this.$message.success('图片上传成功')

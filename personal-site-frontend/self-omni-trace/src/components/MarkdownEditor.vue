@@ -107,9 +107,10 @@
         <el-form-item label="封面图" prop="coverImage">
           <el-upload
             class="cover-uploader"
-            action="/api/upload"
+            :http-request="handleCoverUpload"
             :show-file-list="false"
-            :on-success="handleCoverSuccess"
+            :headers="uploadHeaders"
+            :data="uploadData"
             :before-upload="beforeCoverUpload">
             <img v-if="publishForm.coverImage" :src="publishForm.coverImage" class="cover-image">
             <i v-else class="el-icon-plus cover-uploader-icon"></i>
@@ -242,6 +243,21 @@ export default {
     }
   },
   methods: {
+    handleCoverUpload(file) {
+      const formData = new FormData()
+      formData.append('file', file.file)
+      return request.post('/api/file/upload2', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(res => {
+        this.publishForm.coverImage = URL.createObjectURL(file.file)
+        return res
+      }).catch(err => {
+        this.$message.error('封面图上传失败')
+        throw err
+      })
+    },
     async fetchUserTags() {
       try {
         const response = await request({

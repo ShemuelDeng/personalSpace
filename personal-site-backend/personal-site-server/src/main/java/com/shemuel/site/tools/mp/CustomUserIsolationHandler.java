@@ -20,6 +20,8 @@ public class CustomUserIsolationHandler implements TenantLineHandler {
         ignoreTableList.add("gen_table_column");
         ignoreTableList.add("third_party_platform");
         ignoreTableList.add("user_profile");
+        ignoreTableList.add("file_part_detail");
+        ignoreTableList.add("file_detail");
     }
 
     @Override

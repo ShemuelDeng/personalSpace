@@ -38,7 +38,7 @@ public class MainGenerator {
 
     @Test
     public void generate() {
-        doGenerate("timeline_event");
+        doGenerate("file_detail","file_part_detail");
     }
 
     private void doGenerate(String... tableNames) {
@@ -62,20 +62,20 @@ public class MainGenerator {
             map.forEach((fileName, content) -> {
 
                 if (!fileName.contains("vue") && !fileName.contains("api")) {
-//
-//                    String basePath = Paths.get("D:\\code\\company\\personalSpace\\personal-site-backend\\personal-site-server\\src\\main\\java")
-//                            .toAbsolutePath().toString();
-//
-//                    String basePath2 = Paths.get("D:\\code\\company\\personalSpace\\personal-site-backend\\personal-site-server\\src\\main\\resources")
-//                            .toAbsolutePath().toString();
 
-
-
-                    String basePath = Paths.get("E:\\code\\personalSpace\\personal-site-backend\\personal-site-server\\src\\main\\java")
+                    String basePath = Paths.get("D:\\code\\company\\personalSpace\\personal-site-backend\\personal-site-server\\src\\main\\java")
                             .toAbsolutePath().toString();
 
-                    String basePath2 = Paths.get("E:\\code\\personalSpace\\personal-site-backend\\personal-site-server\\src\\main\\resources")
+                    String basePath2 = Paths.get("D:\\code\\company\\personalSpace\\personal-site-backend\\personal-site-server\\src\\main\\resources")
                             .toAbsolutePath().toString();
+
+
+
+//                    String basePath = Paths.get("E:\\code\\personalSpace\\personal-site-backend\\personal-site-server\\src\\main\\java")
+//                            .toAbsolutePath().toString();
+//
+//                    String basePath2 = Paths.get("E:\\code\\personalSpace\\personal-site-backend\\personal-site-server\\src\\main\\resources")
+//                            .toAbsolutePath().toString();
 
 
                     try {
